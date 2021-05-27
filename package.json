@@ -1,0 +1,55 @@
+{
+  "name": "@opengovsg/sgid-client",
+  "version": "0.0.0",
+  "description": "The official TypeScript/JavaScript SDK for sgID",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "version": "auto-changelog -p && git add CHANGELOG.md",
+    "prepare": "husky install",
+    "lint": "eslint --ext .ts --ignore-path .gitignore --max-warnings 0 .",
+    "lint-fix": "eslint --ext .ts --ignore-path .gitignore --max-warnings 0 --fix .",
+    "prepublishOnly": "npm run build",
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,ts}": "eslint --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/opengovsg/sgid-client.git"
+  },
+  "author": "Open Government Products, GovTech Singapore (https://open.gov.sg)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/opengovsg/sgid-client/issues"
+  },
+  "homepage": "https://github.com/opengovsg/sgid-client#readme",
+  "devDependencies": {
+    "@types/jsonwebtoken": "^8.5.1",
+    "@types/node": "*",
+    "@types/node-jose": "^1.1.6",
+    "@typescript-eslint/eslint-plugin": "^4.25.0",
+    "@typescript-eslint/parser": "^4.25.0",
+    "auto-changelog": "^2.3.0",
+    "eslint": "^7.27.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.23.3",
+    "eslint-plugin-jest": "^24.3.6",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint-plugin-typesafe": "^0.5.2",
+    "husky": "^6.0.0",
+    "lint-staged": "^11.0.0",
+    "prettier": "^2.3.0",
+    "typescript": "^4.3.2"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^3.1.2",
+    "node-jose": "^2.0.0"
+  }
+}
