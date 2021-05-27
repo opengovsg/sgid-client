@@ -112,7 +112,7 @@ export class SgidClient {
       })
   }
 
-  createJWT(payload: Record<string, string>, expiresIn: number): string {
+  createJWT(payload: Record<string, unknown>, expiresIn: number): string {
     return jwt.sign(payload, this.privateKey, {
       algorithm: RS256,
       expiresIn,
