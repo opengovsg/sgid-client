@@ -1,15 +1,12 @@
-import fs from 'fs'
 import jwt from 'jsonwebtoken'
 import jwtDecode from 'jwt-decode'
 import { JWE, JWK } from 'node-jose'
 import { Client, generators, Issuer } from 'openid-client'
 
-const isKey = (key: string) => key.startsWith('-----BEGIN')
 const RS256 = 'RS256'
 
 export class SgidClient {
   private privateKey: string | Buffer
-  private publicKey: string | Buffer
 
   private sgID: Client
 
@@ -18,20 +15,15 @@ export class SgidClient {
     clientId,
     clientSecret,
     privateKey,
-    publicKey,
     redirectUri,
   }: {
     endpoint: string
     clientId: string
     clientSecret: string
-    privateKey: string
-    publicKey: string
+    privateKey: string | Buffer
     redirectUri: string
   }) {
-    this.privateKey = isKey(privateKey)
-      ? privateKey
-      : fs.readFileSync(privateKey)
-    this.publicKey = isKey(publicKey) ? publicKey : fs.readFileSync(publicKey)
+    this.privateKey = privateKey
 
     // TODO: Discover sgID issuer metadata via .well-known endpoint
     const issuer = new Issuer({
@@ -66,7 +58,11 @@ export class SgidClient {
 
   async callback(code: string): Promise<{ sub: string; accessToken: string }> {
     return this.sgID
-      .callback(undefined, { code })
+      .callback(undefined, { code }, undefined, {
+        exchangeBody: {
+          aud: this.sgID.metadata.client_id,
+        },
+      })
       .then(({ access_token, id_token: idToken }) => {
         const sub = this.decodeIdToken(`${idToken}`)
         const accessToken = `${access_token}`
@@ -109,9 +105,12 @@ export class SgidClient {
     })
   }
 
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  verifyJWT(token: string): string | object {
-    return jwt.verify(token, this.publicKey, {
+  verifyJWT(
+    token: string,
+    publicKey: string | Buffer,
+    // eslint-disable-next-line @typescript-eslint/ban-types
+  ): string | object | undefined {
+    return jwt.verify(token, publicKey, {
       algorithms: [RS256],
     })
   }
