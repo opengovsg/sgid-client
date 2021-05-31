@@ -25,15 +25,17 @@ export class SgidClient {
   }) {
     this.privateKey = privateKey
 
+    const { origin: issuer } = new URL(endpoint)
+
     // TODO: Discover sgID issuer metadata via .well-known endpoint
-    const issuer = new Issuer({
-      issuer: 'sgID',
+    const { Client } = new Issuer({
+      issuer,
       authorization_endpoint: `${endpoint}/authorize`,
       token_endpoint: `${endpoint}/token`,
       userinfo_endpoint: `${endpoint}/userinfo`,
     })
 
-    this.sgID = new issuer.Client({
+    this.sgID = new Client({
       client_id: clientId,
       client_secret: clientSecret,
       redirect_uris: [redirectUri],
