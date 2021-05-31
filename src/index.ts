@@ -49,6 +49,17 @@ export class SgidClient {
     })
   }
 
+  getRedirectUri(): string {
+    if (
+      !this.sgID.metadata.redirect_uris ||
+      this.sgID.metadata.redirect_uris.length === 0
+    ) {
+      // eslint-disable-next-line typesafe/no-throw-sync-func
+      throw new Error('No redirect URI registered with this client')
+    }
+    return this.sgID.metadata.redirect_uris[0]
+  }
+
   decodeIdToken(token: string): string {
     // TODO verify id_token
     // parse payload and retrieve sub
@@ -56,11 +67,17 @@ export class SgidClient {
     return sub
   }
 
-  async callback(code: string): Promise<{ sub: string; accessToken: string }> {
+  async callback(
+    code: string,
+    redirectUri: string = this.getRedirectUri(),
+  ): Promise<{ sub: string; accessToken: string }> {
+    const { client_id, client_secret } = this.sgID.metadata
     return this.sgID
-      .callback(undefined, { code }, undefined, {
+      .callback(redirectUri, { code }, undefined, {
         exchangeBody: {
-          aud: this.sgID.metadata.client_id,
+          aud: client_id,
+          client_id,
+          client_secret,
         },
       })
       .then(({ access_token, id_token: idToken }) => {
