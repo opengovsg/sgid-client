@@ -40,10 +40,10 @@ export class SgidClient {
     })
   }
 
-  authorizationUrl(state: string): string {
+  authorizationUrl(state: string, scope = 'myinfo.nric_number openid'): string {
     const nonce = generators.nonce()
     return this.sgID.authorizationUrl({
-      scope: 'myinfo.nric_number openid',
+      scope,
       nonce,
       state,
     })
