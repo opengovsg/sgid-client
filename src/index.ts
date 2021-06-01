@@ -33,6 +33,7 @@ export class SgidClient {
       authorization_endpoint: `${endpoint}/authorize`,
       token_endpoint: `${endpoint}/token`,
       userinfo_endpoint: `${endpoint}/userinfo`,
+      jwks_uri: `${issuer}/.well-known/jwks.json`,
     })
 
     this.sgID = new Client({
@@ -43,6 +44,7 @@ export class SgidClient {
   }
 
   authorizationUrl(state: string, scope = 'myinfo.nric_number openid'): string {
+    // TODO: remember nonce to validate callback
     const nonce = generators.nonce()
     return this.sgID.authorizationUrl({
       scope,
@@ -63,7 +65,6 @@ export class SgidClient {
   }
 
   decodeIdToken(token: string): string {
-    // TODO verify id_token
     // parse payload and retrieve sub
     const { sub } = jwtDecode<{ sub: string }>(token)
     return sub
@@ -74,6 +75,7 @@ export class SgidClient {
     redirectUri: string = this.getRedirectUri(),
   ): Promise<{ sub: string; accessToken: string }> {
     const { client_id, client_secret } = this.sgID.metadata
+    // TODO: implement checks for nonce, maxAge
     return this.sgID
       .callback(redirectUri, { code }, undefined, {
         exchangeBody: {
