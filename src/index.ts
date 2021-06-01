@@ -43,14 +43,17 @@ export class SgidClient {
     })
   }
 
-  authorizationUrl(state: string, scope = 'myinfo.nric_number openid'): string {
-    // TODO: remember nonce to validate callback
-    const nonce = generators.nonce()
-    return this.sgID.authorizationUrl({
+  authorizationUrl(
+    state: string,
+    scope = 'myinfo.nric_number openid',
+    nonce = generators.nonce(),
+  ): { url: string; nonce: string } {
+    const url = this.sgID.authorizationUrl({
       scope,
       nonce,
       state,
     })
+    return { url, nonce }
   }
 
   getRedirectUri(): string {
@@ -72,18 +75,27 @@ export class SgidClient {
 
   async callback(
     code: string,
-    redirectUri: string = this.getRedirectUri(),
+    redirectUri = this.getRedirectUri(),
+    // use null to specify no nonce, per openid-client impl
+    nonce: string | null = null,
   ): Promise<{ sub: string; accessToken: string }> {
     const { client_id, client_secret } = this.sgID.metadata
-    // TODO: implement checks for nonce, maxAge
     return this.sgID
-      .callback(redirectUri, { code }, undefined, {
-        exchangeBody: {
-          aud: client_id,
-          client_id,
-          client_secret,
+      .callback(
+        redirectUri,
+        { code },
+        // TODO: implement checks for maxAge
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        { nonce },
+        {
+          exchangeBody: {
+            aud: client_id,
+            client_id,
+            client_secret,
+          },
         },
-      })
+      )
       .then(({ access_token, id_token: idToken }) => {
         const sub = this.decodeIdToken(`${idToken}`)
         const accessToken = `${access_token}`
