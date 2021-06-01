@@ -43,15 +43,11 @@ export class SgidClient {
     })
   }
 
-  authorizationUrl({
-    state,
+  authorizationUrl(
+    state: string,
     scope = 'myinfo.nric_number openid',
     nonce = generators.nonce(),
-  }: {
-    state: string
-    scope: string
-    nonce: string
-  }): { url: string; nonce: string } {
+  ): { url: string; nonce: string } {
     const url = this.sgID.authorizationUrl({
       scope,
       nonce,
@@ -77,16 +73,12 @@ export class SgidClient {
     return sub
   }
 
-  async callback({
-    code,
-    redirectUri = this.getRedirectUri(),
+  async callback(
+    code: string,
     // use null to specify no nonce, per openid-client impl
-    nonce = null,
-  }: {
-    code: string
-    redirectUri: string
-    nonce: string | null
-  }): Promise<{ sub: string; accessToken: string }> {
+    nonce: string | null = null,
+    redirectUri = this.getRedirectUri(),
+  ): Promise<{ sub: string; accessToken: string }> {
     const { client_id, client_secret } = this.sgID.metadata
     return this.sgID
       .callback(
