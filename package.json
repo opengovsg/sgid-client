@@ -1,6 +1,6 @@
 {
   "name": "@opengovsg/sgid-client",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "The official TypeScript/JavaScript SDK for sgID",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
