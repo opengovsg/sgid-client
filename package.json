@@ -50,6 +50,6 @@
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^3.1.2",
     "node-jose": "^2.0.0",
-    "openid-client": "^4.7.4"
+    "openid-client": "^4.7.5"
   }
 }
