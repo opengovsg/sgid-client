@@ -17,27 +17,29 @@ export class SgidClient {
   private sgID: Client
 
   constructor({
-    endpoint,
     clientId,
     clientSecret,
     privateKey,
     redirectUri,
+    hostname = 'https://api.id.gov.sg',
+    apiVersion = 1,
   }: {
-    endpoint: string
     clientId: string
     clientSecret: string
     privateKey: string
     redirectUri?: string
+    hostname: string
+    apiVersion: number
   }) {
     this.privateKey = privateKey
 
     // TODO: Discover sgID issuer metadata via .well-known endpoint
     const { Client } = new Issuer({
-      issuer: endpoint,
-      authorization_endpoint: `${endpoint}/authorize`,
-      token_endpoint: `${endpoint}/token`,
-      userinfo_endpoint: `${endpoint}/userinfo`,
-      jwks_uri: `${endpoint}/.well-known/jwks.json`,
+      issuer: hostname,
+      authorization_endpoint: `${hostname}/v${apiVersion}/oauth/authorize`,
+      token_endpoint: `${hostname}/v${apiVersion}/oauth/token`,
+      userinfo_endpoint: `${hostname}/v${apiVersion}/oauth/userinfo`,
+      jwks_uri: `${hostname}/.well-known/jwks.json`,
     })
 
     this.sgID = new Client({

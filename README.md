@@ -18,7 +18,6 @@ npm i @opengovsg/sgid-client
 import SgidClient from '@opengovsg/sgid-client'
 
 const client = new SgidClient({
-  endpoint: 'https://api.id.gov.sg',
   clientId: 'CLIENT-ID',
   clientSecret: 'cLiEnTsEcReT',
   privateKey: '-----BEGIN PRIVATE KEY-----MII ... XXX-----END PRIVATE KEY-----',
@@ -31,7 +30,7 @@ const client = new SgidClient({
 `client.authorizationUrl(state, scope, [nonce], [redirectUri])`
 
 ```typescript
-const authorizationUrl = client.authorizationUrl(
+const { url } = client.authorizationUrl(
   'state',
   ['openid', 'myinfo.nric_number'], // or space-concatenated string
   null, // defaults to randomly generated nonce if unspecified
