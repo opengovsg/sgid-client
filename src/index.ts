@@ -1,4 +1,4 @@
-import { compactDecrypt, decodeJwt, importJWK, importPKCS8 } from 'jose'
+import { compactDecrypt, importJWK, importPKCS8 } from 'jose'
 import {
   Client,
   ClientAuthMethod,
@@ -88,17 +88,6 @@ export class SgidClient {
     return this.sgID.metadata.redirect_uris[0]
   }
 
-  // decode id token and return sub
-  private decodeIdToken(token: string): string {
-    // no verification needed since its already verified in callback function
-    const { sub } = decodeJwt(token)
-    if (!sub) {
-      // eslint-disable-next-line typesafe/no-throw-sync-func
-      throw new Error('No sub found in id token')
-    }
-    return sub
-  }
-
   /**
    * Callback handler for sgID OIDC flow
    * @param code The authorization code received from the authorization server
@@ -111,16 +100,16 @@ export class SgidClient {
     nonce: string | null = null,
     redirectUri = this.getFirstRedirectUri(),
   ): Promise<{ sub: string; accessToken: string }> {
-    const { access_token: accessToken, id_token: idToken } =
-      await this.sgID.callback(
-        redirectUri,
-        { code },
-        { nonce: nonce ?? undefined },
-      )
-    if (!idToken || !accessToken) {
-      throw new Error('Missing id token or access token')
+    const tokenSet = await this.sgID.callback(
+      redirectUri,
+      { code },
+      { nonce: nonce ?? undefined },
+    )
+    const { sub } = tokenSet.claims()
+    const { access_token: accessToken } = tokenSet
+    if (!sub || !accessToken) {
+      throw new Error('Missing sub claim or access token')
     }
-    const sub = this.decodeIdToken(idToken)
     return { sub, accessToken }
   }
 
