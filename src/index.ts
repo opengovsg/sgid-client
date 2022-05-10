@@ -7,6 +7,8 @@ import {
   ResponseType,
 } from 'openid-client'
 
+import { convertPkcs1ToPkcs8 } from './util'
+
 const SGID_SIGNING_ALG = 'RS256'
 const SGID_SUPPORTED_FLOWS: ResponseType[] = ['code']
 const SGID_AUTH_METHOD: ClientAuthMethod = 'client_secret_post'
@@ -31,8 +33,6 @@ export class SgidClient {
     hostname: string
     apiVersion: number
   }) {
-    this.privateKey = privateKey
-
     // TODO: Discover sgID issuer metadata via .well-known endpoint
     const { Client } = new Issuer({
       issuer: hostname,
@@ -50,6 +50,15 @@ export class SgidClient {
       response_types: SGID_SUPPORTED_FLOWS,
       token_endpoint_auth_method: SGID_AUTH_METHOD,
     })
+
+    /**
+     * For backward compatibility with pkcs1
+     */
+    if (privateKey.startsWith('-----BEGIN RSA PRIVATE KEY-----')) {
+      this.privateKey = convertPkcs1ToPkcs8(privateKey)
+    } else {
+      this.privateKey = privateKey
+    }
   }
 
   /**

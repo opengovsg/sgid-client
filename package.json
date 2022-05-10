@@ -29,6 +29,7 @@
   "homepage": "https://github.com/opengovsg/sgid-client#readme",
   "devDependencies": {
     "@types/node": "*",
+    "@types/node-rsa": "^1.1.1",
     "@typescript-eslint/eslint-plugin": "^4.25.0",
     "@typescript-eslint/parser": "^4.25.0",
     "auto-changelog": "^2.3.0",
@@ -46,6 +47,7 @@
   },
   "dependencies": {
     "jose": "4.8.1",
+    "node-rsa": "1.1.1",
     "openid-client": "5.1.5"
   }
 }
