@@ -58,3 +58,7 @@ const { sub, accessToken } = await client.callback(
 const { sub, data } = await client.userinfo('access_token')
 // data: { myinfo.nric_number: "S1231231A", myinfo.name: "JAMUS TAN" }
 ```
+
+## Supported Runtime and Environment
+
+This library depends on [jose](https://www.npmjs.com/package/jose) npm package which currently supports [these Node.js versions](https://github.com/panva/jose/issues/262).
