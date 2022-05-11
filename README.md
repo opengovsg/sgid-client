@@ -4,6 +4,10 @@
 
 The official TypeScript/JavaScript client for sgID
 
+## Breaking Changes
+
+See [CHANGELOG](CHANGELOG.md) for breaking changes.
+
 ## Installation
 
 ```bash
