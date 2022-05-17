@@ -1,6 +1,7 @@
 ![](sgid-logo.png)
 
 # sgid-client
+[![npm version](https://badge.fury.io/js/@opengovsg%2Fsgid-client.svg)](https://badge.fury.io/js/@opengovsg%2Fsgid-client)
 
 The official TypeScript/JavaScript client for sgID
 
