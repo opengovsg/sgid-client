@@ -30,8 +30,8 @@ export class SgidClient {
     clientSecret: string
     privateKey: string
     redirectUri?: string
-    hostname: string
-    apiVersion: number
+    hostname?: string
+    apiVersion?: number
   }) {
     // TODO: Discover sgID issuer metadata via .well-known endpoint
     const { Client } = new Issuer({
