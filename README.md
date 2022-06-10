@@ -1,13 +1,14 @@
 ![](sgid-logo.png)
 
 # sgid-client
+
 [![npm version](https://badge.fury.io/js/@opengovsg%2Fsgid-client.svg)](https://badge.fury.io/js/@opengovsg%2Fsgid-client)
 
 The official TypeScript/JavaScript client for sgID
 
-## Breaking Changes
+## CHANGELOG
 
-See [CHANGELOG](CHANGELOG.md) for breaking changes.
+See [Releases](https://github.com/opengovsg/sgid-client/releases) for CHANGELOG and breaking changes.
 
 ## Installation
 
