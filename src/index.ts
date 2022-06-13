@@ -39,7 +39,7 @@ export class SgidClient {
       authorization_endpoint: `${hostname}/v${apiVersion}/oauth/authorize`,
       token_endpoint: `${hostname}/v${apiVersion}/oauth/token`,
       userinfo_endpoint: `${hostname}/v${apiVersion}/oauth/userinfo`,
-      jwks_uri: `${hostname}/.well-known/jwks.json`,
+      jwks_uri: `${new URL(hostname).origin}/.well-known/jwks.json`,
     })
 
     this.sgID = new Client({
