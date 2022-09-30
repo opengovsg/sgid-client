@@ -142,14 +142,17 @@ export class SgidClient {
       key: encryptedPayloadKey,
       data,
     } = await this.sgID.userinfo<{
-      sub: string
-      key: string
-      data: Record<string, string>
+      sub: string | undefined
+      key: string | undefined
+      data: Record<string, string> | undefined
     }>(accessToken)
 
-    const result = await this.decryptPayload(encryptedPayloadKey, data)
+    if (encryptedPayloadKey && data) {
+      const result = await this.decryptPayload(encryptedPayloadKey, data)
+      return { sub, data: result }
+    }
 
-    return { sub, data: result }
+    return { sub, data: {} }
   }
 
   private async decryptPayload(
