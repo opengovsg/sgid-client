@@ -46,6 +46,6 @@
   "dependencies": {
     "jose": "4.9.2",
     "node-rsa": "1.1.1",
-    "openid-client": "5.1.5"
+    "openid-client": "5.4.0"
   }
 }
