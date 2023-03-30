@@ -30,6 +30,7 @@ export const MOCK_BLOCK_KEY = {
   k: 'kMnXcwOisOQskMlIu5oqVA',
 }
 export const MOCK_SUB = 'mockSub'
+export const MOCK_AUTH_CODE = 'mockAuthCode'
 export const MOCK_ACCESS_TOKEN = 'mockAccessToken'
 export const MOCK_USERINFO_PLAINTEXT = {
   myKey: 'myValue',

@@ -5,6 +5,7 @@ import SgidClient from '../src'
 import {
   MOCK_ACCESS_TOKEN,
   MOCK_API_VERSION,
+  MOCK_AUTH_CODE,
   MOCK_AUTH_ENDPOINT,
   MOCK_CLIENT_ID,
   MOCK_CLIENT_PRIVATE_KEY,
@@ -248,7 +249,7 @@ describe('SgidClient', () => {
 
   describe('callback', () => {
     it('should call token endpoint and return sub and accessToken', async () => {
-      const { sub, accessToken } = await client.callback('abc')
+      const { sub, accessToken } = await client.callback(MOCK_AUTH_CODE)
 
       expect(sub).toBe(MOCK_SUB)
       expect(accessToken).toBe(MOCK_ACCESS_TOKEN)
@@ -257,7 +258,7 @@ describe('SgidClient', () => {
     it('should throw when no access token is returned', async () => {
       server.use(tokenHandlerNoToken)
 
-      await expect(client.callback('abc')).rejects.toThrow(
+      await expect(client.callback(MOCK_AUTH_CODE)).rejects.toThrow(
         'Missing sub claim or access token',
       )
     })
@@ -265,7 +266,7 @@ describe('SgidClient', () => {
     it('should throw when sub is empty', async () => {
       server.use(tokenHandlerNoSub)
 
-      await expect(client.callback('abc')).rejects.toThrow(
+      await expect(client.callback(MOCK_AUTH_CODE)).rejects.toThrow(
         'Missing sub claim or access token',
       )
     })
@@ -273,7 +274,7 @@ describe('SgidClient', () => {
 
   describe('userinfo', () => {
     it('should call userinfo endpoint and return sub and data', async () => {
-      const { sub, data } = await client.userinfo('abc')
+      const { sub, data } = await client.userinfo(MOCK_ACCESS_TOKEN)
 
       expect(sub).toBe(MOCK_SUB)
       expect(data).toEqual(MOCK_USERINFO_PLAINTEXT)
@@ -282,7 +283,7 @@ describe('SgidClient', () => {
     it('should return empty data object when no key is returned', async () => {
       server.use(userInfoHandlerNoKey)
 
-      const { sub, data } = await client.userinfo('abc')
+      const { sub, data } = await client.userinfo(MOCK_ACCESS_TOKEN)
 
       expect(sub).toBe(MOCK_SUB)
       expect(data).toEqual({})
@@ -291,7 +292,7 @@ describe('SgidClient', () => {
     it('should return empty data object when no data is returned', async () => {
       server.use(userInfoHandlerNoData)
 
-      const { sub, data } = await client.userinfo('abc')
+      const { sub, data } = await client.userinfo(MOCK_ACCESS_TOKEN)
 
       expect(sub).toBe(MOCK_SUB)
       expect(data).toEqual({})
@@ -307,7 +308,7 @@ describe('SgidClient', () => {
         apiVersion: MOCK_API_VERSION,
       })
 
-      await expect(client.userinfo('abc')).rejects.toThrow(
+      await expect(client.userinfo(MOCK_ACCESS_TOKEN)).rejects.toThrow(
         'Failed to import private key',
       )
     })
@@ -315,7 +316,7 @@ describe('SgidClient', () => {
     it('should throw when encrypted key is malformed', async () => {
       server.use(userInfoHandlerMalformedKey)
 
-      await expect(client.userinfo('abc')).rejects.toThrow(
+      await expect(client.userinfo(MOCK_ACCESS_TOKEN)).rejects.toThrow(
         'Unable to decrypt or import payload key',
       )
     })
@@ -323,7 +324,7 @@ describe('SgidClient', () => {
     it('should throw when encrypted data is malformed', async () => {
       server.use(userInfoHandlerMalformedData)
 
-      await expect(client.userinfo('abc')).rejects.toThrow(
+      await expect(client.userinfo(MOCK_ACCESS_TOKEN)).rejects.toThrow(
         'Unable to decrypt payload',
       )
     })

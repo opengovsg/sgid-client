@@ -2,7 +2,11 @@ import { rest } from 'msw'
 
 import {
   MOCK_ACCESS_TOKEN,
+  MOCK_AUTH_CODE,
+  MOCK_CLIENT_ID,
+  MOCK_CLIENT_SECRET,
   MOCK_JWKS_ENDPOINT,
+  MOCK_REDIRECT_URI,
   MOCK_SUB,
   MOCK_TOKEN_ENDPOINT,
   MOCK_USERINFO_ENDPOINT,
@@ -24,7 +28,19 @@ const jwksHandler = rest.get(MOCK_JWKS_ENDPOINT, (_req, res, ctx) => {
 /**
  * Happy path token handler
  */
-const tokenHandler = rest.post(MOCK_TOKEN_ENDPOINT, (_req, res, ctx) => {
+const tokenHandler = rest.post(MOCK_TOKEN_ENDPOINT, async (req, res, ctx) => {
+  // Request is application/x-www-form-urlencoded
+  const bodyString = await req.text()
+  const body = new URLSearchParams(bodyString)
+  if (
+    body.get('grant_type') !== 'authorization_code' ||
+    body.get('code') !== MOCK_AUTH_CODE ||
+    body.get('redirect_uri') !== MOCK_REDIRECT_URI ||
+    body.get('client_id') !== MOCK_CLIENT_ID ||
+    body.get('client_secret') !== MOCK_CLIENT_SECRET
+  ) {
+    return res(ctx.status(400))
+  }
   return res(
     ctx.status(200),
     ctx.json({
@@ -70,7 +86,11 @@ export const tokenHandlerNoSub = rest.post(
  */
 const userInfoHandler = rest.get(
   MOCK_USERINFO_ENDPOINT,
-  async (_req, res, ctx) => {
+  async (req, res, ctx) => {
+    const authHeader = req.headers.get('authorization')
+    if (authHeader !== `Bearer ${MOCK_ACCESS_TOKEN}`) {
+      return res(ctx.status(401))
+    }
     const encKey = await generateEncryptedBlockKey()
     const data = await generateUserInfo()
     return res(
