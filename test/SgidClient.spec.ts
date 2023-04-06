@@ -52,7 +52,7 @@ describe('SgidClient', () => {
         `${__dirname}/mocks/mockPrivateKeyPkcs8.pem`,
       ).toString()
 
-      const client = new SgidClient({
+      const pkcs8Client = new SgidClient({
         clientId: MOCK_CLIENT_ID,
         clientSecret: MOCK_CLIENT_SECRET,
         privateKey: pkcs8Key,
@@ -61,7 +61,7 @@ describe('SgidClient', () => {
         apiVersion: MOCK_API_VERSION,
       })
 
-      expect(client).toBeDefined()
+      expect(pkcs8Client).toBeDefined()
     })
   })
 
@@ -233,7 +233,7 @@ describe('SgidClient', () => {
     it('should throw when no redirectUri is provided', () => {
       const mockState = 'mockState'
 
-      const client = new SgidClient({
+      const noRedirectUriClient = new SgidClient({
         clientId: MOCK_CLIENT_ID,
         clientSecret: MOCK_CLIENT_SECRET,
         privateKey: MOCK_CLIENT_PRIVATE_KEY,
@@ -241,7 +241,7 @@ describe('SgidClient', () => {
         apiVersion: MOCK_API_VERSION,
       })
 
-      expect(() => client.authorizationUrl(mockState)).toThrow(
+      expect(() => noRedirectUriClient.authorizationUrl(mockState)).toThrow(
         'No redirect URI registered with this client',
       )
     })
@@ -299,7 +299,7 @@ describe('SgidClient', () => {
     })
 
     it('should throw when private key is invalid', async () => {
-      const client = new SgidClient({
+      const invalidPrivateKeyClient = new SgidClient({
         clientId: MOCK_CLIENT_ID,
         clientSecret: MOCK_CLIENT_SECRET,
         privateKey: 'malformed',
@@ -308,9 +308,9 @@ describe('SgidClient', () => {
         apiVersion: MOCK_API_VERSION,
       })
 
-      await expect(client.userinfo(MOCK_ACCESS_TOKEN)).rejects.toThrow(
-        'Failed to import private key',
-      )
+      await expect(
+        invalidPrivateKeyClient.userinfo(MOCK_ACCESS_TOKEN),
+      ).rejects.toThrow('Failed to import private key')
     })
 
     it('should throw when encrypted key is malformed', async () => {
