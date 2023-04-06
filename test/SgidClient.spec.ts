@@ -31,7 +31,7 @@ const DEFAULT_RESPONSE_TYPE = 'code'
 describe('SgidClient', () => {
   let client: SgidClient
 
-  beforeEach(() => {
+  beforeAll(() => {
     client = new SgidClient({
       clientId: MOCK_CLIENT_ID,
       clientSecret: MOCK_CLIENT_SECRET,
