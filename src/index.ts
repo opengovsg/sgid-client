@@ -85,6 +85,7 @@ export class SgidClient {
    * https://www.rfc-editor.org/rfc/rfc6749#section-10.12). You can also use this to
    * track per-request state.
    * @param scopes Array or space-separated scopes. 'openid' must be provided as a scope.
+   * Defaults to 'myinfo.nric_number openid'.
    * @param nonce Unique nonce for this request. If this param is undefined, a nonce is generated
    * and returned. To prevent this behaviour, specify null for this param.
    * @param redirectUri The redirect URI used in the authorization request. Defaults to the one
