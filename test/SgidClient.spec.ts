@@ -259,7 +259,7 @@ describe('SgidClient', () => {
       server.use(tokenHandlerNoToken)
 
       await expect(client.callback(MOCK_AUTH_CODE)).rejects.toThrow(
-        'Missing sub claim or access token',
+        'Authorization server did not return an access token',
       )
     })
 
@@ -267,7 +267,7 @@ describe('SgidClient', () => {
       server.use(tokenHandlerNoSub)
 
       await expect(client.callback(MOCK_AUTH_CODE)).rejects.toThrow(
-        'Missing sub claim or access token',
+        'Authorization server did not return the sub claim',
       )
     })
   })
