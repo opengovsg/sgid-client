@@ -18,6 +18,19 @@ export class SgidClient {
 
   private sgID: Client
 
+  /**
+   * Initialises an SgidClient instance.
+   * @param params Constructor arguments
+   * @param params.clientId Client ID provided during client registration
+   * @param params.clientSecret Client secret provided during client registration
+   * @param params.privateKey Client private key provided during client registration
+   * @param params.redirectUri Redirection URI for user to return to your application
+   * after login. If not provided in the constructor, this must be provided to the
+   * authorizationUrl and callback functions.
+   * @param params.hostname Hostname of OpenID provider (sgID). Defaults to
+   * https://api.id.gov.sg.
+   * @param params.apiVersion sgID API version to use. Defaults to 1.
+   */
   constructor({
     clientId,
     clientSecret,
@@ -62,12 +75,16 @@ export class SgidClient {
   }
 
   /**
-   * Generates authorization url for sgID OIDC flow
-   * @param state A random string to prevent CSRF
-   * @param scopes Array or space-separated scopes, must include openid
-   * @param nonce Specify null if no nonce
-   * @param redirectUri The redirect URI used in the authorization request, defaults to the one registered with the client
-   * @returns
+   * Generates authorization url to redirect end-user to sgID login page.
+   * @param state A string which will be passed back to your application once the end-user
+   * logs in. You should use this to prevent cross-site request forgery attacks (see
+   * https://www.rfc-editor.org/rfc/rfc6749#section-10.12). You can also use this to
+   * track per-request state.
+   * @param scopes Array or space-separated scopes. 'openid' must be provided as a scope.
+   * @param nonce Unique nonce for this request. If this param is undefined, a nonce is generated
+   * and returned. To prevent this behaviour, specify null for this param.
+   * @param redirectUri The redirect URI used in the authorization request. Defaults to the one
+   * passed to the SgidClient constructor.
    */
   authorizationUrl(
     state: string,
@@ -100,11 +117,14 @@ export class SgidClient {
   }
 
   /**
-   * Callback handler for sgID OIDC flow
+   * Exchanges authorization code for access token.
    * @param code The authorization code received from the authorization server
-   * @param nonce Specify null if no nonce
-   * @param redirectUri The redirect URI used in the authorization request, defaults to the one registered with the client
-   * @returns The sub of the user and access token
+   * @param nonce Nonce passed to authorizationUrl for this request. Specify null
+   * if no nonce was passed to authorizationUrl.
+   * @param redirectUri The redirect URI used in the authorization request. Defaults to the one
+   * passed to the SgidClient constructor.
+   * @returns The sub (subject identifier claim) of the user and access token. The subject
+   * identifier claim is the end-user's unique ID.
    */
   async callback(
     code: string,
@@ -125,9 +145,9 @@ export class SgidClient {
   }
 
   /**
-   * Retrieve verified user info and decrypt with client's private key
+   * Retrieves verified user info and decrypts it with your private key.
    * @param accessToken The access token returned in the callback function
-   * @returns The sub of the user and data
+   * @returns The sub of the end-user and the end-user's verified data
    */
   async userinfo(
     accessToken: string,
