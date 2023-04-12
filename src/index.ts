@@ -13,6 +13,17 @@ const SGID_SIGNING_ALG = 'RS256'
 const SGID_SUPPORTED_FLOWS: ResponseType[] = ['code']
 const SGID_AUTH_METHOD: ClientAuthMethod = 'client_secret_post'
 
+// Exported for RPs' convenience, e.g. if they want to
+// write a function to construct the params
+export type SgidClientParams = {
+  clientId: string
+  clientSecret: string
+  privateKey: string
+  redirectUri?: string
+  hostname?: string
+  apiVersion?: number
+}
+
 export class SgidClient {
   private privateKey: string
 
@@ -38,14 +49,7 @@ export class SgidClient {
     redirectUri,
     hostname = 'https://api.id.gov.sg',
     apiVersion = 1,
-  }: {
-    clientId: string
-    clientSecret: string
-    privateKey: string
-    redirectUri?: string
-    hostname?: string
-    apiVersion?: number
-  }) {
+  }: SgidClientParams) {
     // TODO: Discover sgID issuer metadata via .well-known endpoint
     const { Client } = new Issuer({
       issuer: new URL(hostname).origin,
