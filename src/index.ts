@@ -7,6 +7,7 @@ import {
   ResponseType,
 } from 'openid-client'
 
+import * as Errors from './error'
 import { convertPkcs1ToPkcs8 } from './util'
 
 const SGID_SIGNING_ALG = 'RS256'
@@ -116,7 +117,7 @@ export class SgidClient {
       this.sgID.metadata.redirect_uris.length === 0
     ) {
       // eslint-disable-next-line typesafe/no-throw-sync-func
-      throw new Error('No redirect URI registered with this client')
+      throw new Error(Errors.MISSING_REDIRECT_URI_ERROR)
     }
     return this.sgID.metadata.redirect_uris[0]
   }
@@ -143,8 +144,11 @@ export class SgidClient {
     )
     const { sub } = tokenSet.claims()
     const { access_token: accessToken } = tokenSet
-    if (!sub || !accessToken) {
-      throw new Error('Missing sub claim or access token')
+    if (!sub) {
+      throw new Error(Errors.NO_SUB_ERROR)
+    }
+    if (!accessToken) {
+      throw new Error(Errors.NO_ACCESS_TOKEN_ERROR)
     }
     return { sub, accessToken }
   }
@@ -190,7 +194,7 @@ export class SgidClient {
       // Import client private key in PKCS8 format
       privateKeyJwk = await importPKCS8(this.privateKey, 'RSA-OAEP-256')
     } catch (e) {
-      throw new Error('Failed to import private key')
+      throw new Error(Errors.PRIVATE_KEY_IMPORT_ERROR)
     }
 
     // Decrypt key to get plaintext symmetric key
@@ -201,7 +205,7 @@ export class SgidClient {
       )
       payloadJwk = await importJWK(JSON.parse(decryptedKey))
     } catch (e) {
-      throw new Error('Unable to decrypt or import payload key')
+      throw new Error(Errors.DECRYPT_BLOCK_KEY_ERROR)
     }
 
     // Decrypt each jwe in body
@@ -215,7 +219,7 @@ export class SgidClient {
         result[field] = decryptedValue
       }
     } catch (e) {
-      throw new Error('Unable to decrypt payload')
+      throw new Error(Errors.DECRYPT_PAYLOAD_ERROR)
     }
     return result
   }
