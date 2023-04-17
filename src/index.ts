@@ -11,6 +11,7 @@ import * as Errors from './error'
 import { convertPkcs1ToPkcs8 } from './util'
 
 const SGID_SIGNING_ALG = 'RS256'
+const SGID_CODE_CHALLENGE_METHOD = 'S256'
 const SGID_SUPPORTED_FLOWS: ResponseType[] = ['code']
 const SGID_AUTH_METHOD: ClientAuthMethod = 'client_secret_post'
 
@@ -26,8 +27,8 @@ export type SgidClientParams = {
 }
 
 export class SgidClient {
+  private apiVersion: number
   private privateKey: string
-
   private sgID: Client
 
   /**
@@ -51,6 +52,7 @@ export class SgidClient {
     hostname = 'https://api.id.gov.sg',
     apiVersion = 1,
   }: SgidClientParams) {
+    this.apiVersion = apiVersion
     // TODO: Discover sgID issuer metadata via .well-known endpoint
     const { Client } = new Issuer({
       issuer: new URL(hostname).origin,
@@ -79,6 +81,7 @@ export class SgidClient {
     }
   }
 
+  //TODO: Refactor the `authorizationUrl` function and private helper functions into its own file
   /**
    * Generates authorization url to redirect end-user to sgID login page.
    * @param state A string which will be passed back to your application once the end-user
@@ -97,12 +100,70 @@ export class SgidClient {
     scope: string | string[] = 'myinfo.nric_number openid',
     nonce: string | null = generators.nonce(),
     redirectUri: string = this.getFirstRedirectUri(),
+    codeChallengeMethod: 'plain' | 'S256' = SGID_CODE_CHALLENGE_METHOD,
+    codeChallenge?: string,
+  ): { url: string; nonce?: string } {
+    switch (this.apiVersion) {
+      case 1:
+        return this.authorizationUrlV1(state, scope, nonce, redirectUri)
+
+      case 2:
+        return this.authorizationUrlV2(
+          state,
+          scope,
+          nonce,
+          redirectUri,
+          codeChallengeMethod,
+          codeChallenge,
+        )
+
+      default:
+        // TODO: Should the checking be done in the constructor?
+        // eslint-disable-next-line typesafe/no-throw-sync-func
+        throw new Error(`ApiVersion ${this.apiVersion} provided is invalid`)
+    }
+  }
+
+  //TODO: Should we use an object as a parameter instead
+  private authorizationUrlV1(
+    state: string,
+    scope: string | string[],
+    nonce: string | null,
+    redirectUri: string,
   ): { url: string; nonce?: string } {
     const url = this.sgID.authorizationUrl({
       scope: typeof scope === 'string' ? scope : scope.join(' '),
       nonce: nonce ?? undefined,
       state,
       redirect_uri: redirectUri,
+    })
+    const result: { url: string; nonce?: string } = { url }
+    if (nonce) {
+      result.nonce = nonce
+    }
+    return result
+  }
+
+  private authorizationUrlV2(
+    state: string,
+    scope: string | string[],
+    nonce: string | null,
+    redirectUri: string,
+    codeChallengeMethod: 'plain' | 'S256',
+    codeChallenge?: string,
+  ): { url: string; nonce?: string } {
+    if (codeChallenge === undefined) {
+      // eslint-disable-next-line typesafe/no-throw-sync-func
+      throw new Error('Code challenge must be provided when using apiVersion 2')
+    }
+
+    const url = this.sgID.authorizationUrl({
+      scope: typeof scope === 'string' ? scope : scope.join(' '),
+      nonce: nonce ?? undefined,
+      state,
+      redirect_uri: redirectUri,
+      code_challenge: codeChallenge,
+      code_challenge_method: codeChallengeMethod,
     })
     const result: { url: string; nonce?: string } = { url }
     if (nonce) {
