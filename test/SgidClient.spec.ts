@@ -1,6 +1,7 @@
 import { readFileSync } from 'fs'
 
 import SgidClient from '../src'
+import { codeVerifierAndChallengePattern } from '../src/util'
 
 import {
   MOCK_ACCESS_TOKEN,
@@ -327,6 +328,50 @@ describe('SgidClient', () => {
       await expect(client.userinfo(MOCK_ACCESS_TOKEN)).rejects.toThrow(
         'Unable to decrypt payload',
       )
+    })
+  })
+
+  describe('codeVerifier', () => {
+    it('should generate a code verifier of length 43 when no length is provided', () => {
+      const codeVerifier = client.codeVerifier()
+
+      expect(codeVerifier.length).toBe(43)
+      expect(codeVerifier).toMatch(codeVerifierAndChallengePattern)
+    })
+
+    it('should generate a code verifier of specified length when length between 43 (inclusive) and 128 (inclusive) is provided', () => {
+      for (let length = 43; length <= 128; length++) {
+        const codeVerifier = client.codeVerifier(length)
+        expect(codeVerifier.length).toBe(length)
+        expect(codeVerifier).toMatch(codeVerifierAndChallengePattern)
+      }
+    })
+
+    it('should throw an error when a length < 43 or length > 128 is provided', () => {
+      for (const length of [-1, 0, 42, 129, 138, 999]) {
+        expect(() => client.codeVerifier(length)).toThrowError(
+          `The code verifier should have a minimum length of 43 and a maximum length of 128. Length of ${length} was provided`,
+        )
+      }
+    })
+  })
+
+  describe('codeChallenge', () => {
+    it('should match the specified pattern', () => {
+      const MOCK_CODE_VERIFIER = 'bbGcObXZC1YGBQZZtZGQH9jsyO1vypqCGqnSU_4TI5S'
+
+      expect(client.codeChallenge(MOCK_CODE_VERIFIER)).toMatch(
+        codeVerifierAndChallengePattern,
+      )
+    })
+
+    it('should be deterministic (return the same code challenge given the same code verifier)', () => {
+      const MOCK_CODE_VERIFIER = 'bbGcObXZC1YGBQZZtZGQH9jsyO1vypqCGqnSU_4TI5S'
+
+      const firstCodeChallenge = client.codeChallenge(MOCK_CODE_VERIFIER)
+      const secondCodeChallenge = client.codeChallenge(MOCK_CODE_VERIFIER)
+
+      expect(firstCodeChallenge).toBe(secondCodeChallenge)
     })
   })
 })
