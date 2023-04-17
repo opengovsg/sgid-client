@@ -82,7 +82,6 @@ export class SgidClient {
     }
   }
 
-  //TODO: Refactor the `authorizationUrl` function and private helper functions into its own file
   /**
    * Generates authorization url to redirect end-user to sgID login page.
    * @param state A string which will be passed back to your application once the end-user
@@ -119,7 +118,6 @@ export class SgidClient {
         })
 
       default:
-        // TODO: Should the checking be done in the constructor?
         // eslint-disable-next-line typesafe/no-throw-sync-func
         throw new Error(`ApiVersion ${this.apiVersion} provided is invalid`)
     }
