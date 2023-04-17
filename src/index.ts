@@ -243,6 +243,15 @@ export class SgidClient {
     // This works because a prefix of a random string is still random
     return codeVerifier.slice(0, length)
   }
+
+  /**
+   * Calculates the S256 PKCE code challenge for a provided code verifier
+   * @param codeVerifier The code verifier to calculate the S256 code challenge for
+   * @returns The calculated code challenge
+   */
+  codeChallenge(codeVerifier: string): string {
+    return generators.codeChallenge(codeVerifier)
+  }
 }
 
 export default SgidClient
