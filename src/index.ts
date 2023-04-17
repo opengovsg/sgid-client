@@ -194,6 +194,26 @@ export class SgidClient {
     }
     return result
   }
+
+  /**
+   * Generates the code verifier (random bytes encoded in url safe base 64) to be used in the OAuth 2.0 PKCE flow
+   * @param length The length of the code verifier to generate (Defaults to 43 if not provided)
+   * @returns The generated code verifier
+   */
+  codeVerifier(length = 43): string {
+    if (length < 43 || length > 128) {
+      // eslint-disable-next-line typesafe/no-throw-sync-func
+      throw new Error(
+        `The code verifier should have a minimum length of 43 and a maximum length of 128. Length of ${length} was provided`,
+      )
+    }
+
+    // 96 bytes results in a 128 long base64 string
+    const codeVerifier = generators.codeVerifier(96)
+
+    // This works because a prefix of a random string is still random
+    return codeVerifier.slice(0, length)
+  }
 }
 
 export default SgidClient
