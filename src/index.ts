@@ -84,17 +84,17 @@ export class SgidClient {
   ): { url: string; nonce?: string } {
     switch (this.apiVersion) {
       case 1:
-        return this.authorizationUrlV1(state, scope, nonce, redirectUri)
+        return this.authorizationUrlV1({ state, scope, nonce, redirectUri })
 
       case 2:
-        return this.authorizationUrlV2(
+        return this.authorizationUrlV2({
           state,
           scope,
           nonce,
           redirectUri,
-          codeChallengeMethod,
           codeChallenge,
-        )
+          codeChallengeMethod,
+        })
 
       default:
         // TODO: Should the checking be done in the constructor?
@@ -103,13 +103,17 @@ export class SgidClient {
     }
   }
 
-  //TODO: Should we use an object as a parameter instead
-  private authorizationUrlV1(
-    state: string,
-    scope: string | string[],
-    nonce: string | null,
-    redirectUri: string,
-  ): { url: string; nonce?: string } {
+  private authorizationUrlV1({
+    state,
+    scope,
+    nonce,
+    redirectUri,
+  }: {
+    state: string
+    scope: string | string[]
+    nonce: string | null
+    redirectUri: string
+  }): { url: string; nonce?: string } {
     const url = this.sgID.authorizationUrl({
       scope: typeof scope === 'string' ? scope : scope.join(' '),
       nonce: nonce ?? undefined,
@@ -123,14 +127,21 @@ export class SgidClient {
     return result
   }
 
-  private authorizationUrlV2(
-    state: string,
-    scope: string | string[],
-    nonce: string | null,
-    redirectUri: string,
-    codeChallengeMethod: 'plain' | 'S256',
-    codeChallenge?: string,
-  ): { url: string; nonce?: string } {
+  private authorizationUrlV2({
+    state,
+    scope,
+    nonce,
+    redirectUri,
+    codeChallenge,
+    codeChallengeMethod,
+  }: {
+    state: string
+    scope: string | string[]
+    nonce: string | null
+    redirectUri: string
+    codeChallenge?: string
+    codeChallengeMethod: 'plain' | 'S256'
+  }): { url: string; nonce?: string } {
     if (codeChallenge === undefined) {
       // eslint-disable-next-line typesafe/no-throw-sync-func
       throw new Error('Code challenge must be provided when using apiVersion 2')
