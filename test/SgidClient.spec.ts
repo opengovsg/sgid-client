@@ -355,4 +355,23 @@ describe('SgidClient', () => {
       }
     })
   })
+
+  describe('codeChallenge', () => {
+    it('should match the specified pattern', () => {
+      const mockCodeVerifier = 'bbGcObXZC1YGBQZZtZGQH9jsyO1vypqCGqnSU_4TI5S'
+
+      expect(client.codeChallenge(mockCodeVerifier)).toMatch(
+        codeVerifierAndChallengePattern,
+      )
+    })
+
+    it('should be deterministic (return the same code challenge given the same code verifier)', () => {
+      const mockCodeVerifier = 'bbGcObXZC1YGBQZZtZGQH9jsyO1vypqCGqnSU_4TI5S'
+
+      const firstCodeChallenge = client.codeChallenge(mockCodeVerifier)
+      const secondCodeChallenge = client.codeChallenge(mockCodeVerifier)
+
+      expect(firstCodeChallenge).toBe(secondCodeChallenge)
+    })
+  })
 })
