@@ -11,7 +11,8 @@ import * as Errors from './error'
 import { convertPkcs1ToPkcs8 } from './util'
 
 const SGID_SIGNING_ALG = 'RS256'
-const SGID_CODE_CHALLENGE_METHOD = 'S256'
+export const DEFAULT_SGID_CODE_CHALLENGE_METHOD = 'S256'
+export const DEFAULT_SCOPE = 'myinfo.nric_number openid'
 const SGID_SUPPORTED_FLOWS: ResponseType[] = ['code']
 const SGID_AUTH_METHOD: ClientAuthMethod = 'client_secret_post'
 
@@ -97,11 +98,11 @@ export class SgidClient {
    */
   authorizationUrl(
     state: string,
-    scope: string | string[] = 'myinfo.nric_number openid',
+    scope: string | string[] = DEFAULT_SCOPE,
     nonce: string | null = generators.nonce(),
     redirectUri: string = this.getFirstRedirectUri(),
-    codeChallengeMethod: 'plain' | 'S256' = SGID_CODE_CHALLENGE_METHOD,
     codeChallenge?: string,
+    codeChallengeMethod: 'plain' | 'S256' = DEFAULT_SGID_CODE_CHALLENGE_METHOD,
   ): { url: string; nonce?: string } {
     switch (this.apiVersion) {
       case 1:
