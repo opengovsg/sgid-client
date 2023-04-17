@@ -65,7 +65,6 @@ export class SgidClient {
     }
   }
 
-  //TODO: Refactor the `authorizationUrl` function and private helper functions into its own file
   /**
    * Generates authorization url for sgID OIDC flow
    * @param state A random string to prevent CSRF
@@ -98,7 +97,6 @@ export class SgidClient {
         })
 
       default:
-        // TODO: Should the checking be done in the constructor?
         // eslint-disable-next-line typesafe/no-throw-sync-func
         throw new Error(`ApiVersion ${this.apiVersion} provided is invalid`)
     }
