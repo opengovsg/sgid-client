@@ -196,6 +196,21 @@ export class SgidClient {
   }
 
   /**
+   * Generates a PKCE challenge pair where `codeChallenge` is the generated S256 challenge from `codeVerifier`
+   * @param length The length of the code verifier
+   * @returns The generated challenge pair
+   */
+  generatePkcePair(length = 43): {
+    codeVerifier: string
+    codeChallenge: string
+  } {
+    const codeVerifier = this.generateCodeVerifier(length)
+    const codeChallenge = this.generateCodeChallenge(codeVerifier)
+
+    return { codeVerifier, codeChallenge }
+  }
+
+  /**
    * Generates the code verifier (random bytes encoded in url safe base 64) to be used in the OAuth 2.0 PKCE flow
    * @param length The length of the code verifier to generate (Defaults to 43 if not provided)
    * @returns The generated code verifier
