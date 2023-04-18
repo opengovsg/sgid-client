@@ -331,6 +331,13 @@ describe('SgidClient', () => {
     })
   })
 
+  describe('generatePkcePair', () => {
+    it('can generate a PKCE pair', () => {
+      const pkcePair = client.generatePkcePair()
+      expect(pkcePair).toBeDefined()
+    })
+  })
+
   describe('generateCodeVerifier', () => {
     it('should generate a code verifier of length 43 when no length is provided', () => {
       const codeVerifier = client.generateCodeVerifier()
