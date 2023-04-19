@@ -83,6 +83,7 @@ export class SgidClient {
   }
 
   /**
+<<<<<<< HEAD
    * Generates authorization url to redirect end-user to sgID login page.
    * @param state A string which will be passed back to your application once the end-user
    * logs in. You should use this to prevent cross-site request forgery attacks (see
@@ -94,6 +95,16 @@ export class SgidClient {
    * and returned. To prevent this behaviour, specify null for this param.
    * @param redirectUri The redirect URI used in the authorization request. Defaults to the one
    * passed to the SgidClient constructor.
+=======
+   * Generates authorization url for sgID OIDC flow
+   * @param state A random string to prevent CSRF
+   * @param scopes Array or space-separated scopes, must include openid
+   * @param nonce Specify null if no nonce
+   * @param redirectUri The
+   * @param codeChallenge The code challenge from the code verifier used for PKCE enhancement
+   * @param codeChallengeMethod The code challenge method used to generate the code challenge from the code verifier, must be `S256` redirect URI used in the authorization request, defaults to the one registered with the client
+   * @returns
+>>>>>>> 3f3e979 (docs: add jdocs for codeChallenge and codeChallengeMethod)
    */
   authorizationUrl(
     state: string,
