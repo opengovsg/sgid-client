@@ -5,10 +5,12 @@ import {
   MOCK_AUTH_CODE,
   MOCK_CLIENT_ID,
   MOCK_CLIENT_SECRET,
+  MOCK_CODE_VERIFIER,
   MOCK_JWKS_ENDPOINT,
   MOCK_REDIRECT_URI,
   MOCK_SUB,
   MOCK_TOKEN_ENDPOINT,
+  MOCK_TOKEN_ENDPOINT_V2,
   MOCK_USERINFO_ENDPOINT,
 } from './constants'
 import {
@@ -70,6 +72,66 @@ export const tokenHandlerNoToken = rest.post(
  */
 export const tokenHandlerNoSub = rest.post(
   MOCK_TOKEN_ENDPOINT,
+  (_req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        access_token: MOCK_ACCESS_TOKEN,
+        id_token: generateIdToken(''),
+      }),
+    )
+  },
+)
+
+/**
+ * Happy path token handler for v2 (PKCE)
+ */
+const tokenHandlerV2 = rest.post(
+  MOCK_TOKEN_ENDPOINT_V2,
+  async (req, res, ctx) => {
+    // Request is application/x-www-form-urlencoded
+    const bodyString = await req.text()
+    const body = new URLSearchParams(bodyString)
+    if (
+      body.get('grant_type') !== 'authorization_code' ||
+      body.get('code') !== MOCK_AUTH_CODE ||
+      body.get('redirect_uri') !== MOCK_REDIRECT_URI ||
+      body.get('client_id') !== MOCK_CLIENT_ID ||
+      body.get('client_secret') !== MOCK_CLIENT_SECRET ||
+      body.get('code_verifier') !== MOCK_CODE_VERIFIER
+    ) {
+      return res(ctx.status(400))
+    }
+    return res(
+      ctx.status(200),
+      ctx.json({
+        access_token: MOCK_ACCESS_TOKEN,
+        id_token: generateIdToken(),
+      }),
+    )
+  },
+)
+
+/**
+ * Handler to test case where server doesn't return access token for v2 (PKCE)
+ */
+export const tokenHandlerNoTokenV2 = rest.post(
+  MOCK_TOKEN_ENDPOINT_V2,
+  (_req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        id_token: generateIdToken(),
+      }),
+    )
+  },
+)
+
+/**
+ * Handler to test case where sub is empty for v2 (PKCE)
+ */
+export const tokenHandlerNoSubV2 = rest.post(
+  MOCK_TOKEN_ENDPOINT_V2,
   (_req, res, ctx) => {
     return res(
       ctx.status(200),
@@ -175,4 +237,9 @@ export const userInfoHandlerMalformedData = rest.get(
 )
 
 // Export happy path handlers as default
-export const handlers = [tokenHandler, jwksHandler, userInfoHandler]
+export const handlers = [
+  tokenHandler,
+  tokenHandlerV2,
+  jwksHandler,
+  userInfoHandler,
+]

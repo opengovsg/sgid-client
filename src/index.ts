@@ -274,8 +274,8 @@ export class SgidClient {
 
     const tokenSet = await this.sgID.callback(
       redirectUri,
-      { code, code_verifier: codeVerifier },
-      { nonce: nonce ?? undefined },
+      { code },
+      { nonce: nonce ?? undefined, code_verifier: codeVerifier },
     )
     const { sub } = tokenSet.claims()
     const { access_token: accessToken } = tokenSet

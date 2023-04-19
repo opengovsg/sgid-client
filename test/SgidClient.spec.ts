@@ -6,18 +6,16 @@ import { codeVerifierAndChallengePattern } from '../src/util'
 import {
   MOCK_ACCESS_TOKEN,
   MOCK_API_VERSION,
-  MOCK_AUTH_CODE,
   MOCK_CLIENT_ID,
   MOCK_CLIENT_PRIVATE_KEY,
   MOCK_CLIENT_SECRET,
+  MOCK_CODE_VERIFIER,
   MOCK_HOSTNAME,
   MOCK_REDIRECT_URI,
   MOCK_SUB,
   MOCK_USERINFO_PLAINTEXT,
 } from './mocks/constants'
 import {
-  tokenHandlerNoSub,
-  tokenHandlerNoToken,
   userInfoHandlerMalformedData,
   userInfoHandlerMalformedKey,
   userInfoHandlerNoData,
@@ -59,31 +57,6 @@ describe('SgidClient', () => {
       })
 
       expect(pkcs8Client).toBeDefined()
-    })
-  })
-
-  describe('callback', () => {
-    it('should call token endpoint and return sub and accessToken', async () => {
-      const { sub, accessToken } = await client.callback(MOCK_AUTH_CODE)
-
-      expect(sub).toBe(MOCK_SUB)
-      expect(accessToken).toBe(MOCK_ACCESS_TOKEN)
-    })
-
-    it('should throw when no access token is returned', async () => {
-      server.use(tokenHandlerNoToken)
-
-      await expect(client.callback(MOCK_AUTH_CODE)).rejects.toThrow(
-        'Authorization server did not return an access token',
-      )
-    })
-
-    it('should throw when sub is empty', async () => {
-      server.use(tokenHandlerNoSub)
-
-      await expect(client.callback(MOCK_AUTH_CODE)).rejects.toThrow(
-        'Authorization server did not return the sub claim',
-      )
     })
   })
 
@@ -179,18 +152,16 @@ describe('SgidClient', () => {
 
   describe('generateCodeChallenge', () => {
     it('should match the specified pattern', () => {
-      const mockCodeVerifier = 'bbGcObXZC1YGBQZZtZGQH9jsyO1vypqCGqnSU_4TI5S'
-
-      expect(client.generateCodeChallenge(mockCodeVerifier)).toMatch(
+      expect(client.generateCodeChallenge(MOCK_CODE_VERIFIER)).toMatch(
         codeVerifierAndChallengePattern,
       )
     })
 
     it('should be deterministic (return the same code challenge given the same code verifier)', () => {
-      const mockCodeVerifier = 'bbGcObXZC1YGBQZZtZGQH9jsyO1vypqCGqnSU_4TI5S'
-
-      const firstCodeChallenge = client.generateCodeChallenge(mockCodeVerifier)
-      const secondCodeChallenge = client.generateCodeChallenge(mockCodeVerifier)
+      const firstCodeChallenge =
+        client.generateCodeChallenge(MOCK_CODE_VERIFIER)
+      const secondCodeChallenge =
+        client.generateCodeChallenge(MOCK_CODE_VERIFIER)
 
       expect(firstCodeChallenge).toBe(secondCodeChallenge)
     })
