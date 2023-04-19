@@ -70,8 +70,9 @@ export class SgidClient {
    * @param state A random string to prevent CSRF
    * @param scopes Array or space-separated scopes, must include openid
    * @param nonce Specify null if no nonce
-   * @param redirectUri The redirect URI used in the authorization request, defaults to the one registered with the client
-   * @param codeChallengeMethod
+   * @param redirectUri The
+   * @param codeChallenge The code challenge from the code verifier used for PKCE enhancement
+   * @param codeChallengeMethod The code challenge method used to generate the code challenge from the code verifier, must be `S256` redirect URI used in the authorization request, defaults to the one registered with the client
    * @returns
    */
   authorizationUrl(
