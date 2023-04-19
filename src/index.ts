@@ -130,7 +130,9 @@ export class SgidClient {
 
       default:
         // eslint-disable-next-line typesafe/no-throw-sync-func
-        throw new Error(`ApiVersion ${this.apiVersion} provided is invalid`)
+        throw new Error(
+          `ApiVersion ${this.apiVersion} provided is invalid for function 'authorizationUrl'`,
+        )
     }
   }
 
@@ -175,7 +177,9 @@ export class SgidClient {
   }): { url: string; nonce?: string } {
     if (codeChallenge === undefined) {
       // eslint-disable-next-line typesafe/no-throw-sync-func
-      throw new Error('Code challenge must be provided when using apiVersion 2')
+      throw new Error(
+        "Code challenge must be provided in 'authorizationUrl' when using apiVersion 2",
+      )
     }
 
     const url = this.sgID.authorizationUrl({
@@ -218,6 +222,26 @@ export class SgidClient {
     code: string,
     nonce: string | null = null,
     redirectUri = this.getFirstRedirectUri(),
+    codeVerifier?: string,
+  ): Promise<{ sub: string; accessToken: string }> {
+    switch (this.apiVersion) {
+      case 1:
+        return this.callbackV1(code, nonce, redirectUri)
+      case 2:
+        return this.callbackV2(code, nonce, redirectUri, codeVerifier)
+
+      default:
+        // eslint-disable-next-line typesafe/no-throw-sync-func
+        throw new Error(
+          `ApiVersion ${this.apiVersion} provided is invalid for function 'callback'`,
+        )
+    }
+  }
+
+  private async callbackV1(
+    code: string,
+    nonce: string | null = null,
+    redirectUri = this.getFirstRedirectUri(),
   ): Promise<{ sub: string; accessToken: string }> {
     const tokenSet = await this.sgID.callback(
       redirectUri,
@@ -231,6 +255,32 @@ export class SgidClient {
     }
     if (!accessToken) {
       throw new Error(Errors.NO_ACCESS_TOKEN_ERROR)
+    }
+    return { sub, accessToken }
+  }
+
+  private async callbackV2(
+    code: string,
+    nonce: string | null = null,
+    redirectUri = this.getFirstRedirectUri(),
+    codeVerifier?: string,
+  ): Promise<{ sub: string; accessToken: string }> {
+    if (codeVerifier === undefined) {
+      // eslint-disable-next-line typesafe/no-throw-sync-func
+      throw new Error(
+        "Code verifier must be provided in 'callback' when using apiVersion 2",
+      )
+    }
+
+    const tokenSet = await this.sgID.callback(
+      redirectUri,
+      { code, code_verifier: codeVerifier },
+      { nonce: nonce ?? undefined },
+    )
+    const { sub } = tokenSet.claims()
+    const { access_token: accessToken } = tokenSet
+    if (!sub || !accessToken) {
+      throw new Error('Missing sub claim or access token')
     }
     return { sub, accessToken }
   }
