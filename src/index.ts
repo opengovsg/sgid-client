@@ -182,6 +182,7 @@ export class SgidClient {
    * @param code The authorization code received from the authorization server
    * @param nonce Specify null if no nonce
    * @param redirectUri The redirect URI used in the authorization request, defaults to the one registered with the client
+   * @param codeVerifier The code verifier that was used to generate the code challenge that was passed in `authorizationUrl`
    * @returns The sub of the user and access token
    */
   async callback(
