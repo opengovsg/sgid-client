@@ -41,3 +41,5 @@ export const MOCK_ACCESS_TOKEN = 'mockAccessToken'
 export const MOCK_USERINFO_PLAINTEXT = {
   myKey: 'myValue',
 }
+export const MOCK_CODE_VERIFIER = 'bbGcObXZC1YGBQZZtZGQH9jsyO1vypqCGqnSU_4TI5S'
+export const MOCK_CODE_CHALLENGE = 'zaqUHoBV3rnhBF2g0Gkz1qkpEZXHqi2OrPK1DqRi-Lk'
