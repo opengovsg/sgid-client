@@ -1,19 +1,34 @@
 import { compactDecrypt, importJWK, importPKCS8 } from 'jose'
-import {
-  Client,
-  ClientAuthMethod,
-  generators,
-  Issuer,
-  ResponseType,
-} from 'openid-client'
+import { Client, generators, Issuer } from 'openid-client'
 
+import {
+  API_VERSION,
+  DEFAULT_SCOPE,
+  DEFAULT_SGID_CODE_CHALLENGE_METHOD,
+  SGID_AUTH_METHOD,
+  SGID_SIGNING_ALG,
+  SGID_SUPPORTED_FLOWS,
+} from './constants'
 import * as Errors from './error'
 import { convertPkcs1ToPkcs8 } from './util'
 
-const SGID_SIGNING_ALG = 'RS256'
-export const DEFAULT_SCOPE = 'myinfo.nric_number openid'
-const SGID_SUPPORTED_FLOWS: ResponseType[] = ['code']
-const SGID_AUTH_METHOD: ClientAuthMethod = 'client_secret_post'
+type AuthorizationUrlParams = {
+  state: string
+  scope?: string | string[]
+  nonce?: string | null
+  redirectUri?: string
+  codeChallenge: string
+  codeChallengeMethod?: 'plain' | 'S256'
+}
+
+type AuthorizationUrlReturn = { url: string; nonce?: string }
+
+type CallbackParams = {
+  code: string
+  nonce?: string | null
+  redirectUri?: string
+  codeVerifier?: string
+}
 
 // Exported for RPs' convenience, e.g. if they want to
 // write a function to construct the params
@@ -21,14 +36,14 @@ export type SgidClientParams = {
   clientId: string
   clientSecret: string
   privateKey: string
-  redirectUri?: string
+  redirectUris?: string[]
   hostname?: string
   apiVersion?: number
 }
 
 export class SgidClient {
+  private apiVersion: number
   private privateKey: string
-
   private sgID: Client
 
   /**
@@ -48,23 +63,24 @@ export class SgidClient {
     clientId,
     clientSecret,
     privateKey,
-    redirectUri,
+    redirectUris,
     hostname = 'https://api.id.gov.sg',
-    apiVersion = 1,
   }: SgidClientParams) {
+    this.apiVersion = API_VERSION
+
     // TODO: Discover sgID issuer metadata via .well-known endpoint
     const { Client } = new Issuer({
       issuer: new URL(hostname).origin,
-      authorization_endpoint: `${hostname}/v${apiVersion}/oauth/authorize`,
-      token_endpoint: `${hostname}/v${apiVersion}/oauth/token`,
-      userinfo_endpoint: `${hostname}/v${apiVersion}/oauth/userinfo`,
+      authorization_endpoint: `${hostname}/v${this.apiVersion}/oauth/authorize`,
+      token_endpoint: `${hostname}/v${this.apiVersion}/oauth/token`,
+      userinfo_endpoint: `${hostname}/v${this.apiVersion}/oauth/userinfo`,
       jwks_uri: `${new URL(hostname).origin}/.well-known/jwks.json`,
     })
 
     this.sgID = new Client({
       client_id: clientId,
       client_secret: clientSecret,
-      redirect_uris: redirectUri ? [redirectUri] : undefined,
+      redirect_uris: redirectUris,
       id_token_signed_response_alg: SGID_SIGNING_ALG,
       response_types: SGID_SUPPORTED_FLOWS,
       token_endpoint_auth_method: SGID_AUTH_METHOD,
@@ -92,19 +108,38 @@ export class SgidClient {
    * and returned. To prevent this behaviour, specify null for this param.
    * @param redirectUri The redirect URI used in the authorization request. Defaults to the one
    * passed to the SgidClient constructor.
+   * @param codeChallenge The code challenge from the code verifier used for PKCE enhancement
+   * @param codeChallengeMethod The code challenge method used to generate the code challenge from the code verifier, must be `S256`
    */
-  authorizationUrl(
-    state: string,
-    scope: string | string[] = DEFAULT_SCOPE,
-    nonce: string | null = generators.nonce(),
-    redirectUri: string = this.getFirstRedirectUri(),
-  ): { url: string; nonce?: string } {
+  authorizationUrl({
+    state,
+    scope = DEFAULT_SCOPE,
+    nonce = generators.nonce(),
+    redirectUri = this.getFirstRedirectUri(),
+    codeChallenge,
+    codeChallengeMethod = DEFAULT_SGID_CODE_CHALLENGE_METHOD,
+  }: AuthorizationUrlParams): AuthorizationUrlReturn {
+    if (this.apiVersion !== 2) {
+      // eslint-disable-next-line typesafe/no-throw-sync-func
+      throw new Error(
+        `ApiVersion ${this.apiVersion} provided is invalid for function 'authorizationUrl'`,
+      )
+    }
+
+    if (codeChallenge === undefined) {
+      // eslint-disable-next-line typesafe/no-throw-sync-func
+      throw new Error("Code challenge must be provided in 'authorizationUrl'")
+    }
+
     const url = this.sgID.authorizationUrl({
       scope: typeof scope === 'string' ? scope : scope.join(' '),
       nonce: nonce ?? undefined,
       state,
       redirect_uri: redirectUri,
+      code_challenge: codeChallenge,
+      code_challenge_method: codeChallengeMethod,
     })
+
     const result: { url: string; nonce?: string } = { url }
     if (nonce) {
       result.nonce = nonce
@@ -130,18 +165,34 @@ export class SgidClient {
    * if no nonce was passed to authorizationUrl.
    * @param redirectUri The redirect URI used in the authorization request. Defaults to the one
    * passed to the SgidClient constructor.
+   * @param codeVerifier The code verifier that was used to generate the code challenge that was passed in `authorizationUrl`
    * @returns The sub (subject identifier claim) of the user and access token. The subject
    * identifier claim is the end-user's unique ID.
    */
-  async callback(
-    code: string,
-    nonce: string | null = null,
+  async callback({
+    code,
+    nonce = null,
     redirectUri = this.getFirstRedirectUri(),
-  ): Promise<{ sub: string; accessToken: string }> {
+    codeVerifier,
+  }: CallbackParams): Promise<{ sub: string; accessToken: string }> {
+    if (this.apiVersion !== 2) {
+      // eslint-disable-next-line typesafe/no-throw-sync-func
+      throw new Error(
+        "Code verifier must be provided in 'callback' when using apiVersion 2",
+      )
+    }
+
+    if (codeVerifier === undefined) {
+      // eslint-disable-next-line typesafe/no-throw-sync-func
+      throw new Error(
+        "Code verifier must be provided in 'callback' when using apiVersion 2",
+      )
+    }
+
     const tokenSet = await this.sgID.callback(
       redirectUri,
       { code },
-      { nonce: nonce ?? undefined },
+      { nonce: nonce ?? undefined, code_verifier: codeVerifier },
     )
     const { sub } = tokenSet.claims()
     const { access_token: accessToken } = tokenSet
@@ -223,6 +274,50 @@ export class SgidClient {
       throw new Error(Errors.DECRYPT_PAYLOAD_ERROR)
     }
     return result
+  }
+
+  /**
+   * Generates a PKCE challenge pair where `codeChallenge` is the generated S256 challenge from `codeVerifier`
+   * @param length The length of the code verifier
+   * @returns The generated challenge pair
+   */
+  static generatePkcePair(length = 43): {
+    codeVerifier: string
+    codeChallenge: string
+  } {
+    const codeVerifier = this.generateCodeVerifier(length)
+    const codeChallenge = this.generateCodeChallenge(codeVerifier)
+
+    return { codeVerifier, codeChallenge }
+  }
+
+  /**
+   * Generates the code verifier (random bytes encoded in url safe base 64) to be used in the OAuth 2.0 PKCE flow
+   * @param length The length of the code verifier to generate (Defaults to 43 if not provided)
+   * @returns The generated code verifier
+   */
+  static generateCodeVerifier(length = 43): string {
+    if (length < 43 || length > 128) {
+      // eslint-disable-next-line typesafe/no-throw-sync-func
+      throw new Error(
+        `The code verifier should have a minimum length of 43 and a maximum length of 128. Length of ${length} was provided`,
+      )
+    }
+
+    // 96 bytes results in a 128 long base64 string
+    const codeVerifier = generators.codeVerifier(96)
+
+    // This works because a prefix of a random string is still random
+    return codeVerifier.slice(0, length)
+  }
+
+  /**
+   * Calculates the S256 PKCE code challenge for a provided code verifier
+   * @param codeVerifier The code verifier to calculate the S256 code challenge for
+   * @returns The calculated code challenge
+   */
+  static generateCodeChallenge(codeVerifier: string): string {
+    return generators.codeChallenge(codeVerifier)
   }
 }
 
