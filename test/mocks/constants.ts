@@ -8,12 +8,6 @@ export const MOCK_PRIVATE_KEY = readFileSync(
   `${__dirname}/mockPrivateKey.pem`,
 ).toString()
 export const MOCK_HOSTNAME = 'https://id.sgid.com'
-// apiVersion 1
-export const MOCK_API_VERSION = 1
-export const MOCK_AUTH_ENDPOINT = `${MOCK_HOSTNAME}/v${MOCK_API_VERSION}/oauth/authorize`
-export const MOCK_TOKEN_ENDPOINT = `${MOCK_HOSTNAME}/v${MOCK_API_VERSION}/oauth/token`
-export const MOCK_USERINFO_ENDPOINT = `${MOCK_HOSTNAME}/v${MOCK_API_VERSION}/oauth/userinfo`
-// apiVersion 2
 export const MOCK_API_VERSION_V2 = 2
 export const MOCK_AUTH_ENDPOINT_V2 = `${MOCK_HOSTNAME}/v${MOCK_API_VERSION_V2}/oauth/authorize`
 export const MOCK_TOKEN_ENDPOINT_V2 = `${MOCK_HOSTNAME}/v${MOCK_API_VERSION_V2}/oauth/token`

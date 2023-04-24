@@ -9,9 +9,7 @@ import {
   MOCK_JWKS_ENDPOINT,
   MOCK_REDIRECT_URI,
   MOCK_SUB,
-  MOCK_TOKEN_ENDPOINT,
   MOCK_TOKEN_ENDPOINT_V2,
-  MOCK_USERINFO_ENDPOINT,
   MOCK_USERINFO_ENDPOINT_V2,
 } from './constants'
 import {
@@ -29,32 +27,7 @@ const jwksHandler = rest.get(MOCK_JWKS_ENDPOINT, (_req, res, ctx) => {
 })
 
 /**
- * Happy path token handler
- */
-const tokenHandler = rest.post(MOCK_TOKEN_ENDPOINT, async (req, res, ctx) => {
-  // Request is application/x-www-form-urlencoded
-  const bodyString = await req.text()
-  const body = new URLSearchParams(bodyString)
-  if (
-    body.get('grant_type') !== 'authorization_code' ||
-    body.get('code') !== MOCK_AUTH_CODE ||
-    body.get('redirect_uri') !== MOCK_REDIRECT_URI ||
-    body.get('client_id') !== MOCK_CLIENT_ID ||
-    body.get('client_secret') !== MOCK_CLIENT_SECRET
-  ) {
-    return res(ctx.status(400))
-  }
-  return res(
-    ctx.status(200),
-    ctx.json({
-      access_token: MOCK_ACCESS_TOKEN,
-      id_token: generateIdToken(),
-    }),
-  )
-})
-
-/**
- * Happy path token handler for v2 (PKCE)
+ * Happy path token handler (with PKCE)
  */
 const tokenHandlerV2 = rest.post(
   MOCK_TOKEN_ENDPOINT_V2,
@@ -85,28 +58,24 @@ const tokenHandlerV2 = rest.post(
 /**
  * Handler to test case where server doesn't return access token
  */
-export const [tokenHandlerNoToken, tokenHandlerNoTokenV2] = [
-  MOCK_TOKEN_ENDPOINT,
+export const tokenHandlerNoTokenV2 = rest.post(
   MOCK_TOKEN_ENDPOINT_V2,
-].map((endpoint) =>
-  rest.post(endpoint, (_req, res, ctx) => {
+  (_req, res, ctx) => {
     return res(
       ctx.status(200),
       ctx.json({
         id_token: generateIdToken(),
       }),
     )
-  }),
+  },
 )
 
 /**
  * Handler to test case where sub is empty
  */
-export const [tokenHandlerNoSub, tokenHandlerNoSubV2] = [
-  MOCK_TOKEN_ENDPOINT,
+export const tokenHandlerNoSubV2 = rest.post(
   MOCK_TOKEN_ENDPOINT_V2,
-].map((endpoint) =>
-  rest.post(endpoint, (_req, res, ctx) => {
+  (_req, res, ctx) => {
     return res(
       ctx.status(200),
       ctx.json({
@@ -114,17 +83,15 @@ export const [tokenHandlerNoSub, tokenHandlerNoSubV2] = [
         id_token: generateIdToken(''),
       }),
     )
-  }),
+  },
 )
 
 /**
  * Happy path userinfo handler
  */
-const [userInfoHandler, userInfoHandlerV2] = [
-  MOCK_USERINFO_ENDPOINT,
+const userInfoHandlerV2 = rest.get(
   MOCK_USERINFO_ENDPOINT_V2,
-].map((endpoint) =>
-  rest.get(endpoint, async (req, res, ctx) => {
+  async (req, res, ctx) => {
     const authHeader = req.headers.get('authorization')
     if (authHeader !== `Bearer ${MOCK_ACCESS_TOKEN}`) {
       return res(ctx.status(401))
@@ -139,17 +106,15 @@ const [userInfoHandler, userInfoHandlerV2] = [
         data,
       }),
     )
-  }),
+  },
 )
 
 /**
  * Handler to test case where userinfo endpoint does not return key
  */
-export const [userInfoHandlerNoKey, userInfoHandlerNoKeyV2] = [
-  MOCK_USERINFO_ENDPOINT,
+export const userInfoHandlerNoKeyV2 = rest.get(
   MOCK_USERINFO_ENDPOINT_V2,
-].map((endpoint) =>
-  rest.get(endpoint, async (_req, res, ctx) => {
+  async (_req, res, ctx) => {
     const data = await generateUserInfo()
     return res(
       ctx.status(200),
@@ -158,17 +123,15 @@ export const [userInfoHandlerNoKey, userInfoHandlerNoKeyV2] = [
         data,
       }),
     )
-  }),
+  },
 )
 
 /**
  * Handler to test case where userinfo endpoint does not return data
  */
-export const [userInfoHandlerNoData, userInfoHandlerNoDataV2] = [
-  MOCK_USERINFO_ENDPOINT,
+export const userInfoHandlerNoDataV2 = rest.get(
   MOCK_USERINFO_ENDPOINT_V2,
-].map((endpoint) =>
-  rest.get(endpoint, async (_req, res, ctx) => {
+  async (_req, res, ctx) => {
     const encKey = await generateEncryptedBlockKey()
     return res(
       ctx.status(200),
@@ -177,17 +140,15 @@ export const [userInfoHandlerNoData, userInfoHandlerNoDataV2] = [
         key: encKey,
       }),
     )
-  }),
+  },
 )
 
 /**
  * Handler to test case where userinfo endpoint returns malformed key
  */
-export const [userInfoHandlerMalformedKey, userInfoHandlerMalformedKeyV2] = [
-  MOCK_USERINFO_ENDPOINT,
+export const userInfoHandlerMalformedKeyV2 = rest.get(
   MOCK_USERINFO_ENDPOINT_V2,
-].map((endpoint) =>
-  rest.get(endpoint, async (_req, res, ctx) => {
+  async (_req, res, ctx) => {
     const data = await generateUserInfo()
     return res(
       ctx.status(200),
@@ -197,17 +158,15 @@ export const [userInfoHandlerMalformedKey, userInfoHandlerMalformedKeyV2] = [
         data,
       }),
     )
-  }),
+  },
 )
 
 /**
  * Handler to test case where userinfo endpoint returns malformed data
  */
-export const [userInfoHandlerMalformedData, userInfoHandlerMalformedDataV2] = [
-  MOCK_USERINFO_ENDPOINT,
+export const userInfoHandlerMalformedDataV2 = rest.get(
   MOCK_USERINFO_ENDPOINT_V2,
-].map((endpoint) =>
-  rest.get(endpoint, async (_req, res, ctx) => {
+  async (_req, res, ctx) => {
     const encKey = await generateEncryptedBlockKey()
     return res(
       ctx.status(200),
@@ -217,14 +176,8 @@ export const [userInfoHandlerMalformedData, userInfoHandlerMalformedDataV2] = [
         data: { myKey: 'malformed' },
       }),
     )
-  }),
+  },
 )
 
 // Export happy path handlers as default
-export const handlers = [
-  tokenHandler,
-  tokenHandlerV2,
-  jwksHandler,
-  userInfoHandler,
-  userInfoHandlerV2,
-]
+export const handlers = [tokenHandlerV2, jwksHandler, userInfoHandlerV2]
