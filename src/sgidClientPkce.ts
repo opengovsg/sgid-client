@@ -259,7 +259,7 @@ export class SgidClient {
    * @param length The length of the code verifier
    * @returns The generated challenge pair
    */
-  generatePkcePair(length = 43): {
+  static generatePkcePair(length = 43): {
     codeVerifier: string
     codeChallenge: string
   } {
@@ -274,7 +274,7 @@ export class SgidClient {
    * @param length The length of the code verifier to generate (Defaults to 43 if not provided)
    * @returns The generated code verifier
    */
-  generateCodeVerifier(length = 43): string {
+  static generateCodeVerifier(length = 43): string {
     if (length < 43 || length > 128) {
       // eslint-disable-next-line typesafe/no-throw-sync-func
       throw new Error(
@@ -294,7 +294,7 @@ export class SgidClient {
    * @param codeVerifier The code verifier to calculate the S256 code challenge for
    * @returns The calculated code challenge
    */
-  generateCodeChallenge(codeVerifier: string): string {
+  static generateCodeChallenge(codeVerifier: string): string {
     return generators.codeChallenge(codeVerifier)
   }
 }
