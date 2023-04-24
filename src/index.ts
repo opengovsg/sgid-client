@@ -77,6 +77,11 @@ export class SgidClient {
     } else {
       this.privateKey = privateKey
     }
+
+    /**
+     * To rectify instances where an extra '\' escape character is added to the newline
+     */
+    this.privateKey = this.privateKey.replace(/\\n/gm, '\n')
   }
 
   /**
