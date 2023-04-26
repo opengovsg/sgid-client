@@ -125,14 +125,12 @@ export class SgidClient {
     codeChallengeMethod = DEFAULT_SGID_CODE_CHALLENGE_METHOD,
   }: AuthorizationUrlParams): AuthorizationUrlReturn {
     if (this.apiVersion !== 2) {
-      // eslint-disable-next-line typesafe/no-throw-sync-func
       throw new Error(
         `ApiVersion ${this.apiVersion} provided is invalid for function 'authorizationUrl'`,
       )
     }
 
     if (codeChallenge === undefined) {
-      // eslint-disable-next-line typesafe/no-throw-sync-func
       throw new Error("Code challenge must be provided in 'authorizationUrl'")
     }
 
@@ -157,8 +155,12 @@ export class SgidClient {
       !this.sgID.metadata.redirect_uris ||
       this.sgID.metadata.redirect_uris.length === 0
     ) {
+<<<<<<< HEAD
       // eslint-disable-next-line typesafe/no-throw-sync-func
       throw new Error(Errors.MISSING_REDIRECT_URI_ERROR)
+=======
+      throw new Error('No redirect URI registered with this client')
+>>>>>>> da2f8cb (style: remove eslint-no-throw-sync-func rule)
     }
     return this.sgID.metadata.redirect_uris[0]
   }
@@ -181,14 +183,12 @@ export class SgidClient {
     codeVerifier,
   }: CallbackParams): Promise<{ sub: string; accessToken: string }> {
     if (this.apiVersion !== 2) {
-      // eslint-disable-next-line typesafe/no-throw-sync-func
       throw new Error(
         "Code verifier must be provided in 'callback' when using apiVersion 2",
       )
     }
 
     if (codeVerifier === undefined) {
-      // eslint-disable-next-line typesafe/no-throw-sync-func
       throw new Error(
         "Code verifier must be provided in 'callback' when using apiVersion 2",
       )
@@ -303,7 +303,6 @@ export class SgidClient {
    */
   static generateCodeVerifier(length = 43): string {
     if (length < 43 || length > 128) {
-      // eslint-disable-next-line typesafe/no-throw-sync-func
       throw new Error(
         `The code verifier should have a minimum length of 43 and a maximum length of 128. Length of ${length} was provided`,
       )

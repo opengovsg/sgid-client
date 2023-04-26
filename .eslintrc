@@ -60,7 +60,7 @@
         "import/no-duplicates": "error",
         "@typescript-eslint/no-floating-promises": 2,
         "@typescript-eslint/no-unused-vars": 2,
-        "typesafe/no-throw-sync-func": "error"
+        "typesafe/no-throw-sync-func": "off"
       }
     },
     { "files": ["*.spec.ts"], "extends": ["plugin:jest/recommended"] },
