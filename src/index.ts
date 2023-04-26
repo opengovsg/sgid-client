@@ -18,7 +18,6 @@ type AuthorizationUrlParams = {
   nonce?: string | null
   redirectUri?: string
   codeChallenge: string
-  codeChallengeMethod?: 'plain' | 'S256'
 }
 
 type AuthorizationUrlReturn = { url: string; nonce?: string }
@@ -114,7 +113,6 @@ export class SgidClient {
    * @param redirectUri The redirect URI used in the authorization request. Defaults to the one
    * passed to the SgidClient constructor.
    * @param codeChallenge The code challenge from the code verifier used for PKCE enhancement
-   * @param codeChallengeMethod The code challenge method used to generate the code challenge from the code verifier, must be `S256`
    */
   authorizationUrl({
     state,
@@ -122,7 +120,6 @@ export class SgidClient {
     nonce = generators.nonce(),
     redirectUri = this.getFirstRedirectUri(),
     codeChallenge,
-    codeChallengeMethod = DEFAULT_SGID_CODE_CHALLENGE_METHOD,
   }: AuthorizationUrlParams): AuthorizationUrlReturn {
     if (this.apiVersion !== 2) {
       throw new Error(
@@ -140,7 +137,7 @@ export class SgidClient {
       state,
       redirect_uri: redirectUri,
       code_challenge: codeChallenge,
-      code_challenge_method: codeChallengeMethod,
+      code_challenge_method: DEFAULT_SGID_CODE_CHALLENGE_METHOD,
     })
 
     const result: { url: string; nonce?: string } = { url }
@@ -155,12 +152,7 @@ export class SgidClient {
       !this.sgID.metadata.redirect_uris ||
       this.sgID.metadata.redirect_uris.length === 0
     ) {
-<<<<<<< HEAD
-      // eslint-disable-next-line typesafe/no-throw-sync-func
       throw new Error(Errors.MISSING_REDIRECT_URI_ERROR)
-=======
-      throw new Error('No redirect URI registered with this client')
->>>>>>> da2f8cb (style: remove eslint-no-throw-sync-func rule)
     }
     return this.sgID.metadata.redirect_uris[0]
   }

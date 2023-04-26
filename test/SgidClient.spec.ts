@@ -100,41 +100,6 @@ describe('SgidClient', () => {
       expect(actualNumSearchParams).toBe(8)
     })
 
-    it('should generate authorisation URL correctly when state, codeChallenge, and codeChallengeMethod is provided', () => {
-      const mockState = 'mockState'
-      const mockCodeChallenge = 'mockCodeChallenge'
-      const mockCodeChallengeMethod = 'plain'
-
-      const { url, nonce } = client.authorizationUrl({
-        state: mockState,
-        codeChallenge: mockCodeChallenge,
-        codeChallengeMethod: mockCodeChallengeMethod,
-      })
-
-      const actual = new URL(url)
-      // Count number of search params
-      let actualNumSearchParams = 0
-      actual.searchParams.forEach(() => actualNumSearchParams++)
-      const expected = new URL(MOCK_AUTH_ENDPOINT_V2)
-      expect(actual.host).toBe(expected.host)
-      expect(actual.pathname).toBe(expected.pathname)
-      expect(actual.searchParams.get('client_id')).toBe(MOCK_CLIENT_ID)
-      expect(actual.searchParams.get('scope')).toBe(DEFAULT_SCOPE)
-      expect(actual.searchParams.get('response_type')).toBe(
-        DEFAULT_RESPONSE_TYPE,
-      )
-      expect(actual.searchParams.get('redirect_uri')).toBe(MOCK_REDIRECT_URI)
-      expect(actual.searchParams.get('nonce')).toBe(nonce)
-      expect(actual.searchParams.get('state')).toBe(mockState)
-      expect(actual.searchParams.get('code_challenge')).toBe(mockCodeChallenge)
-      // Important check is here
-      expect(actual.searchParams.get('code_challenge_method')).toBe(
-        mockCodeChallengeMethod,
-      )
-      // Client ID, scope, response_type, redirect_uri, nonce, state, code_challenge, code_challenge_method
-      expect(actualNumSearchParams).toBe(8)
-    })
-
     it('should generate authorisation URL correctly when state, codeChallenge, and scope is provided as a string', () => {
       const mockState = 'mockState'
       const mockScope = 'mockScope'
