@@ -25,7 +25,6 @@ type AuthorizationUrlParams = {
   nonce?: string | null
   redirectUri?: string
   codeChallenge: string
-  codeChallengeMethod?: 'plain' | 'S256'
 }
 
 type AuthorizationUrlReturn = { url: string; nonce?: string }
@@ -91,7 +90,6 @@ export class SgidClient {
    * @param nonce Specify null if no nonce
    * @param redirectUri The redirect URI used in the authorization request, defaults to the one registered with the client
    * @param codeChallenge The code challenge from the code verifier used for PKCE enhancement
-   * @param codeChallengeMethod The code challenge method used to generate the code challenge from the code verifier, must be `S256`
    * @returns
    */
   authorizationUrl({
@@ -100,7 +98,6 @@ export class SgidClient {
     nonce = generators.nonce(),
     redirectUri = this.getFirstRedirectUri(),
     codeChallenge,
-    codeChallengeMethod = DEFAULT_SGID_CODE_CHALLENGE_METHOD,
   }: AuthorizationUrlParams): AuthorizationUrlReturn {
     if (this.apiVersion !== 2) {
       throw new Error(
@@ -118,7 +115,7 @@ export class SgidClient {
       state,
       redirect_uri: redirectUri,
       code_challenge: codeChallenge,
-      code_challenge_method: codeChallengeMethod,
+      code_challenge_method: DEFAULT_SGID_CODE_CHALLENGE_METHOD,
     })
 
     const result: { url: string; nonce?: string } = { url }
