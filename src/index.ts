@@ -121,12 +121,6 @@ export class SgidClient {
     redirectUri = this.getFirstRedirectUri(),
     codeChallenge,
   }: AuthorizationUrlParams): AuthorizationUrlReturn {
-    if (this.apiVersion !== 2) {
-      throw new Error(
-        `ApiVersion ${this.apiVersion} provided is invalid for function 'authorizationUrl'`,
-      )
-    }
-
     if (codeChallenge === undefined) {
       throw new Error("Code challenge must be provided in 'authorizationUrl'")
     }
@@ -174,12 +168,6 @@ export class SgidClient {
     redirectUri = this.getFirstRedirectUri(),
     codeVerifier,
   }: CallbackParams): Promise<{ sub: string; accessToken: string }> {
-    if (this.apiVersion !== 2) {
-      throw new Error(
-        "Code verifier must be provided in 'callback' when using apiVersion 2",
-      )
-    }
-
     if (codeVerifier === undefined) {
       throw new Error(
         "Code verifier must be provided in 'callback' when using apiVersion 2",
