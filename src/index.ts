@@ -26,7 +26,7 @@ type CallbackParams = {
   code: string
   nonce?: string | null
   redirectUri?: string
-  codeVerifier?: string
+  codeVerifier: string
 }
 
 // Exported for RPs' convenience, e.g. if they want to
@@ -121,10 +121,6 @@ export class SgidClient {
     redirectUri = this.getFirstRedirectUri(),
     codeChallenge,
   }: AuthorizationUrlParams): AuthorizationUrlReturn {
-    if (codeChallenge === undefined) {
-      throw new Error("Code challenge must be provided in 'authorizationUrl'")
-    }
-
     const url = this.sgID.authorizationUrl({
       scope: typeof scope === 'string' ? scope : scope.join(' '),
       nonce: nonce ?? undefined,
@@ -168,12 +164,6 @@ export class SgidClient {
     redirectUri = this.getFirstRedirectUri(),
     codeVerifier,
   }: CallbackParams): Promise<{ sub: string; accessToken: string }> {
-    if (codeVerifier === undefined) {
-      throw new Error(
-        "Code verifier must be provided in 'callback' when using apiVersion 2",
-      )
-    }
-
     const tokenSet = await this.sgID.callback(
       redirectUri,
       { code },

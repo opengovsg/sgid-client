@@ -307,12 +307,6 @@ describe('SgidClient', () => {
       expect(accessToken).toBe(MOCK_ACCESS_TOKEN)
     })
 
-    it('should throw when no code verifier is provided', async () => {
-      await expect(client.callback({ code: MOCK_AUTH_CODE })).rejects.toThrow(
-        "Code verifier must be provided in 'callback' when using apiVersion 2",
-      )
-    })
-
     it('should throw when no access token is returned', async () => {
       server.use(tokenHandlerNoTokenV2)
 
