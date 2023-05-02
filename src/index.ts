@@ -7,17 +7,42 @@ import {
   ResponseType,
 } from 'openid-client'
 
+import * as Errors from './error'
 import { convertPkcs1ToPkcs8 } from './util'
 
 const SGID_SIGNING_ALG = 'RS256'
 const SGID_SUPPORTED_FLOWS: ResponseType[] = ['code']
 const SGID_AUTH_METHOD: ClientAuthMethod = 'client_secret_post'
 
+// Exported for RPs' convenience, e.g. if they want to
+// write a function to construct the params
+export type SgidClientParams = {
+  clientId: string
+  clientSecret: string
+  privateKey: string
+  redirectUri?: string
+  hostname?: string
+  apiVersion?: number
+}
+
 export class SgidClient {
   private privateKey: string
 
   private sgID: Client
 
+  /**
+   * Initialises an SgidClient instance.
+   * @param params Constructor arguments
+   * @param params.clientId Client ID provided during client registration
+   * @param params.clientSecret Client secret provided during client registration
+   * @param params.privateKey Client private key provided during client registration
+   * @param params.redirectUri Redirection URI for user to return to your application
+   * after login. If not provided in the constructor, this must be provided to the
+   * authorizationUrl and callback functions.
+   * @param params.hostname Hostname of OpenID provider (sgID). Defaults to
+   * https://api.id.gov.sg.
+   * @param params.apiVersion sgID API version to use. Defaults to 1.
+   */
   constructor({
     clientId,
     clientSecret,
@@ -25,14 +50,7 @@ export class SgidClient {
     redirectUri,
     hostname = 'https://api.id.gov.sg',
     apiVersion = 1,
-  }: {
-    clientId: string
-    clientSecret: string
-    privateKey: string
-    redirectUri?: string
-    hostname?: string
-    apiVersion?: number
-  }) {
+  }: SgidClientParams) {
     // TODO: Discover sgID issuer metadata via .well-known endpoint
     const { Client } = new Issuer({
       issuer: new URL(hostname).origin,
@@ -62,12 +80,17 @@ export class SgidClient {
   }
 
   /**
-   * Generates authorization url for sgID OIDC flow
-   * @param state A random string to prevent CSRF
-   * @param scopes Array or space-separated scopes, must include openid
-   * @param nonce Specify null if no nonce
-   * @param redirectUri The redirect URI used in the authorization request, defaults to the one registered with the client
-   * @returns
+   * Generates authorization url to redirect end-user to sgID login page.
+   * @param state A string which will be passed back to your application once the end-user
+   * logs in. You should use this to prevent cross-site request forgery attacks (see
+   * https://www.rfc-editor.org/rfc/rfc6749#section-10.12). You can also use this to
+   * track per-request state.
+   * @param scopes Array or space-separated scopes. 'openid' must be provided as a scope.
+   * Defaults to 'myinfo.nric_number openid'.
+   * @param nonce Unique nonce for this request. If this param is undefined, a nonce is generated
+   * and returned. To prevent this behaviour, specify null for this param.
+   * @param redirectUri The redirect URI used in the authorization request. Defaults to the one
+   * passed to the SgidClient constructor.
    */
   authorizationUrl(
     state: string,
@@ -94,17 +117,20 @@ export class SgidClient {
       this.sgID.metadata.redirect_uris.length === 0
     ) {
       // eslint-disable-next-line typesafe/no-throw-sync-func
-      throw new Error('No redirect URI registered with this client')
+      throw new Error(Errors.MISSING_REDIRECT_URI_ERROR)
     }
     return this.sgID.metadata.redirect_uris[0]
   }
 
   /**
-   * Callback handler for sgID OIDC flow
+   * Exchanges authorization code for access token.
    * @param code The authorization code received from the authorization server
-   * @param nonce Specify null if no nonce
-   * @param redirectUri The redirect URI used in the authorization request, defaults to the one registered with the client
-   * @returns The sub of the user and access token
+   * @param nonce Nonce passed to authorizationUrl for this request. Specify null
+   * if no nonce was passed to authorizationUrl.
+   * @param redirectUri The redirect URI used in the authorization request. Defaults to the one
+   * passed to the SgidClient constructor.
+   * @returns The sub (subject identifier claim) of the user and access token. The subject
+   * identifier claim is the end-user's unique ID.
    */
   async callback(
     code: string,
@@ -118,16 +144,19 @@ export class SgidClient {
     )
     const { sub } = tokenSet.claims()
     const { access_token: accessToken } = tokenSet
-    if (!sub || !accessToken) {
-      throw new Error('Missing sub claim or access token')
+    if (!sub) {
+      throw new Error(Errors.NO_SUB_ERROR)
+    }
+    if (!accessToken) {
+      throw new Error(Errors.NO_ACCESS_TOKEN_ERROR)
     }
     return { sub, accessToken }
   }
 
   /**
-   * Retrieve verified user info and decrypt with client's private key
+   * Retrieves verified user info and decrypts it with your private key.
    * @param accessToken The access token returned in the callback function
-   * @returns The sub of the user and data
+   * @returns The sub of the end-user and the end-user's verified data
    */
   async userinfo(
     accessToken: string,
@@ -165,7 +194,7 @@ export class SgidClient {
       // Import client private key in PKCS8 format
       privateKeyJwk = await importPKCS8(this.privateKey, 'RSA-OAEP-256')
     } catch (e) {
-      throw new Error('Failed to import private key')
+      throw new Error(Errors.PRIVATE_KEY_IMPORT_ERROR)
     }
 
     // Decrypt key to get plaintext symmetric key
@@ -176,7 +205,7 @@ export class SgidClient {
       )
       payloadJwk = await importJWK(JSON.parse(decryptedKey))
     } catch (e) {
-      throw new Error('Unable to decrypt or import payload key')
+      throw new Error(Errors.DECRYPT_BLOCK_KEY_ERROR)
     }
 
     // Decrypt each jwe in body
@@ -190,7 +219,7 @@ export class SgidClient {
         result[field] = decryptedValue
       }
     } catch (e) {
-      throw new Error('Unable to decrypt payload')
+      throw new Error(Errors.DECRYPT_PAYLOAD_ERROR)
     }
     return result
   }
