@@ -10,7 +10,7 @@ import { codeVerifierAndChallengePattern } from '../src/util'
 import {
   MOCK_ACCESS_TOKEN,
   MOCK_AUTH_CODE,
-  MOCK_AUTH_ENDPOINT_V2,
+  MOCK_AUTH_ENDPOINT,
   MOCK_CLIENT_ID,
   MOCK_CLIENT_PRIVATE_KEY,
   MOCK_CLIENT_SECRET,
@@ -21,12 +21,12 @@ import {
   MOCK_USERINFO_PLAINTEXT,
 } from './mocks/constants'
 import {
-  tokenHandlerNoSubV2,
-  tokenHandlerNoTokenV2,
-  userInfoHandlerMalformedDataV2,
-  userInfoHandlerMalformedKeyV2,
-  userInfoHandlerNoDataV2,
-  userInfoHandlerNoKeyV2,
+  tokenHandlerNoSub,
+  tokenHandlerNoToken,
+  userInfoHandlerMalformedData,
+  userInfoHandlerMalformedKey,
+  userInfoHandlerNoData,
+  userInfoHandlerNoKey,
 } from './mocks/handlers'
 import { server } from './mocks/server'
 
@@ -67,7 +67,7 @@ describe('SgidClient', () => {
     })
   })
 
-  describe('authorizationUrl (v2 with PKCE)', () => {
+  describe('authorizationUrl', () => {
     it('should generate authorisation URL correctly when state and codeChallenge is provided', () => {
       const mockState = 'mockState'
       const mockCodeChallenge = 'mockCodeChallenge'
@@ -81,7 +81,7 @@ describe('SgidClient', () => {
       // Count number of search params
       let actualNumSearchParams = 0
       actual.searchParams.forEach(() => actualNumSearchParams++)
-      const expected = new URL(MOCK_AUTH_ENDPOINT_V2)
+      const expected = new URL(MOCK_AUTH_ENDPOINT)
       expect(actual.host).toBe(expected.host)
       expect(actual.pathname).toBe(expected.pathname)
       expect(actual.searchParams.get('client_id')).toBe(MOCK_CLIENT_ID)
@@ -115,7 +115,7 @@ describe('SgidClient', () => {
       // Count number of search params
       let actualNumSearchParams = 0
       actual.searchParams.forEach(() => actualNumSearchParams++)
-      const expected = new URL(MOCK_AUTH_ENDPOINT_V2)
+      const expected = new URL(MOCK_AUTH_ENDPOINT)
       expect(actual.host).toBe(expected.host)
       expect(actual.pathname).toBe(expected.pathname)
       expect(actual.searchParams.get('client_id')).toBe(MOCK_CLIENT_ID)
@@ -150,7 +150,7 @@ describe('SgidClient', () => {
       // Count number of search params
       let actualNumSearchParams = 0
       actual.searchParams.forEach(() => actualNumSearchParams++)
-      const expected = new URL(MOCK_AUTH_ENDPOINT_V2)
+      const expected = new URL(MOCK_AUTH_ENDPOINT)
       expect(actual.host).toBe(expected.host)
       expect(actual.pathname).toBe(expected.pathname)
       expect(actual.searchParams.get('client_id')).toBe(MOCK_CLIENT_ID)
@@ -185,7 +185,7 @@ describe('SgidClient', () => {
       // Count number of search params
       let actualNumSearchParams = 0
       actual.searchParams.forEach(() => actualNumSearchParams++)
-      const expected = new URL(MOCK_AUTH_ENDPOINT_V2)
+      const expected = new URL(MOCK_AUTH_ENDPOINT)
       expect(actual.host).toBe(expected.host)
       expect(actual.pathname).toBe(expected.pathname)
       expect(actual.searchParams.get('client_id')).toBe(MOCK_CLIENT_ID)
@@ -220,7 +220,7 @@ describe('SgidClient', () => {
       // Count number of search params
       let actualNumSearchParams = 0
       actual.searchParams.forEach(() => actualNumSearchParams++)
-      const expected = new URL(MOCK_AUTH_ENDPOINT_V2)
+      const expected = new URL(MOCK_AUTH_ENDPOINT)
       expect(actual.host).toBe(expected.host)
       expect(actual.pathname).toBe(expected.pathname)
       expect(actual.searchParams.get('client_id')).toBe(MOCK_CLIENT_ID)
@@ -256,7 +256,7 @@ describe('SgidClient', () => {
       // Count number of search params
       let actualNumSearchParams = 0
       actual.searchParams.forEach(() => actualNumSearchParams++)
-      const expected = new URL(MOCK_AUTH_ENDPOINT_V2)
+      const expected = new URL(MOCK_AUTH_ENDPOINT)
       expect(actual.host).toBe(expected.host)
       expect(actual.pathname).toBe(expected.pathname)
       expect(actual.searchParams.get('client_id')).toBe(MOCK_CLIENT_ID)
@@ -296,7 +296,7 @@ describe('SgidClient', () => {
     })
   })
 
-  describe('callback (v2 with PKCE)', () => {
+  describe('callback', () => {
     it('should call token endpoint and return sub and accessToken', async () => {
       const { sub, accessToken } = await client.callback({
         code: MOCK_AUTH_CODE,
@@ -308,7 +308,7 @@ describe('SgidClient', () => {
     })
 
     it('should throw when no access token is returned', async () => {
-      server.use(tokenHandlerNoTokenV2)
+      server.use(tokenHandlerNoToken)
 
       await expect(
         client.callback({
@@ -319,7 +319,7 @@ describe('SgidClient', () => {
     })
 
     it('should throw when sub is empty', async () => {
-      server.use(tokenHandlerNoSubV2)
+      server.use(tokenHandlerNoSub)
 
       await expect(
         client.callback({
@@ -339,7 +339,7 @@ describe('SgidClient', () => {
     })
 
     it('should return empty data object when no key is returned', async () => {
-      server.use(userInfoHandlerNoKeyV2)
+      server.use(userInfoHandlerNoKey)
 
       const { sub, data } = await client.userinfo(MOCK_ACCESS_TOKEN)
 
@@ -348,7 +348,7 @@ describe('SgidClient', () => {
     })
 
     it('should return empty data object when no data is returned', async () => {
-      server.use(userInfoHandlerNoDataV2)
+      server.use(userInfoHandlerNoData)
 
       const { sub, data } = await client.userinfo(MOCK_ACCESS_TOKEN)
 
@@ -371,7 +371,7 @@ describe('SgidClient', () => {
     })
 
     it('should throw when encrypted key is malformed', async () => {
-      server.use(userInfoHandlerMalformedKeyV2)
+      server.use(userInfoHandlerMalformedKey)
 
       await expect(client.userinfo(MOCK_ACCESS_TOKEN)).rejects.toThrow(
         'Unable to decrypt or import payload key',
@@ -379,7 +379,7 @@ describe('SgidClient', () => {
     })
 
     it('should throw when encrypted data is malformed', async () => {
-      server.use(userInfoHandlerMalformedDataV2)
+      server.use(userInfoHandlerMalformedData)
 
       await expect(client.userinfo(MOCK_ACCESS_TOKEN)).rejects.toThrow(
         'Unable to decrypt payload',
