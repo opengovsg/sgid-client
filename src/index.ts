@@ -37,11 +37,9 @@ export type SgidClientParams = {
   privateKey: string
   redirectUris?: string[]
   hostname?: string
-  apiVersion?: number
 }
 
 export class SgidClient {
-  private apiVersion: number
   private privateKey: string
   private sgID: Client
 
@@ -56,7 +54,6 @@ export class SgidClient {
    * authorizationUrl and callback functions.
    * @param params.hostname Hostname of OpenID provider (sgID). Defaults to
    * https://api.id.gov.sg.
-   * @param params.apiVersion sgID API version to use. Defaults to 1.
    */
   constructor({
     clientId,
@@ -65,14 +62,12 @@ export class SgidClient {
     redirectUris,
     hostname = 'https://api.id.gov.sg',
   }: SgidClientParams) {
-    this.apiVersion = API_VERSION
-
     // TODO: Discover sgID issuer metadata via .well-known endpoint
     const { Client } = new Issuer({
       issuer: new URL(hostname).origin,
-      authorization_endpoint: `${hostname}/v${this.apiVersion}/oauth/authorize`,
-      token_endpoint: `${hostname}/v${this.apiVersion}/oauth/token`,
-      userinfo_endpoint: `${hostname}/v${this.apiVersion}/oauth/userinfo`,
+      authorization_endpoint: `${hostname}/v${API_VERSION}/oauth/authorize`,
+      token_endpoint: `${hostname}/v${API_VERSION}/oauth/token`,
+      userinfo_endpoint: `${hostname}/v${API_VERSION}/oauth/userinfo`,
       jwks_uri: `${new URL(hostname).origin}/.well-known/jwks.json`,
     })
 
