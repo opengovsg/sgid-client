@@ -315,7 +315,7 @@ describe('SgidClient', () => {
           code: MOCK_AUTH_CODE,
           codeVerifier: MOCK_CODE_VERIFIER,
         }),
-      ).rejects.toThrow('Missing sub claim or access token')
+      ).rejects.toThrow('Authorization server did not return an access token')
     })
 
     it('should throw when sub is empty', async () => {
@@ -326,7 +326,7 @@ describe('SgidClient', () => {
           code: MOCK_AUTH_CODE,
           codeVerifier: MOCK_CODE_VERIFIER,
         }),
-      ).rejects.toThrow('Missing sub claim or access token')
+      ).rejects.toThrow('Authorization server did not return the sub claim')
     })
   })
 
@@ -413,7 +413,7 @@ describe('SgidClient', () => {
     it('should throw an error when a length < 43 or length > 128 is provided', () => {
       for (const length of [-1, 0, 42, 129, 138, 999]) {
         expect(() => SgidClient.generateCodeVerifier(length)).toThrowError(
-          `The code verifier should have a minimum length of 43 and a maximum length of 128. Length of ${length} was provided`,
+          `The code verifier should have a minimum length of 43 and a maximum length of 128`,
         )
       }
     })

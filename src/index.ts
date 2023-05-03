@@ -273,9 +273,7 @@ export class SgidClient {
    */
   static generateCodeVerifier(length = 43): string {
     if (length < 43 || length > 128) {
-      throw new Error(
-        `The code verifier should have a minimum length of 43 and a maximum length of 128. Length of ${length} was provided`,
-      )
+      throw new Error(Errors.CODE_VERIFIER_LENGTH_ERROR)
     }
 
     // 96 bytes results in a 128 long base64 string
