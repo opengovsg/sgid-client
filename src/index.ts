@@ -256,6 +256,10 @@ export class SgidClient {
     codeVerifier: string
     codeChallenge: string
   } {
+    if (length < 43 || length > 128) {
+      throw new Error(Errors.PKCE_PAIR_LENGTH_ERROR)
+    }
+
     const codeVerifier = this.generateCodeVerifier(length)
     const codeChallenge = this.generateCodeChallenge(codeVerifier)
 

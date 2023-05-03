@@ -388,9 +388,34 @@ describe('SgidClient', () => {
   })
 
   describe('generatePkcePair', () => {
-    it('can generate a PKCE pair', () => {
+    it('should generate a PKCE pair when no length is provided', () => {
       const pkcePair = SgidClient.generatePkcePair()
-      expect(pkcePair).toBeDefined()
+
+      expect(pkcePair.codeVerifier.length).toBe(43)
+      expect(pkcePair.codeChallenge.length).toBe(43)
+
+      expect(pkcePair.codeChallenge).toMatch(codeVerifierAndChallengePattern)
+      expect(pkcePair.codeVerifier).toMatch(codeVerifierAndChallengePattern)
+    })
+
+    it('should generate a PKCE pair of specified length when length between 43 (inclusive) and 128 (inclusive) is provided', () => {
+      for (let length = 43; length <= 128; length++) {
+        const pkcePair = SgidClient.generatePkcePair(length)
+
+        // Length is only for the code verifier
+        expect(pkcePair.codeVerifier.length).toBe(length)
+
+        expect(pkcePair.codeChallenge).toMatch(codeVerifierAndChallengePattern)
+        expect(pkcePair.codeVerifier).toMatch(codeVerifierAndChallengePattern)
+      }
+    })
+
+    it('should throw an error when a length < 43 or length > 128 is provided', () => {
+      for (const length of [-1, 0, 42, 129, 138, 999]) {
+        expect(() => SgidClient.generatePkcePair(length)).toThrowError(
+          'The function generatePkcePair should receive a minimum length of 43 and a maximum length of 128',
+        )
+      }
     })
   })
 
