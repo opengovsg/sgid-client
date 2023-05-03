@@ -40,7 +40,7 @@ describe('SgidClient', () => {
       clientId: MOCK_CLIENT_ID,
       clientSecret: MOCK_CLIENT_SECRET,
       privateKey: MOCK_CLIENT_PRIVATE_KEY,
-      redirectUris: [MOCK_REDIRECT_URI],
+      redirectUri: MOCK_REDIRECT_URI,
       hostname: MOCK_HOSTNAME,
     })
   })
@@ -59,7 +59,7 @@ describe('SgidClient', () => {
         clientId: MOCK_CLIENT_ID,
         clientSecret: MOCK_CLIENT_SECRET,
         privateKey: pkcs8Key,
-        redirectUris: [MOCK_REDIRECT_URI],
+        redirectUri: MOCK_REDIRECT_URI,
         hostname: MOCK_HOSTNAME,
       })
 
@@ -361,7 +361,7 @@ describe('SgidClient', () => {
         clientId: MOCK_CLIENT_ID,
         clientSecret: MOCK_CLIENT_SECRET,
         privateKey: 'malformed',
-        redirectUris: [MOCK_REDIRECT_URI],
+        redirectUri: MOCK_REDIRECT_URI,
         hostname: MOCK_HOSTNAME,
       })
 

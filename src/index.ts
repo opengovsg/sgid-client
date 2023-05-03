@@ -35,7 +35,7 @@ export type SgidClientParams = {
   clientId: string
   clientSecret: string
   privateKey: string
-  redirectUris?: string[]
+  redirectUri?: string
   hostname?: string
 }
 
@@ -59,7 +59,7 @@ export class SgidClient {
     clientId,
     clientSecret,
     privateKey,
-    redirectUris,
+    redirectUri,
     hostname = 'https://api.id.gov.sg',
   }: SgidClientParams) {
     // TODO: Discover sgID issuer metadata via .well-known endpoint
@@ -74,7 +74,7 @@ export class SgidClient {
     this.sgID = new Client({
       client_id: clientId,
       client_secret: clientSecret,
-      redirect_uris: redirectUris,
+      redirect_uris: redirectUri ? [redirectUri] : undefined,
       id_token_signed_response_alg: SGID_SIGNING_ALG,
       response_types: SGID_SUPPORTED_FLOWS,
       token_endpoint_auth_method: SGID_AUTH_METHOD,
@@ -105,8 +105,9 @@ export class SgidClient {
    * Defaults to 'myinfo.nric_number openid'.
    * @param nonce Unique nonce for this request. If this param is undefined, a nonce is generated
    * and returned. To prevent this behaviour, specify null for this param.
-   * @param redirectUri The redirect URI used in the authorization request. Defaults to the one
-   * passed to the SgidClient constructor.
+   * @param redirectUri The redirect URI used in the authorization request. If this param is provided,
+   * it will be used over the redirect URI provided in the SgidClient constructor. The redirect URI
+   * must be provided in at least the SgidClient constructor or this function.
    * @param codeChallenge The code challenge from the code verifier used for PKCE enhancement
    */
   authorizationUrl({
