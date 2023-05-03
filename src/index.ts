@@ -12,7 +12,7 @@ import {
 import * as Errors from './error'
 import { convertPkcs1ToPkcs8 } from './util'
 
-type AuthorizationUrlParams = {
+export type AuthorizationUrlParams = {
   state: string
   scope?: string | string[]
   nonce?: string | null
@@ -20,9 +20,9 @@ type AuthorizationUrlParams = {
   codeChallenge: string
 }
 
-type AuthorizationUrlReturn = { url: string; nonce?: string }
+export type AuthorizationUrlReturn = { url: string; nonce?: string }
 
-type CallbackParams = {
+export type CallbackParams = {
   code: string
   nonce?: string | null
   redirectUri?: string
