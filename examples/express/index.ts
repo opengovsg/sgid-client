@@ -2,6 +2,7 @@ import express, { Router } from 'express'
 import SgidClient from '@opengovsg/sgid-client'
 import * as dotenv from 'dotenv'
 import crypto from 'crypto'
+import cookieParser from 'cookie-parser'
 
 dotenv.config()
 
@@ -11,12 +12,12 @@ const sgid = new SgidClient({
   clientId: String(process.env.SGID_CLIENT_ID),
   clientSecret: String(process.env.SGID_CLIENT_SECRET),
   privateKey: String(process.env.SGID_PRIVATE_KEY),
-  redirectUri: String(process.env.SGID_REDIRECT_URI),
+  redirectUri: `http://localhost:${PORT}/api/callback`,
 })
 
 const app = express()
 
-const router = Router()
+const apiRouter = Router()
 
 const SESSION_COOKIE_NAME = 'exampleAppSession'
 
@@ -34,7 +35,7 @@ type SessionData = {
  */
 const sessionData: SessionData = {}
 
-router.get('/auth-url', (req, res) => {
+apiRouter.get('/auth-url', (req, res) => {
   const iceCreamSelection = String(req.query.icecream)
   const sessionId = crypto.randomUUID()
   const { url, nonce } = sgid.authorizationUrl(
@@ -54,7 +55,7 @@ router.get('/auth-url', (req, res) => {
     .json({ url })
 })
 
-router.get('/callback', async (req, res) => {
+apiRouter.get('/callback', async (req, res) => {
   const authCode = String(req.query.code)
   const state = String(req.query.state)
   const sessionId = String(req.cookies[SESSION_COOKIE_NAME])
@@ -72,11 +73,13 @@ router.get('/callback', async (req, res) => {
   return res.redirect('/logged-in')
 })
 
-router.get('/userinfo', async (req, res) => {
+apiRouter.get('/userinfo', async (req, res) => {
   const sessionId = String(req.cookies[SESSION_COOKIE_NAME])
   const accessToken = sessionData[sessionId]?.accessToken
+
+  // User is not authenticated
   if (!accessToken) {
-    return res.redirect('/error')
+    return res.sendStatus(401)
   }
   const userinfo = await sgid.userinfo(accessToken)
 
@@ -89,6 +92,8 @@ const fetchStaticFiles = async () => {
 
 const initServer = async () => {
   await fetchStaticFiles()
+  app.use(cookieParser())
+  app.use('/api', apiRouter)
   app.use(express.static('public'))
 
   app.listen(PORT, () => {
