@@ -3,6 +3,7 @@ import SgidClient from '@opengovsg/sgid-client'
 import * as dotenv from 'dotenv'
 import crypto from 'crypto'
 import cookieParser from 'cookie-parser'
+import { fetchStaticFiles } from './helpers'
 
 dotenv.config()
 
@@ -108,18 +109,14 @@ apiRouter.get('/logout', async (_req, res) => {
     .sendStatus(200)
 })
 
-const fetchStaticFiles = async (): Promise<void> => {
-  await Promise.resolve()
-}
-
 const initServer = async (): Promise<void> => {
   try {
     await fetchStaticFiles()
     app.use(cookieParser())
     app.use('/api', apiRouter)
-    app.use(express.static('public'))
+    app.use(express.static('dist'))
     app.get('*', (_req, res) => {
-      res.sendFile('index.html', { root: './public' })
+      res.sendFile('index.html', { root: './dist' })
     })
 
     app.listen(PORT, () => {
