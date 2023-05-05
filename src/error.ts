@@ -5,7 +5,7 @@ export const MISSING_REDIRECT_URI_ERROR =
 // callback errors
 export const NO_SUB_ERROR = 'Authorization server did not return the sub claim'
 export const NO_ACCESS_TOKEN_ERROR =
-  'Authorization server did not return an access token'
+  'Authorization server did not return an access token '
 
 // userinfo errors
 export const PRIVATE_KEY_IMPORT_ERROR =

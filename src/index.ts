@@ -94,7 +94,7 @@ export class SgidClient {
    */
   authorizationUrl(
     state: string,
-    scope: string | string[] = 'myinfo.nric_number openid',
+    scope: string | string[] = 'myinfo.nric_number openid ',
     nonce: string | null = generators.nonce(),
     redirectUri: string = this.getFirstRedirectUri(),
   ): { url: string; nonce?: string } {
