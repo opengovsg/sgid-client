@@ -35,7 +35,7 @@ import { server } from './mocks/server'
  * Constants are redefined instead of being imported from "/src" so as to ensure any changes to either (but not both) would cause tests to fail.
  * This is to ensure that any changes we make to these are deliberate and not accidental.
  */
-const DEFAULT_SCOPE = 'myinfo.nric_number openid'
+const DEFAULT_SCOPE = 'myinfo.name openid'
 const DEFAULT_SGID_CODE_CHALLENGE_METHOD = 'S256'
 const DEFAULT_RESPONSE_TYPE = 'code'
 
