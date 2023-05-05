@@ -20,6 +20,9 @@ const app = express()
 const apiRouter = Router()
 
 const SESSION_COOKIE_NAME = 'exampleAppSession'
+const SESSION_COOKIE_OPTIONS = {
+  httpOnly: true,
+}
 
 type SessionData = Record<
   string,
@@ -52,7 +55,7 @@ apiRouter.get('/auth-url', (req, res) => {
     nonce,
   }
   return res
-    .cookie(SESSION_COOKIE_NAME, sessionId, { httpOnly: true })
+    .cookie(SESSION_COOKIE_NAME, sessionId, SESSION_COOKIE_OPTIONS)
     .json({ url })
 })
 
@@ -86,6 +89,10 @@ apiRouter.get('/userinfo', async (req, res) => {
   const userinfo = await sgid.userinfo(accessToken)
 
   return res.json(userinfo)
+})
+
+apiRouter.get('/logout', async (_req, res) => {
+  res.clearCookie(SESSION_COOKIE_NAME, SESSION_COOKIE_OPTIONS).redirect('/')
 })
 
 const fetchStaticFiles = async (): Promise<void> => {
