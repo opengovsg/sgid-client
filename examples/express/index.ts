@@ -98,6 +98,9 @@ const initServer = async (): Promise<void> => {
       app.use(cookieParser())
       app.use('/api', apiRouter)
       app.use(express.static('public'))
+      app.get('*', (_req, res) => {
+        res.sendFile('index.html', { root: './public' })
+      })
 
       app.listen(PORT, () => {
         console.log(`Server listening on port ${PORT}`)
