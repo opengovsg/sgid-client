@@ -4,7 +4,8 @@
   "description": "Example sgID relying party which uses NodeJS and ExpressJS",
   "main": "index.ts",
   "scripts": {
-    "start": "ts-node ./index.ts"
+    "start": "ts-node index.ts",
+    "dev": "tsnd --transpile-only index.ts"
   },
   "dependencies": {
     "@opengovsg/sgid-client": "^1.0.4",
@@ -27,6 +28,7 @@
     "eslint-plugin-promise": "^6.1.1",
     "prettier": "^2.8.8",
     "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.0.4"
   }
 }
