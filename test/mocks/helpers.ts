@@ -43,3 +43,9 @@ export const generateIdToken = (sub = MOCK_SUB): string => {
   }
   return jwt.sign(idTokenContent, MOCK_PRIVATE_KEY, { algorithm: 'RS256' })
 }
+
+/**
+ * Regex pattern that the code verifier and code challenge in the PKCE flow should match according to the PKCE RFC
+ * https://www.rfc-editor.org/rfc/rfc7636
+ */
+export const codeVerifierAndChallengePattern = /^[A-Za-z\d\-._~]{43,128}$/
