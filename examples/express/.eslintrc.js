@@ -1,4 +1,5 @@
 module.exports = {
+  root: true,
   env: {
     commonjs: true,
     es2021: true,
@@ -8,6 +9,9 @@ module.exports = {
   overrides: [],
   parserOptions: {
     ecmaVersion: 'latest',
+    project: 'examples/express/tsconfig.json',
   },
-  rules: {},
+  rules: {
+    '@typescript-eslint/no-misused-promises': 'off',
+  },
 }

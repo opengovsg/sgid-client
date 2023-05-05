@@ -21,13 +21,14 @@ const apiRouter = Router()
 
 const SESSION_COOKIE_NAME = 'exampleAppSession'
 
-type SessionData = {
-  [sessionId: string]: {
+type SessionData = Record<
+  string,
+  {
     nonce?: string
     state: string
     accessToken?: string
   }
-}
+>
 
 /**
  * In-memory store for session data.
@@ -55,22 +56,23 @@ apiRouter.get('/auth-url', (req, res) => {
     .json({ url })
 })
 
-apiRouter.get('/callback', async (req, res) => {
+apiRouter.get('/callback', async (req, res): Promise<void> => {
   const authCode = String(req.query.code)
   const state = String(req.query.state)
   const sessionId = String(req.cookies[SESSION_COOKIE_NAME])
 
   const session = sessionData[sessionId]
   // Validate that the state matches what we passed to sgID for this session
-  if (!session || session.state !== state) {
-    return res.redirect('/error')
+  if (session?.state !== state) {
+    res.redirect('/error')
+    return
   }
 
   const { accessToken } = await sgid.callback(authCode, session.nonce)
   sessionData[sessionId].accessToken = accessToken
 
   // Successful login, redirect to logged in state
-  return res.redirect('/logged-in')
+  res.redirect('/logged-in')
 })
 
 apiRouter.get('/userinfo', async (req, res) => {
@@ -78,7 +80,7 @@ apiRouter.get('/userinfo', async (req, res) => {
   const accessToken = sessionData[sessionId]?.accessToken
 
   // User is not authenticated
-  if (!accessToken) {
+  if (accessToken === undefined) {
     return res.sendStatus(401)
   }
   const userinfo = await sgid.userinfo(accessToken)
@@ -86,19 +88,26 @@ apiRouter.get('/userinfo', async (req, res) => {
   return res.json(userinfo)
 })
 
-const fetchStaticFiles = async () => {
-  return Promise.resolve()
+const fetchStaticFiles = async (): Promise<void> => {
+  await Promise.resolve()
 }
 
-const initServer = async () => {
-  await fetchStaticFiles()
-  app.use(cookieParser())
-  app.use('/api', apiRouter)
-  app.use(express.static('public'))
+const initServer = async (): Promise<void> => {
+  void fetchStaticFiles()
+    .then(() => {
+      app.use(cookieParser())
+      app.use('/api', apiRouter)
+      app.use(express.static('public'))
 
-  app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`)
-  })
+      app.listen(PORT, () => {
+        console.log(`Server listening on port ${PORT}`)
+      })
+    })
+    .catch(() => {
+      console.error(
+        'Something went wrong while fetching the static files. Please restart the server.',
+      )
+    })
 }
 
-initServer()
+void initServer()
