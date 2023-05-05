@@ -6,7 +6,7 @@ import cookieParser from 'cookie-parser'
 
 dotenv.config()
 
-const PORT = 5916
+const PORT = 2020
 
 const sgid = new SgidClient({
   clientId: String(process.env.SGID_CLIENT_ID),
