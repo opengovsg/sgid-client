@@ -7,8 +7,8 @@ import mockClientKeys from './mockClientKeys.json'
 export const MOCK_PRIVATE_KEY = readFileSync(
   `${__dirname}/mockPrivateKey.pem`,
 ).toString()
-export const MOCK_HOSTNAME = 'https://id.sgid.com'
 export const MOCK_API_VERSION = 2
+export const MOCK_HOSTNAME = `https://id.sgid.com/v${MOCK_API_VERSION}`
 export const MOCK_AUTH_ENDPOINT = `${MOCK_HOSTNAME}/v${MOCK_API_VERSION}/oauth/authorize`
 export const MOCK_TOKEN_ENDPOINT = `${MOCK_HOSTNAME}/v${MOCK_API_VERSION}/oauth/token`
 export const MOCK_USERINFO_ENDPOINT = `${MOCK_HOSTNAME}/v${MOCK_API_VERSION}/oauth/userinfo`

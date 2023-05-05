@@ -64,7 +64,7 @@ export class SgidClient {
   }: SgidClientParams) {
     // TODO: Discover sgID issuer metadata via .well-known endpoint
     const { Client } = new Issuer({
-      issuer: new URL(hostname).origin,
+      issuer: `${new URL(hostname).origin}/v${API_VERSION}`,
       authorization_endpoint: `${hostname}/v${API_VERSION}/oauth/authorize`,
       token_endpoint: `${hostname}/v${API_VERSION}/oauth/token`,
       userinfo_endpoint: `${hostname}/v${API_VERSION}/oauth/userinfo`,
