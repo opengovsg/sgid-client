@@ -92,7 +92,9 @@ apiRouter.get('/userinfo', async (req, res) => {
 })
 
 apiRouter.get('/logout', async (_req, res) => {
-  res.clearCookie(SESSION_COOKIE_NAME, SESSION_COOKIE_OPTIONS).redirect('/')
+  return res
+    .clearCookie(SESSION_COOKIE_NAME, SESSION_COOKIE_OPTIONS)
+    .sendStatus(200)
 })
 
 const fetchStaticFiles = async (): Promise<void> => {
