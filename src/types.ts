@@ -1,5 +1,5 @@
 export type AuthorizationUrlParams = {
-  state: string
+  state?: string
   scope?: string | string[]
   nonce?: string | null
   redirectUri?: string

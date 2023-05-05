@@ -80,7 +80,7 @@ export class SgidClient {
    * logs in. You should use this to prevent cross-site request forgery attacks (see
    * https://www.rfc-editor.org/rfc/rfc6749#section-10.12). You can also use this to
    * track per-request state.
-   * @param scopes Array or space-separated scopes. 'openid' must be provided as a scope.
+   * @param scope Array or space-separated scopes. 'openid' must be provided as a scope.
    * Defaults to 'myinfo.nric_number openid'.
    * @param nonce Unique nonce for this request. If this param is undefined, a nonce is generated
    * and returned. To prevent this behaviour, specify null for this param.
