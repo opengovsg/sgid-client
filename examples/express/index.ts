@@ -28,7 +28,8 @@ type SessionData = Record<
   string,
   | {
       nonce?: string
-      state: string
+      // Store state as search params to easily stringify key-value pairs
+      state: URLSearchParams
       accessToken?: string
     }
   | undefined
@@ -43,16 +44,21 @@ const sessionData: SessionData = {}
 apiRouter.get('/auth-url', (req, res) => {
   const iceCreamSelection = String(req.query.icecream)
   const sessionId = crypto.randomUUID()
+  // Use search params to store state so other key-value pairs
+  // can be added easily
+  const state = new URLSearchParams({
+    icecream: iceCreamSelection,
+  })
   const { url, nonce } = sgid.authorizationUrl(
     // We pass the user's ice cream preference as the state,
     // so after they log in, we can display it together with the
     // other user info.
-    iceCreamSelection,
+    state.toString(),
     // Scopes that all sgID relying parties can access by default
     ['openid', 'myinfo.name'],
   )
   sessionData[sessionId] = {
-    state: iceCreamSelection,
+    state,
     nonce,
   }
   return res
@@ -67,7 +73,7 @@ apiRouter.get('/callback', async (req, res): Promise<void> => {
 
   const session = sessionData[sessionId]
   // Validate that the state matches what we passed to sgID for this session
-  if (session?.state !== state) {
+  if (session?.state.toString() !== state) {
     res.redirect('/error')
     return
   }
@@ -92,7 +98,7 @@ apiRouter.get('/userinfo', async (req, res) => {
   const userinfo = await sgid.userinfo(accessToken)
 
   // Add ice cream flavour to userinfo
-  userinfo.data.iceCream = session.state
+  userinfo.data.iceCream = session.state.get('icecream') ?? 'None'
   return res.json(userinfo)
 })
 
