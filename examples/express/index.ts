@@ -93,24 +93,24 @@ const fetchStaticFiles = async (): Promise<void> => {
 }
 
 const initServer = async (): Promise<void> => {
-  void fetchStaticFiles()
-    .then(() => {
-      app.use(cookieParser())
-      app.use('/api', apiRouter)
-      app.use(express.static('public'))
-      app.get('*', (_req, res) => {
-        res.sendFile('index.html', { root: './public' })
-      })
+  try {
+    await fetchStaticFiles()
+    app.use(cookieParser())
+    app.use('/api', apiRouter)
+    app.use(express.static('public'))
+    app.get('*', (_req, res) => {
+      res.sendFile('index.html', { root: './public' })
+    })
 
-      app.listen(PORT, () => {
-        console.log(`Server listening on port ${PORT}`)
-      })
+    app.listen(PORT, () => {
+      console.log(`Server listening on port ${PORT}`)
     })
-    .catch(() => {
-      console.error(
-        'Something went wrong while fetching the static files. Please restart the server.',
-      )
-    })
+  } catch (error) {
+    console.error(
+      'Something went wrong while fetching the static files. Please restart the server.',
+    )
+    console.error(error)
+  }
 }
 
 void initServer()
