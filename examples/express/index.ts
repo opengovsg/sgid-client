@@ -26,11 +26,12 @@ const SESSION_COOKIE_OPTIONS = {
 
 type SessionData = Record<
   string,
-  {
-    nonce?: string
-    state: string
-    accessToken?: string
-  }
+  | {
+      nonce?: string
+      state: string
+      accessToken?: string
+    }
+  | undefined
 >
 
 /**
@@ -72,7 +73,8 @@ apiRouter.get('/callback', async (req, res): Promise<void> => {
   }
 
   const { accessToken } = await sgid.callback(authCode, session.nonce)
-  sessionData[sessionId].accessToken = accessToken
+  session.accessToken = accessToken
+  sessionData[sessionId] = session
 
   // Successful login, redirect to logged in state
   res.redirect('/logged-in')
@@ -80,14 +82,17 @@ apiRouter.get('/callback', async (req, res): Promise<void> => {
 
 apiRouter.get('/userinfo', async (req, res) => {
   const sessionId = String(req.cookies[SESSION_COOKIE_NAME])
-  const accessToken = sessionData[sessionId]?.accessToken
+  const session = sessionData[sessionId]
+  const accessToken = session?.accessToken
 
   // User is not authenticated
-  if (accessToken === undefined) {
+  if (session === undefined || accessToken === undefined) {
     return res.sendStatus(401)
   }
   const userinfo = await sgid.userinfo(accessToken)
 
+  // Add ice cream flavour to userinfo
+  userinfo.data.iceCream = session.state
   return res.json(userinfo)
 })
 
