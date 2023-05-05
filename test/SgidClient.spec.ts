@@ -339,7 +339,9 @@ describe('SgidClient', () => {
 
   describe('userinfo', () => {
     it('should call userinfo endpoint and return sub and data', async () => {
-      const { sub, data } = await client.userinfo(MOCK_ACCESS_TOKEN)
+      const { sub, data } = await client.userinfo({
+        accessToken: MOCK_ACCESS_TOKEN,
+      })
 
       expect(sub).toBe(MOCK_SUB)
       expect(data).toEqual(MOCK_USERINFO_PLAINTEXT)
@@ -348,7 +350,9 @@ describe('SgidClient', () => {
     it('should return empty data object when no key is returned', async () => {
       server.use(userInfoHandlerNoKey)
 
-      const { sub, data } = await client.userinfo(MOCK_ACCESS_TOKEN)
+      const { sub, data } = await client.userinfo({
+        accessToken: MOCK_ACCESS_TOKEN,
+      })
 
       expect(sub).toBe(MOCK_SUB)
       expect(data).toEqual({})
@@ -357,7 +361,9 @@ describe('SgidClient', () => {
     it('should return empty data object when no data is returned', async () => {
       server.use(userInfoHandlerNoData)
 
-      const { sub, data } = await client.userinfo(MOCK_ACCESS_TOKEN)
+      const { sub, data } = await client.userinfo({
+        accessToken: MOCK_ACCESS_TOKEN,
+      })
 
       expect(sub).toBe(MOCK_SUB)
       expect(data).toEqual({})
@@ -373,24 +379,30 @@ describe('SgidClient', () => {
       })
 
       await expect(
-        invalidPrivateKeyClient.userinfo(MOCK_ACCESS_TOKEN),
+        invalidPrivateKeyClient.userinfo({
+          accessToken: MOCK_ACCESS_TOKEN,
+        }),
       ).rejects.toThrow('Failed to import private key')
     })
 
     it('should throw when encrypted key is malformed', async () => {
       server.use(userInfoHandlerMalformedKey)
 
-      await expect(client.userinfo(MOCK_ACCESS_TOKEN)).rejects.toThrow(
-        'Unable to decrypt or import payload key',
-      )
+      await expect(
+        client.userinfo({
+          accessToken: MOCK_ACCESS_TOKEN,
+        }),
+      ).rejects.toThrow('Unable to decrypt or import payload key')
     })
 
     it('should throw when encrypted data is malformed', async () => {
       server.use(userInfoHandlerMalformedData)
 
-      await expect(client.userinfo(MOCK_ACCESS_TOKEN)).rejects.toThrow(
-        'Unable to decrypt payload',
-      )
+      await expect(
+        client.userinfo({
+          accessToken: MOCK_ACCESS_TOKEN,
+        }),
+      ).rejects.toThrow('Unable to decrypt payload')
     })
   })
 

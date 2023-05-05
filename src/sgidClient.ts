@@ -15,6 +15,7 @@ import {
   AuthorizationUrlReturn,
   CallbackParams,
   SgidClientParams,
+  UserInfoParams,
 } from './types'
 import { convertPkcs1ToPkcs8 } from './util'
 
@@ -160,9 +161,9 @@ export class SgidClient {
    * @param accessToken The access token returned in the callback function
    * @returns The sub of the end-user and the end-user's verified data
    */
-  async userinfo(
-    accessToken: string,
-  ): Promise<{ sub: string; data: Record<string, string> }> {
+  async userinfo({
+    accessToken,
+  }: UserInfoParams): Promise<{ sub: string; data: Record<string, string> }> {
     /**
      * sub: user sub (also returned previously in id_token)
      * encryptedPayloadKey: key encrypted with client's public key (for decrypting userinfo jwe)
