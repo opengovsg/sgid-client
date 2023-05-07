@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv'
 import crypto from 'crypto'
 import cookieParser from 'cookie-parser'
 import { fetchStaticFiles } from './helpers'
+import open from 'open'
 
 dotenv.config()
 
@@ -121,6 +122,7 @@ const initServer = async (): Promise<void> => {
 
     app.listen(PORT, () => {
       console.log(`Server listening on port ${PORT}`)
+      void open(`http://localhost:${PORT}`)
     })
   } catch (error) {
     console.error(
