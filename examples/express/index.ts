@@ -7,7 +7,7 @@ import { fetchStaticFiles } from './helpers'
 
 dotenv.config()
 
-const PORT = 2020
+const PORT = 5000
 
 const sgid = new SgidClient({
   clientId: String(process.env.SGID_CLIENT_ID),
