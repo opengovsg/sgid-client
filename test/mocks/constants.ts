@@ -8,13 +8,12 @@ export const MOCK_PRIVATE_KEY = readFileSync(
   `${__dirname}/mockPrivateKey.pem`,
 ).toString()
 export const MOCK_API_VERSION = 2
-export const MOCK_HOSTNAME = `https://id.sgid.com/v${MOCK_API_VERSION}`
+export const MOCK_HOSTNAME = `https://id.sgid.com`
+export const MOCK_ISSUER = `${new URL(MOCK_HOSTNAME).origin}/v2`
 export const MOCK_AUTH_ENDPOINT = `${MOCK_HOSTNAME}/v${MOCK_API_VERSION}/oauth/authorize`
 export const MOCK_TOKEN_ENDPOINT = `${MOCK_HOSTNAME}/v${MOCK_API_VERSION}/oauth/token`
 export const MOCK_USERINFO_ENDPOINT = `${MOCK_HOSTNAME}/v${MOCK_API_VERSION}/oauth/userinfo`
-export const MOCK_JWKS_ENDPOINT = `${
-  new URL(MOCK_HOSTNAME).origin
-}/.well-known/jwks.json`
+export const MOCK_JWKS_ENDPOINT = `${MOCK_ISSUER}/.well-known/jwks.json`
 
 // RP configuration
 export const MOCK_CLIENT_ID = 'mockClientId'

@@ -43,12 +43,17 @@ export class SgidClient {
     hostname = 'https://api.id.gov.sg',
   }: SgidClientParams) {
     // TODO: Discover sgID issuer metadata via .well-known endpoint
+    const issuer =
+      (API_VERSION as number) === 1
+        ? new URL(hostname).origin
+        : `${new URL(hostname).origin}/v${API_VERSION}`
+
     const { Client } = new Issuer({
-      issuer: `${new URL(hostname).origin}/v${API_VERSION}`,
+      issuer,
       authorization_endpoint: `${hostname}/v${API_VERSION}/oauth/authorize`,
       token_endpoint: `${hostname}/v${API_VERSION}/oauth/token`,
       userinfo_endpoint: `${hostname}/v${API_VERSION}/oauth/userinfo`,
-      jwks_uri: `${new URL(hostname).origin}/.well-known/jwks.json`,
+      jwks_uri: `${issuer}/.well-known/jwks.json`,
     })
 
     this.sgID = new Client({

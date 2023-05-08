@@ -5,7 +5,7 @@ import {
   MOCK_BLOCK_KEY,
   MOCK_CLIENT_ID,
   MOCK_CLIENT_PUBLIC_KEY,
-  MOCK_HOSTNAME,
+  MOCK_ISSUER,
   MOCK_PRIVATE_KEY,
   MOCK_SUB,
   MOCK_USERINFO_PLAINTEXT,
@@ -35,7 +35,7 @@ export const generateEncryptedBlockKey = async (): Promise<string> => {
 export const generateIdToken = (sub = MOCK_SUB): string => {
   const secondsSinceEpoch = Math.floor(Date.now() / 1000)
   const idTokenContent = {
-    iss: MOCK_HOSTNAME,
+    iss: MOCK_ISSUER,
     sub,
     aud: MOCK_CLIENT_ID,
     exp: secondsSinceEpoch + 300,
