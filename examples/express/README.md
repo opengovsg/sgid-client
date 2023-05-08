@@ -23,9 +23,9 @@ cd sgid-client/examples/express
 cat .env.example > .env
 ```
 
-2. Replace the values in `.env` with the credentials of your sgID client (see [Prerequisites](#prerequisites)).
+3. Replace the values in `.env` with the credentials of your sgID client (see [Prerequisites](#prerequisites)).
 
-3. Run:
+4. Run:
 
 ```
 npm install
