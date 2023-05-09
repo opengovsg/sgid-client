@@ -18,10 +18,12 @@ npm i @opengovsg/sgid-client
 
 ## Usage
 
+For more detailed instructions on how to register your client and integrate with sgID, please refer to our [developer documentation](https://docs.id.gov.sg/).
+
 ### Initialization
 
 ```typescript
-import SgidClient from '@opengovsg/sgid-client'
+import { SgidClient } from '@opengovsg/sgid-client'
 
 const client = new SgidClient({
   clientId: 'CLIENT-ID',
@@ -31,38 +33,64 @@ const client = new SgidClient({
 })
 ```
 
-### Get Authorization URL
+### Generate PKCE pair
 
-`client.authorizationUrl(state, scope, [nonce], [redirectUri])`
+`generatePkcePair([length])`
 
 ```typescript
-const { url } = client.authorizationUrl(
-  'state',
-  ['openid', 'myinfo.nric_number'], // or space-concatenated string
-  null, // defaults to randomly generated nonce if unspecified
-  'http://localhost:3000/other_callback', // overrides redirect uri
-)
+const { codeChallenge, codeVerifier } = generatePckePair()
+```
+
+### Get Authorization URL
+
+`async client.authorizationUrl(parameters)`
+
+- parameters: `<Object>`
+  - state: `<string>`
+  - scope: `<string | string[]>` **Default**: `myinfo.name openid`
+  - nonce: `<string>` **Default**: Randomly generates a nonce if unspecified
+  - redirectUri: `<string>` **Default**: Utilizes the `redirectUri` provided in the constructor
+  - codeChallenge: `<string>`
+
+```typescript
+const { url } = client.authorizationUrl({
+  state: 'state', // no longer mandatory as PKCE protects against CSRF
+  scope: ['openid', 'myinfo.name'], // or space-concatenated string
+  nonce: null, // defaults to randomly generated nonce if unspecified
+  redirectUri: 'http://localhost:3000/callback', // optional, to override redirect uri provided in constructor
+  codeChallenge: 'zaqUHoBV3rnhBF2g0Gkz1qkpEZXHqi2OrPK1DqRi-Lk', // generated from the previous step
+})
 ```
 
 ### Token exchange
 
-`async client.callback(code, [nonce], [redirectUri])`
+`async client.callback(parameters)`
+
+- parameters: `<Object>`
+  - code: `<string>`
+  - nonce: `<string>`
+  - redirectUri: `<string>`
+  - codeVerifier: `<string>`
 
 ```typescript
-const { sub, accessToken } = await client.callback(
-  'code', // auth code reuturned from redirect_url
-  null,
-  'http://localhost:3000/other_callback', // optional, unless overridden
-)
+const { sub, accessToken } = await client.callback({
+  code: 'code', // auth code reuturned from redirect_url
+  nonce: null,
+  redirectUri: 'http://localhost:3000/other_callback', // optional, unless overridden
+  codeVerifier: 'bbGcObXZC1YGBQZZtZGQH9jsyO1vypqCGqnSU_4TI5S',
+})
 ```
 
 ### User info
 
-`async client.userinfo(accessToken)`
+`async client.userinfo(parameters)`
+
+- parameters: `<Object>`
+  - accessToken: `<string>`
 
 ```typescript
-const { sub, data } = await client.userinfo('access_token')
-// data: { myinfo.nric_number: "S1231231A", myinfo.name: "JAMUS TAN" }
+const { sub, data } = await client.userinfo({ accessToken: 'access_token' })
+// data: { myinfo.name: "JAMUS TAN" }
 ```
 
 ## Supported Runtime and Environment
