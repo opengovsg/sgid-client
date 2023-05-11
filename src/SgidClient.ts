@@ -7,7 +7,7 @@ import {
   DEFAULT_SGID_CODE_CHALLENGE_METHOD,
   SGID_AUTH_METHOD,
   SGID_SIGNING_ALG,
-  SGID_SUPPORTED_FLOWS,
+  SGID_SUPPORTED_GRANT_TYPES,
 } from './constants'
 import * as Errors from './error'
 import {
@@ -60,7 +60,7 @@ export class SgidClient {
       client_secret: clientSecret,
       redirect_uris: redirectUri ? [redirectUri] : undefined,
       id_token_signed_response_alg: SGID_SIGNING_ALG,
-      response_types: SGID_SUPPORTED_FLOWS,
+      response_types: SGID_SUPPORTED_GRANT_TYPES,
       token_endpoint_auth_method: SGID_AUTH_METHOD,
     })
 
