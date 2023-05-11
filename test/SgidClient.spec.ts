@@ -432,7 +432,7 @@ describe('SgidClient', () => {
     it('should throw an error when a length < 43 or length > 128 is provided', () => {
       for (const length of [-1, 0, 42, 129, 138, 999]) {
         expect(() => generatePkcePair(length)).toThrowError(
-          'The function generatePkcePair should receive a minimum length of 43 and a maximum length of 128',
+          'generatePkcePair should receive a minimum length of 43 and a maximum length of 128',
         )
       }
     })
