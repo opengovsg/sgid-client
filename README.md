@@ -46,19 +46,19 @@ const { codeChallenge, codeVerifier } = generatePckePair()
 `async client.authorizationUrl(parameters)`
 
 - parameters: `<Object>`
-  - state: `<string>`
-  - scope: `<string | string[]>` **Default**: `myinfo.name openid`
-  - nonce: `<string>` **Default**: Randomly generates a nonce if unspecified
-  - redirectUri: `<string>` **Default**: Utilizes the `redirectUri` provided in the constructor
   - codeChallenge: `<string>`
+  - state: `<string>` (Optional)
+  - scope: `<string | string[]>` (Optional) **Default**: `myinfo.name openid`
+  - nonce: `<string> | <null>` (Optional) **Default**: Randomly generates a nonce if unspecified
+  - redirectUri: `<string>` (Optional) **Default**: Utilizes the `redirectUri` provided in the constructor
 
 ```typescript
 const { url } = client.authorizationUrl({
-  state: 'state', // no longer mandatory as PKCE protects against CSRF
+  codeChallenge: 'zaqUHoBV3rnhBF2g0Gkz1qkpEZXHqi2OrPK1DqRi-Lk', // generated from the previous step
+  state: 'state', // optional as PKCE protects against CSRF
   scope: ['openid', 'myinfo.name'], // or space-concatenated string
   nonce: null, // defaults to randomly generated nonce if unspecified
   redirectUri: 'http://localhost:3000/callback', // optional, to override redirect uri provided in constructor
-  codeChallenge: 'zaqUHoBV3rnhBF2g0Gkz1qkpEZXHqi2OrPK1DqRi-Lk', // generated from the previous step
 })
 ```
 
@@ -68,16 +68,16 @@ const { url } = client.authorizationUrl({
 
 - parameters: `<Object>`
   - code: `<string>`
-  - nonce: `<string>`
-  - redirectUri: `<string>`
   - codeVerifier: `<string>`
+  - nonce: `<string>` (Optional)
+  - redirectUri: `<string>` (Optional)
 
 ```typescript
 const { sub, accessToken } = await client.callback({
   code: 'code', // auth code reuturned from redirect_url
+  codeVerifier: 'bbGcObXZC1YGBQZZtZGQH9jsyO1vypqCGqnSU_4TI5S',
   nonce: null,
   redirectUri: 'http://localhost:3000/other_callback', // optional, unless overridden
-  codeVerifier: 'bbGcObXZC1YGBQZZtZGQH9jsyO1vypqCGqnSU_4TI5S',
 })
 ```
 
