@@ -14,8 +14,10 @@ import {
   AuthorizationUrlParams,
   AuthorizationUrlReturn,
   CallbackParams,
+  CallbackReturn,
   SgidClientParams,
   UserInfoParams,
+  UserInfoReturn,
 } from './types'
 import { convertPkcs1ToPkcs8 } from './util'
 
@@ -81,17 +83,16 @@ export class SgidClient {
 
   /**
    * Generates authorization url to redirect end-user to sgID login page.
-   * @param state A string which will be passed back to your application once the end-user
-   * logs in. You should use this to prevent cross-site request forgery attacks (see
-   * https://www.rfc-editor.org/rfc/rfc6749#section-10.12). You can also use this to
-   * track per-request state.
-   * @param scope Array or space-separated scopes. 'openid' must be provided as a scope.
-   * Defaults to 'myinfo.nric_number openid'.
-   * @param nonce Unique nonce for this request. If this param is undefined, a nonce is generated
-   * and returned. To prevent this behaviour, specify null for this param.
-   * @param redirectUri The redirect URI used in the authorization request. If this param is provided,
-   * it will be used over the redirect URI provided in the SgidClient constructor. The redirect URI
-   * must be provided in at least the SgidClient constructor or this function.
+   * @param state A string which will be passed back to your application once
+   * the end-user logs in. You can also use this to track per-request state.
+   * @param scope Array or space-separated scopes. 'openid' must be provided as a
+   * scope. Defaults to 'myinfo.name openid'.
+   * @param nonce Unique nonce for this request. If this param is undefined, a nonce
+   * is generated and returned. To prevent this behaviour, specify null for this param.
+   * @param redirectUri The redirect URI used in the authorization request. If this
+   * param is provided, it will be used instead of the redirect URI provided in the
+   * SgidClient constructor. If not provided in the constructor, the redirect URI
+   * must be provided here.
    * @param codeChallenge The code challenge from the code verifier used for PKCE enhancement
    */
   authorizationUrl({
@@ -143,7 +144,7 @@ export class SgidClient {
     nonce = null,
     redirectUri = this.getFirstRedirectUri(),
     codeVerifier,
-  }: CallbackParams): Promise<{ sub: string; accessToken: string }> {
+  }: CallbackParams): Promise<CallbackReturn> {
     const tokenSet = await this.sgID.callback(
       redirectUri,
       { code },
@@ -165,9 +166,7 @@ export class SgidClient {
    * @param accessToken The access token returned in the callback function
    * @returns The sub of the end-user and the end-user's verified data
    */
-  async userinfo({
-    accessToken,
-  }: UserInfoParams): Promise<{ sub: string; data: Record<string, string> }> {
+  async userinfo({ accessToken }: UserInfoParams): Promise<UserInfoReturn> {
     /**
      * sub: user sub (also returned previously in id_token)
      * encryptedPayloadKey: key encrypted with client's public key (for decrypting userinfo jwe)

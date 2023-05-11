@@ -15,8 +15,15 @@ export type CallbackParams = {
   codeVerifier: string
 }
 
+export type CallbackReturn = { sub: string; accessToken: string }
+
 export type UserInfoParams = {
   accessToken: string
+}
+
+export type UserInfoReturn = {
+  sub: string
+  data: Record<string, string>
 }
 
 export type SgidClientParams = {
