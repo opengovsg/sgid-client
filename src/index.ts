@@ -48,16 +48,15 @@ export class SgidClient {
     clientSecret,
     privateKey,
     redirectUri,
-    hostname = 'https://api.id.gov.sg',
-    apiVersion = 1,
+    hostname = 'https://www.certification.openid.net/test/a/ogp_sgid_antariksh',
   }: SgidClientParams) {
     // TODO: Discover sgID issuer metadata via .well-known endpoint
     const { Client } = new Issuer({
       issuer: new URL(hostname).origin,
-      authorization_endpoint: `${hostname}/v${apiVersion}/oauth/authorize`,
-      token_endpoint: `${hostname}/v${apiVersion}/oauth/token`,
-      userinfo_endpoint: `${hostname}/v${apiVersion}/oauth/userinfo`,
-      jwks_uri: `${new URL(hostname).origin}/.well-known/jwks.json`,
+      authorization_endpoint: `https://www.certification.openid.net/test/a/ogp_sgid_antariksh/authorize`,
+      token_endpoint: `https://www.certification.openid.net/test/a/ogp_sgid_antariksh/token`,
+      userinfo_endpoint: `https://www.certification.openid.net/test/a/ogp_sgid_antariksh/userinfo`,
+      jwks_uri: `https://www.certification.openid.net/test/a/ogp_sgid_antariksh/jwks`,
     })
 
     this.sgID = new Client({
@@ -168,7 +167,7 @@ export class SgidClient {
      */
     const {
       sub,
-      key: encryptedPayloadKey,
+      // key: encryptedPayloadKey,
       data,
     } = await this.sgID.userinfo<{
       sub: string | undefined
@@ -176,12 +175,12 @@ export class SgidClient {
       data: Record<string, string> | undefined
     }>(accessToken)
 
-    if (encryptedPayloadKey && data) {
-      const result = await this.decryptPayload(encryptedPayloadKey, data)
-      return { sub, data: result }
-    }
+    // if (encryptedPayloadKey && data) {
+    //   const result = await this.decryptPayload(encryptedPayloadKey, data)
+    //   return { sub, data: result }
+    // }
 
-    return { sub, data: {} }
+    return { sub, data: data ?? {} }
   }
 
   private async decryptPayload(
