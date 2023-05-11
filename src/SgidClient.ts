@@ -187,6 +187,10 @@ export class SgidClient {
       return { sub, data: result }
     }
 
+    /**
+     * When the scope requested is just `openid`, the `key` and `data` attributes are undefined
+     * because no data fields are requested. In this case, data is just an empty object.
+     */
     return { sub, data: {} }
   }
 
