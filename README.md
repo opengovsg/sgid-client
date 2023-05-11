@@ -55,14 +55,14 @@ const { codeChallenge, codeVerifier } = generatePkcePair()
 `client.authorizationUrl(parameters)`
 
 - parameters: `<Object>`
-  - codeChallenge: `<string>` Code challenge generated from the code verifier.
+  - codeChallenge: `<string>` Code challenge generated from `generatePkcePair`.
   - state: `<string>` (Optional) Used to track application state which will be passed back to you in query params via the redirect URI after login.
   - scope: `<string> | <string[]>` (Optional) Scopes being requested. Can be provided as a string array or a space-concatenated string. **Default**: `myinfo.name openid`
   - nonce: `<string> | <null>` (Optional) Random, unique value to associate a user-session with an ID Token and to mitigate replay attacks. Set as `null` to omit the nonce. **Default**: Randomly generates a nonce if unspecified or set as `undefined`
   - redirectUri: `<string>` (Optional) Overrides redirect URI initially provided in constructor. **Default**: Utilizes the `redirectUri` provided in the constructor.
 - Returns: `<Object>`
   - url: `<string>` Generated authorization url.
-  - nonce: `<string> | <undefined>` Provided nonce, randomly generated nonce, or `undefined` (based on nonce input).
+  - nonce: `<string> | <undefined>` Provided nonce, randomly generated nonce, or `undefined` (based on nonce input). Should be stored in the user's session so it can be retrieved later for use in `callback`.
 
 Example usage:
 
