@@ -75,7 +75,7 @@ describe('SgidClient', () => {
   })
 
   describe('authorizationUrl', () => {
-    it('should generate authorisation URL correctly when state and codeChallenge is provided', () => {
+    it('should generate authorisation URL correctly when state and codeChallenge are provided', () => {
       const mockState = 'mockState'
       const mockCodeChallenge = 'mockCodeChallenge'
 
@@ -408,24 +408,26 @@ describe('SgidClient', () => {
 
   describe('generatePkcePair', () => {
     it('should generate a PKCE pair when no length is provided', () => {
-      const pkcePair = generatePkcePair()
+      const { codeChallenge, codeVerifier } = generatePkcePair()
 
-      expect(pkcePair.codeVerifier.length).toBe(43)
-      expect(pkcePair.codeChallenge.length).toBe(43)
+      expect(codeVerifier.length).toBe(43)
+      expect(codeChallenge.length).toBe(43)
 
-      expect(pkcePair.codeChallenge).toMatch(codeVerifierAndChallengePattern)
-      expect(pkcePair.codeVerifier).toMatch(codeVerifierAndChallengePattern)
+      expect(codeChallenge).toMatch(codeVerifierAndChallengePattern)
+      expect(codeVerifier).toMatch(codeVerifierAndChallengePattern)
+      expect(generateCodeChallenge(codeVerifier)).toBe(codeChallenge)
     })
 
     it('should generate a PKCE pair of specified length when length between 43 (inclusive) and 128 (inclusive) is provided', () => {
       for (let length = 43; length <= 128; length++) {
-        const pkcePair = generatePkcePair(length)
+        const { codeChallenge, codeVerifier } = generatePkcePair(length)
 
         // Length is only for the code verifier
-        expect(pkcePair.codeVerifier.length).toBe(length)
+        expect(codeVerifier.length).toBe(length)
 
-        expect(pkcePair.codeChallenge).toMatch(codeVerifierAndChallengePattern)
-        expect(pkcePair.codeVerifier).toMatch(codeVerifierAndChallengePattern)
+        expect(codeChallenge).toMatch(codeVerifierAndChallengePattern)
+        expect(codeVerifier).toMatch(codeVerifierAndChallengePattern)
+        expect(generateCodeChallenge(codeVerifier)).toBe(codeChallenge)
       }
     })
 
