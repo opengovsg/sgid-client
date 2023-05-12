@@ -48,11 +48,11 @@ export class SgidClient {
     clientSecret,
     privateKey,
     redirectUri,
-    hostname = 'https://www.certification.openid.net/test/a/ogp_sgid_antariksh',
+    hostname = 'https://www.certification.openid.net/test/a/ogp_sgid_antariksh/',
   }: SgidClientParams) {
     // TODO: Discover sgID issuer metadata via .well-known endpoint
     const { Client } = new Issuer({
-      issuer: new URL(hostname).origin,
+      issuer: hostname,
       authorization_endpoint: `https://www.certification.openid.net/test/a/ogp_sgid_antariksh/authorize`,
       token_endpoint: `https://www.certification.openid.net/test/a/ogp_sgid_antariksh/token`,
       userinfo_endpoint: `https://www.certification.openid.net/test/a/ogp_sgid_antariksh/userinfo`,

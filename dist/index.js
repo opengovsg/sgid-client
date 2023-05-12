@@ -82,10 +82,10 @@ var SgidClient = /** @class */ (function () {
      * @param params.apiVersion sgID API version to use. Defaults to 1.
      */
     function SgidClient(_a) {
-        var clientId = _a.clientId, clientSecret = _a.clientSecret, privateKey = _a.privateKey, redirectUri = _a.redirectUri, _b = _a.hostname, hostname = _b === void 0 ? 'https://www.certification.openid.net/test/a/ogp_sgid_antariksh' : _b;
+        var clientId = _a.clientId, clientSecret = _a.clientSecret, privateKey = _a.privateKey, redirectUri = _a.redirectUri, _b = _a.hostname, hostname = _b === void 0 ? 'https://www.certification.openid.net/test/a/ogp_sgid_antariksh/' : _b;
         // TODO: Discover sgID issuer metadata via .well-known endpoint
         var Client = new openid_client_1.Issuer({
-            issuer: new URL(hostname).origin,
+            issuer: hostname,
             authorization_endpoint: "https://www.certification.openid.net/test/a/ogp_sgid_antariksh/authorize",
             token_endpoint: "https://www.certification.openid.net/test/a/ogp_sgid_antariksh/token",
             userinfo_endpoint: "https://www.certification.openid.net/test/a/ogp_sgid_antariksh/userinfo",
