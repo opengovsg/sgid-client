@@ -1,9 +1,10 @@
+import { Client } from 'openid-client';
 export type SgidClientParams = {
     clientId: string;
     clientSecret: string;
     privateKey: string;
     redirectUri?: string;
-    hostname?: string;
+    hostname: string;
     apiVersion?: number;
 };
 export declare class SgidClient {
@@ -22,7 +23,11 @@ export declare class SgidClient {
      * https://api.id.gov.sg.
      * @param params.apiVersion sgID API version to use. Defaults to 1.
      */
-    constructor({ clientId, clientSecret, privateKey, redirectUri, hostname, }: SgidClientParams);
+    constructor({ sgID, privateKey }: {
+        sgID: Client;
+        privateKey: string;
+    });
+    static create({ clientId, clientSecret, privateKey, redirectUri, hostname, }: SgidClientParams): Promise<SgidClient>;
     /**
      * Generates authorization url to redirect end-user to sgID login page.
      * @param state A string which will be passed back to your application once the end-user

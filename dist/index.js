@@ -82,23 +82,8 @@ var SgidClient = /** @class */ (function () {
      * @param params.apiVersion sgID API version to use. Defaults to 1.
      */
     function SgidClient(_a) {
-        var clientId = _a.clientId, clientSecret = _a.clientSecret, privateKey = _a.privateKey, redirectUri = _a.redirectUri, _b = _a.hostname, hostname = _b === void 0 ? 'https://www.certification.openid.net/test/a/ogp_sgid_antariksh/' : _b;
-        // TODO: Discover sgID issuer metadata via .well-known endpoint
-        var Client = new openid_client_1.Issuer({
-            issuer: hostname,
-            authorization_endpoint: "https://www.certification.openid.net/test/a/ogp_sgid_antariksh/authorize",
-            token_endpoint: "https://www.certification.openid.net/test/a/ogp_sgid_antariksh/token",
-            userinfo_endpoint: "https://www.certification.openid.net/test/a/ogp_sgid_antariksh/userinfo",
-            jwks_uri: "https://www.certification.openid.net/test/a/ogp_sgid_antariksh/jwks",
-        }).Client;
-        this.sgID = new Client({
-            client_id: clientId,
-            client_secret: clientSecret,
-            redirect_uris: redirectUri ? [redirectUri] : undefined,
-            id_token_signed_response_alg: SGID_SIGNING_ALG,
-            response_types: SGID_SUPPORTED_FLOWS,
-            token_endpoint_auth_method: SGID_AUTH_METHOD,
-        });
+        var sgID = _a.sgID, privateKey = _a.privateKey;
+        this.sgID = sgID;
         /**
          * For backward compatibility with pkcs1
          */
@@ -109,6 +94,28 @@ var SgidClient = /** @class */ (function () {
             this.privateKey = privateKey;
         }
     }
+    SgidClient.create = function (_a) {
+        var clientId = _a.clientId, clientSecret = _a.clientSecret, privateKey = _a.privateKey, redirectUri = _a.redirectUri, hostname = _a.hostname;
+        return __awaiter(this, void 0, void 0, function () {
+            var Client, sgID;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, openid_client_1.Issuer.discover(hostname)];
+                    case 1:
+                        Client = (_b.sent()).Client;
+                        sgID = new Client({
+                            client_id: clientId,
+                            client_secret: clientSecret,
+                            redirect_uris: redirectUri ? [redirectUri] : undefined,
+                            id_token_signed_response_alg: SGID_SIGNING_ALG,
+                            response_types: SGID_SUPPORTED_FLOWS,
+                            token_endpoint_auth_method: SGID_AUTH_METHOD,
+                        });
+                        return [2 /*return*/, new SgidClient({ sgID: sgID, privateKey: privateKey })];
+                }
+            });
+        });
+    };
     /**
      * Generates authorization url to redirect end-user to sgID login page.
      * @param state A string which will be passed back to your application once the end-user

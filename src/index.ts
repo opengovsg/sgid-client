@@ -21,7 +21,7 @@ export type SgidClientParams = {
   clientSecret: string
   privateKey: string
   redirectUri?: string
-  hostname?: string
+  hostname: string
   apiVersion?: number
 }
 
@@ -43,31 +43,8 @@ export class SgidClient {
    * https://api.id.gov.sg.
    * @param params.apiVersion sgID API version to use. Defaults to 1.
    */
-  constructor({
-    clientId,
-    clientSecret,
-    privateKey,
-    redirectUri,
-    hostname = 'https://www.certification.openid.net/test/a/ogp_sgid_antariksh/',
-  }: SgidClientParams) {
-    // TODO: Discover sgID issuer metadata via .well-known endpoint
-    const { Client } = new Issuer({
-      issuer: hostname,
-      authorization_endpoint: `https://www.certification.openid.net/test/a/ogp_sgid_antariksh/authorize`,
-      token_endpoint: `https://www.certification.openid.net/test/a/ogp_sgid_antariksh/token`,
-      userinfo_endpoint: `https://www.certification.openid.net/test/a/ogp_sgid_antariksh/userinfo`,
-      jwks_uri: `https://www.certification.openid.net/test/a/ogp_sgid_antariksh/jwks`,
-    })
-
-    this.sgID = new Client({
-      client_id: clientId,
-      client_secret: clientSecret,
-      redirect_uris: redirectUri ? [redirectUri] : undefined,
-      id_token_signed_response_alg: SGID_SIGNING_ALG,
-      response_types: SGID_SUPPORTED_FLOWS,
-      token_endpoint_auth_method: SGID_AUTH_METHOD,
-    })
-
+  constructor({ sgID, privateKey }: { sgID: Client; privateKey: string }) {
+    this.sgID = sgID
     /**
      * For backward compatibility with pkcs1
      */
@@ -76,6 +53,25 @@ export class SgidClient {
     } else {
       this.privateKey = privateKey
     }
+  }
+
+  static async create({
+    clientId,
+    clientSecret,
+    privateKey,
+    redirectUri,
+    hostname,
+  }: SgidClientParams) {
+    const { Client } = await Issuer.discover(hostname)
+    const sgID = new Client({
+      client_id: clientId,
+      client_secret: clientSecret,
+      redirect_uris: redirectUri ? [redirectUri] : undefined,
+      id_token_signed_response_alg: SGID_SIGNING_ALG,
+      response_types: SGID_SUPPORTED_FLOWS,
+      token_endpoint_auth_method: SGID_AUTH_METHOD,
+    })
+    return new SgidClient({ sgID, privateKey })
   }
 
   /**
