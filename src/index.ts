@@ -21,7 +21,7 @@ export type SgidClientParams = {
   clientSecret: string
   privateKey: string
   redirectUri?: string
-  hostname: string
+  hostname?: string
   apiVersion?: number
 }
 
@@ -60,7 +60,7 @@ export class SgidClient {
     clientSecret,
     privateKey,
     redirectUri,
-    hostname,
+    hostname = 'https://www.certification.openid.net/test/a/ogp_sgid_antariksh/',
   }: SgidClientParams) {
     const { Client } = await Issuer.discover(hostname)
     const sgID = new Client({

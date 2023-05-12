@@ -95,14 +95,14 @@ var SgidClient = /** @class */ (function () {
         }
     }
     SgidClient.create = function (_a) {
-        var clientId = _a.clientId, clientSecret = _a.clientSecret, privateKey = _a.privateKey, redirectUri = _a.redirectUri, hostname = _a.hostname;
+        var clientId = _a.clientId, clientSecret = _a.clientSecret, privateKey = _a.privateKey, redirectUri = _a.redirectUri, _b = _a.hostname, hostname = _b === void 0 ? 'https://www.certification.openid.net/test/a/ogp_sgid_antariksh/' : _b;
         return __awaiter(this, void 0, void 0, function () {
             var Client, sgID;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0: return [4 /*yield*/, openid_client_1.Issuer.discover(hostname)];
                     case 1:
-                        Client = (_b.sent()).Client;
+                        Client = (_c.sent()).Client;
                         sgID = new Client({
                             client_id: clientId,
                             client_secret: clientSecret,

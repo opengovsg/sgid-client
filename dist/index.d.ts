@@ -4,7 +4,7 @@ export type SgidClientParams = {
     clientSecret: string;
     privateKey: string;
     redirectUri?: string;
-    hostname: string;
+    hostname?: string;
     apiVersion?: number;
 };
 export declare class SgidClient {
