@@ -5,7 +5,6 @@ import {
   MOCK_AUTH_CODE,
   MOCK_CLIENT_ID,
   MOCK_CLIENT_SECRET,
-  MOCK_CODE_VERIFIER,
   MOCK_JWKS_ENDPOINT,
   MOCK_REDIRECT_URI,
   MOCK_SUB,
@@ -27,7 +26,7 @@ const jwksHandler = rest.get(MOCK_JWKS_ENDPOINT, (_req, res, ctx) => {
 })
 
 /**
- * Happy path token handler (with PKCE)
+ * Happy path token handler
  */
 const tokenHandler = rest.post(MOCK_TOKEN_ENDPOINT, async (req, res, ctx) => {
   // Request is application/x-www-form-urlencoded
@@ -38,8 +37,7 @@ const tokenHandler = rest.post(MOCK_TOKEN_ENDPOINT, async (req, res, ctx) => {
     body.get('code') !== MOCK_AUTH_CODE ||
     body.get('redirect_uri') !== MOCK_REDIRECT_URI ||
     body.get('client_id') !== MOCK_CLIENT_ID ||
-    body.get('client_secret') !== MOCK_CLIENT_SECRET ||
-    body.get('code_verifier') !== MOCK_CODE_VERIFIER
+    body.get('client_secret') !== MOCK_CLIENT_SECRET
   ) {
     return res(ctx.status(400))
   }

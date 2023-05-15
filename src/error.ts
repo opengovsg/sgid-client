@@ -1,9 +1,3 @@
-// PKCE generatePkcePair and generateCodeVerifier errors
-export const CODE_VERIFIER_LENGTH_ERROR =
-  'Code verifier should have a minimum length of 43 and a maximum length of 128'
-export const PKCE_PAIR_LENGTH_ERROR =
-  'generatePkcePair should receive a minimum length of 43 and a maximum length of 128'
-
 // authorization URL error, also used in callback
 export const MISSING_REDIRECT_URI_ERROR =
   'No redirect URI registered with this client. You must either specify a valid redirect URI in the SgidClient constructor, or pass it to the authorizationUrl and callback functions.'
