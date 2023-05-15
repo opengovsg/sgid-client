@@ -7,14 +7,13 @@ import mockClientKeys from './mockClientKeys.json'
 export const MOCK_PRIVATE_KEY = readFileSync(
   `${__dirname}/mockPrivateKey.pem`,
 ).toString()
-export const MOCK_HOSTNAME = 'https://id.sgid.com'
-export const MOCK_API_VERSION = 3
+export const MOCK_API_VERSION = 2
+export const MOCK_HOSTNAME = `https://id.sgid.com`
+export const MOCK_ISSUER = `${new URL(MOCK_HOSTNAME).origin}/v2`
 export const MOCK_AUTH_ENDPOINT = `${MOCK_HOSTNAME}/v${MOCK_API_VERSION}/oauth/authorize`
 export const MOCK_TOKEN_ENDPOINT = `${MOCK_HOSTNAME}/v${MOCK_API_VERSION}/oauth/token`
 export const MOCK_USERINFO_ENDPOINT = `${MOCK_HOSTNAME}/v${MOCK_API_VERSION}/oauth/userinfo`
-export const MOCK_JWKS_ENDPOINT = `${
-  new URL(MOCK_HOSTNAME).origin
-}/.well-known/jwks.json`
+export const MOCK_JWKS_ENDPOINT = `${MOCK_ISSUER}/.well-known/jwks.json`
 
 // RP configuration
 export const MOCK_CLIENT_ID = 'mockClientId'
@@ -35,3 +34,5 @@ export const MOCK_ACCESS_TOKEN = 'mockAccessToken'
 export const MOCK_USERINFO_PLAINTEXT = {
   myKey: 'myValue',
 }
+export const MOCK_CODE_VERIFIER = 'bbGcObXZC1YGBQZZtZGQH9jsyO1vypqCGqnSU_4TI5S'
+export const MOCK_CODE_CHALLENGE = 'zaqUHoBV3rnhBF2g0Gkz1qkpEZXHqi2OrPK1DqRi-Lk'
