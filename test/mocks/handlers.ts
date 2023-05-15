@@ -107,6 +107,25 @@ const userInfoHandler = rest.get(
 )
 
 /**
+ * Handler to test case where userinfo endpoint returns a sub
+ * which is different from the sub previously returned in the
+ * ID token from the callback endpoint
+ */
+export const userInfoHandlerMismatchedSub = rest.get(
+  MOCK_USERINFO_ENDPOINT,
+  async (_req, res, ctx) => {
+    const data = await generateUserInfo()
+    return res(
+      ctx.status(200),
+      ctx.json({
+        sub: 'mismatchedSub',
+        data,
+      }),
+    )
+  },
+)
+
+/**
  * Handler to test case where userinfo endpoint does not return key
  */
 export const userInfoHandlerNoKey = rest.get(
