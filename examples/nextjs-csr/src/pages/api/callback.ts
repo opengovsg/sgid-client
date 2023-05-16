@@ -24,14 +24,13 @@ export default async function handler(
     return res.status(400).send('Session not found')
   } else if (state && state !== session.state) {
     return res.status(400).send('State does not match')
-  } else if (
-    !session.codeVerifier ||
-    typeof session.codeVerifier !== 'string'
-  ) {
-    return res.status(400).send('Code verifier not found')
   }
 
   const { nonce, codeVerifier } = session
+
+  if (!codeVerifier || typeof codeVerifier !== 'string') {
+    return res.status(400).send('Code verifier not found')
+  }
 
   // At the end of this function, users are considered logged in by the sgID server
   const { accessToken, sub } = await sgidClient.callback({

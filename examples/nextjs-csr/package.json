@@ -6,7 +6,7 @@
     "dev": "NEXT_ENV=development next dev",
     "build": "next build",
     "start": "next start",
-    "start:dev": "next build && NEXT_ENV=development next start",
+    "start:dev": "next build & NEXT_ENV=development next start",
     "lint": "next lint"
   },
   "dependencies": {
