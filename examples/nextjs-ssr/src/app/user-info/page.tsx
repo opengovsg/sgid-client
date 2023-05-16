@@ -1,5 +1,6 @@
 import { store } from "@/lib/store";
 import { cookies } from "next/headers";
+import Link from "next/link";
 
 const getUserInfo = async (sessionId: string) => {
   // Retrieve session from memory
@@ -17,8 +18,8 @@ export default async function LoggedIn() {
     throw new Error("Session ID not found in browser's cookies");
   }
 
-  const { sgid, userInfo } = await getUserInfo(sessionId);
-  if (!sgid || !userInfo) {
+  const { sub, userInfo } = await getUserInfo(sessionId);
+  if (!sub || !userInfo) {
     throw new Error("User has not authenticated");
   }
 
@@ -28,7 +29,7 @@ export default async function LoggedIn() {
         <div className="text-xl mx-auto text-center mb-8">User Info</div>
         <div className="w-full grid grid-cols-2 py-2 gap-4">
           <div className="w-full whitespace-nowrap">sgID</div>
-          <div className="w-full">{sgid}</div>
+          <div className="w-full">{sub}</div>
         </div>
         {Object.entries(userInfo).map(([field, value]) => (
           <div className="w-full grid grid-cols-2 py-2 gap-4" key={field}>
@@ -36,13 +37,14 @@ export default async function LoggedIn() {
             <div className="w-full">{value}</div>
           </div>
         ))}
+        <Link
+          prefetch={false}
+          href="/logout"
+          className="w-full text-white cursor-pointer rounded-md bg-blue-600 hover:bg-blue-700 py-2 px-4 text-center mt-8"
+        >
+          Logout
+        </Link>
       </div>
-      <a
-        href="/api/logout"
-        className="w-full text-white cursor-pointer rounded-md bg-blue-600 hover:bg-blue-700 py-2 px-4 text-center mt-8"
-      >
-        Logout
-      </a>
     </main>
   );
 }

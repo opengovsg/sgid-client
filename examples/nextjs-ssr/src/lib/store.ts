@@ -4,7 +4,7 @@ type Session = {
   codeVerifier?: string;
   accessToken?: string;
   userInfo?: Record<string, string>;
-  sgid?: string;
+  sub?: string;
 };
 
 const store = new Map<string, Session>();

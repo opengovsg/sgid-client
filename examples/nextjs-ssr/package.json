@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "NEXT_ENV=development next dev",
     "build": "next build",
     "start": "next start",
+    "start:dev": "next build && NEXT_ENV=development next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "@opengovsg/sgid-client": "^1.0.4",
+    "@opengovsg/sgid-client": "github:opengovsg/sgid-client#test/v2",
     "@types/node": "20.1.2",
     "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",

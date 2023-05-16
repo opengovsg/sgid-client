@@ -1,5 +1,6 @@
 "use client"; // Error components must be Client components
 
+import Link from "next/link";
 import { useEffect } from "react";
 
 export default function Error({ error }: { error: Error }) {
@@ -16,12 +17,12 @@ export default function Error({ error }: { error: Error }) {
         </h2>
         <div className="mb-1 font-medium">Error message:</div>
         <div className="font-light">{error.message}</div>
-        <a
+        <Link
           href="/"
           className="w-full text-white cursor-pointe rounded-md bg-blue-600 hover:bg-blue-700 py-2 px-4 text-center mt-8"
         >
           Return to home
-        </a>
+        </Link>
       </div>
     </main>
   );

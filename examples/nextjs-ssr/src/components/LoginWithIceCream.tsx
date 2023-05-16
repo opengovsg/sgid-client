@@ -4,16 +4,13 @@ import { useState } from "react";
 import sgidLogo from "@/assets/logo.png";
 import singpassLogo from "@/assets/singpass.svg";
 import Image from "next/image";
+import Link from "next/link";
 
 const flavours = ["Vanilla", "Chocolate", "Strawberry"] as const;
 type IceCream = (typeof flavours)[number];
 
 const LoginWithIceCream = () => {
   const [state, setState] = useState<IceCream>("Vanilla");
-
-  const handleLogin = () => {
-    window.location.href = `${window.location.origin}/api/auth-url?state=${state}`;
-  };
 
   return (
     <div className="bg-white rounded-md py-12 px-8 flex flex-col max-w-lg">
@@ -36,18 +33,25 @@ const LoginWithIceCream = () => {
             onClick={() => setState(flavour)}
             className="gap-2 flex cursor-pointer hover:bg-white hover:bg-opacity-10 p-1 rounded-md"
           >
-            <input type="radio" defaultChecked={state === flavour} />
+            <input
+              type="radio"
+              checked={state === flavour}
+              value={flavour}
+              onChange={(e) => {
+                setState(e.target.value as IceCream);
+              }}
+              title="flavour"
+            />
             {flavour}
           </div>
         ))}
       </div>
 
-      <button
-        className="py-2 px-4 font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 w-fit mx-auto mt-8"
-        onClick={handleLogin}
-      >
-        Login with Singpass app
-      </button>
+      <Link prefetch={false} href={`/login?state=${state}`} className="flex">
+        <button className="py-2 px-4 font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 w-fit mx-auto mt-8">
+          Login with Singpass app
+        </button>
+      </Link>
     </div>
   );
 };
