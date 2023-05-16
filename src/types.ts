@@ -18,6 +18,7 @@ export type CallbackParams = {
 export type CallbackReturn = { sub: string; accessToken: string }
 
 export type UserInfoParams = {
+  sub: string
   accessToken: string
 }
 

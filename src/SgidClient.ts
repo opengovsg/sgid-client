@@ -163,17 +163,22 @@ export class SgidClient {
 
   /**
    * Retrieves verified user info and decrypts it with your private key.
-   * @param accessToken The access token returned in the callback function
-   * @returns The sub of the end-user and the end-user's verified data
+   * @param sub The sub returned from the callback function
+   * @param accessToken The access token returned from the callback function
+   * @returns The sub of the end-user and the end-user's verified data. The sub
+   * returned is the same as the one passed in the params.
    */
-  async userinfo({ accessToken }: UserInfoParams): Promise<UserInfoReturn> {
+  async userinfo({
+    sub,
+    accessToken,
+  }: UserInfoParams): Promise<UserInfoReturn> {
     /**
      * sub: user sub (also returned previously in id_token)
      * encryptedPayloadKey: key encrypted with client's public key (for decrypting userinfo jwe)
      * data: jwe of userinfo
      */
     const {
-      sub,
+      sub: subReturned,
       key: encryptedPayloadKey,
       data,
     } = await this.sgID.userinfo<{
@@ -181,6 +186,10 @@ export class SgidClient {
       key: string | undefined
       data: Record<string, string> | undefined
     }>(accessToken)
+
+    if (sub !== subReturned) {
+      throw new Error(Errors.SUB_MISMATCH_ERROR)
+    }
 
     if (encryptedPayloadKey && data) {
       const result = await this.decryptPayload(encryptedPayloadKey, data)

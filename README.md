@@ -105,6 +105,7 @@ const { sub, accessToken } = await client.callback({
 `async client.userinfo(parameters)`
 
 - parameters: `<Object>`
+  - sub: `<string>` Sub obtained from `callback`.
   - accessToken: `<string>` Access token obtained from `callback`.
 - Returns: `<Object>`
   - sub: `<string>`Represents a unique identifer for the end-user.
@@ -113,7 +114,10 @@ const { sub, accessToken } = await client.callback({
 Example usage:
 
 ```typescript
-const { sub, data } = await client.userinfo({ accessToken: 'access_token' })
+const { sub, data } = await client.userinfo({
+  sub: 'sub',
+  accessToken: 'access_token',
+})
 // data: { myinfo.name: "JAMUS TAN" }
 ```
 
