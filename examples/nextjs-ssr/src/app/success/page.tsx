@@ -1,19 +1,19 @@
-import { store } from "@/lib/store";
-import { sgidClient } from "@/lib/sgidClient";
-import { cookies } from "next/headers";
-import Link from "next/link";
+import { store } from '@/lib/store'
+import { sgidClient } from '@/lib/sgidClient'
+import { cookies } from 'next/headers'
+import Link from 'next/link'
 
 const getAndStoreUserInfo = async (code: string, sessionId: string) => {
-  const session = store.get(sessionId);
+  const session = store.get(sessionId)
 
   if (!session) {
-    throw new Error("Session not found");
+    throw new Error('Session not found')
   }
 
-  const { nonce, codeVerifier } = session;
+  const { nonce, codeVerifier } = session
 
   if (!codeVerifier) {
-    throw new Error("Code verifier not found");
+    throw new Error('Code verifier not found')
   }
 
   // Exchange auth code for access token
@@ -21,41 +21,41 @@ const getAndStoreUserInfo = async (code: string, sessionId: string) => {
     code,
     nonce,
     codeVerifier,
-  });
+  })
 
-  // Request user info with acecss token
+  // Request user info with access token
   const { data } = await sgidClient.userinfo({
     accessToken,
     sub,
-  });
+  })
 
   // Store userInfo and sgID in memory
   const updatedSession = {
     ...session,
     userInfo: data,
     sub,
-  };
-  store.set(sessionId, updatedSession);
+  }
+  store.set(sessionId, updatedSession)
 
-  return updatedSession;
-};
+  return updatedSession
+}
 
 export default async function Callback({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: { [key: string]: string | undefined }
 }) {
-  const code = searchParams?.code;
-  const sessionId = cookies().get("sessionId")?.value;
+  const code = searchParams?.code
+  const sessionId = cookies().get('sessionId')?.value
   if (!code) {
     throw new Error(
-      "Authorization code is not present in the url search params"
-    );
+      'Authorization code is not present in the url search params',
+    )
   } else if (!sessionId) {
-    throw new Error("Session ID not found in browser's cookies");
+    throw new Error("Session ID not found in browser's cookies")
   }
 
-  const { state, userInfo, sub } = await getAndStoreUserInfo(code, sessionId);
+  const { state, userInfo, sub } = await getAndStoreUserInfo(code, sessionId)
 
   return (
     <main className="min-h-screen flex flex-col justify-center items-center px-4">
@@ -98,5 +98,5 @@ export default async function Callback({
         </div>
       </div>
     </main>
-  );
+  )
 }
