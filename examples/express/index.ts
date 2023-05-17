@@ -1,6 +1,6 @@
 import express, { Router } from 'express'
 import cors from 'cors'
-import SgidClient from '@opengovsg/sgid-client'
+import SgidClient, { generatePkcePair } from '@opengovsg/sgid-client'
 import * as dotenv from 'dotenv'
 import crypto from 'crypto'
 import cookieParser from 'cookie-parser'
@@ -37,8 +37,10 @@ type SessionData = Record<
   | {
       nonce?: string
       // Store state as search params to easily stringify key-value pairs
-      state: URLSearchParams
+      state?: URLSearchParams
       accessToken?: string
+      codeVerifier?: string
+      sub?: string
     }
   | undefined
 >
@@ -64,17 +66,23 @@ apiRouter.get('/auth-url', (req, res) => {
   const state = new URLSearchParams({
     icecream: iceCreamSelection,
   })
-  const { url, nonce } = sgid.authorizationUrl(
+
+  // Generate a PKCE pair
+  const { codeChallenge, codeVerifier } = generatePkcePair()
+
+  const { url, nonce } = sgid.authorizationUrl({
     // We pass the user's ice cream preference as the state,
     // so after they log in, we can display it together with the
     // other user info.
-    state.toString(),
+    state: state.toString(),
+    codeChallenge,
     // Scopes that all sgID relying parties can access by default
-    ['openid', 'myinfo.name'],
-  )
+    scope: ['openid', 'myinfo.name'],
+  })
   sessionData[sessionId] = {
     state,
     nonce,
+    codeVerifier,
   }
   return res
     .cookie(SESSION_COOKIE_NAME, sessionId, SESSION_COOKIE_OPTIONS)
@@ -86,15 +94,28 @@ apiRouter.get('/callback', async (req, res): Promise<void> => {
   const state = String(req.query.state)
   const sessionId = String(req.cookies[SESSION_COOKIE_NAME])
 
-  const session = sessionData[sessionId]
+  const session = { ...sessionData[sessionId] }
   // Validate that the state matches what we passed to sgID for this session
-  if (session?.state.toString() !== state) {
+  if (session?.state?.toString() !== state) {
     res.redirect(`${frontendHost}/error`)
     return
   }
 
-  const { accessToken } = await sgid.callback(authCode, session.nonce)
+  // Validate that the code verifier exists for this session
+  if (!session?.codeVerifier) {
+    res.redirect(`${frontendHost}/error`)
+    return
+  }
+
+  // Exchange the authorization code and code verifier for the access token
+  const { accessToken, sub } = await sgid.callback({
+    code: authCode,
+    nonce: session.nonce,
+    codeVerifier: session.codeVerifier
+  })
+
   session.accessToken = accessToken
+  session.sub = sub
   sessionData[sessionId] = session
 
   // Successful login, redirect to logged in state
@@ -103,17 +124,23 @@ apiRouter.get('/callback', async (req, res): Promise<void> => {
 
 apiRouter.get('/userinfo', async (req, res) => {
   const sessionId = String(req.cookies[SESSION_COOKIE_NAME])
+
+  // Retrieve the access token and sub
   const session = sessionData[sessionId]
   const accessToken = session?.accessToken
+  const sub = session?.sub
 
   // User is not authenticated
-  if (session === undefined || accessToken === undefined) {
+  if (session === undefined || accessToken === undefined || sub == undefined) {
     return res.sendStatus(401)
   }
-  const userinfo = await sgid.userinfo(accessToken)
+  const userinfo = await sgid.userinfo({
+    accessToken,
+    sub,
+  })
 
   // Add ice cream flavour to userinfo
-  userinfo.data.iceCream = session.state.get('icecream') ?? 'None'
+  userinfo.data.iceCream = session.state?.get('icecream') ?? 'None'
   return res.json(userinfo)
 })
 
