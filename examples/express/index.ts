@@ -1,20 +1,26 @@
 import express, { Router } from 'express'
+import cors from 'cors'
 import SgidClient from '@opengovsg/sgid-client'
 import * as dotenv from 'dotenv'
 import crypto from 'crypto'
 import cookieParser from 'cookie-parser'
-import { fetchStaticFiles } from './helpers'
 import open from 'open'
 
 dotenv.config()
 
-const PORT = 5000
+const PORT = 5001
+const redirectUri = String(
+  process.env.SGID_REDIRECT_URI ?? `http://localhost:${PORT}/api/callback`,
+)
+const frontendHost = String(
+  process.env.SGID_FRONTEND_HOST ?? 'http://localhost:5173',
+)
 
 const sgid = new SgidClient({
   clientId: String(process.env.SGID_CLIENT_ID),
   clientSecret: String(process.env.SGID_CLIENT_SECRET),
   privateKey: String(process.env.SGID_PRIVATE_KEY),
-  redirectUri: `http://localhost:${PORT}/api/callback`,
+  redirectUri,
 })
 
 const app = express()
@@ -42,6 +48,13 @@ type SessionData = Record<
  * In a real application, this would be a database.
  */
 const sessionData: SessionData = {}
+
+app.use(
+  cors({
+    credentials: true,
+    origin: frontendHost,
+  }),
+)
 
 apiRouter.get('/auth-url', (req, res) => {
   const iceCreamSelection = String(req.query.icecream)
@@ -76,7 +89,7 @@ apiRouter.get('/callback', async (req, res): Promise<void> => {
   const session = sessionData[sessionId]
   // Validate that the state matches what we passed to sgID for this session
   if (session?.state.toString() !== state) {
-    res.redirect('/error')
+    res.redirect(`${frontendHost}/error`)
     return
   }
 
@@ -85,7 +98,7 @@ apiRouter.get('/callback', async (req, res): Promise<void> => {
   sessionData[sessionId] = session
 
   // Successful login, redirect to logged in state
-  res.redirect('/logged-in')
+  res.redirect(`${frontendHost}/logged-in`)
 })
 
 apiRouter.get('/userinfo', async (req, res) => {
@@ -112,13 +125,8 @@ apiRouter.get('/logout', async (_req, res) => {
 
 const initServer = async (): Promise<void> => {
   try {
-    await fetchStaticFiles()
     app.use(cookieParser())
     app.use('/api', apiRouter)
-    app.use(express.static('dist'))
-    app.get('*', (_req, res) => {
-      res.sendFile('index.html', { root: './dist' })
-    })
 
     app.listen(PORT, () => {
       console.log(`Server listening on port ${PORT}`)
