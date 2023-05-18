@@ -27,12 +27,30 @@ cat .env.example > .env
 
 3. Replace the values in `.env` with the credentials of your sgID client (see [Prerequisites](#prerequisites)).
 
-4. Run:
+4. Run the Express app:
 
 ```
 npm install
 npm start
 ```
+
+This should start the server on port `5001` by default
+
+5. Clone sgID's example frontend repo:
+
+```
+git clone https://github.com/opengovsg/sgid-demo-frontend-spa.git
+```
+
+6. Install and run the example frontend:
+
+```
+cd sgid-demo-frontend-spa
+npm install
+npm run dev
+```
+
+This should start the frontend on port `5173` by default. Visit `http://localhost:5173` to test the entire sgID flow!
 
 ## For contributors
 
