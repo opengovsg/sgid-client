@@ -50,9 +50,9 @@ export class SgidClient {
 
     const { Client } = new Issuer({
       issuer,
-      authorization_endpoint: `${issuer}/oauth/authorize`,
-      token_endpoint: `${issuer}/oauth/token`,
-      userinfo_endpoint: `${issuer}/oauth/userinfo`,
+      authorization_endpoint: `${issuer}/authorize`,
+      token_endpoint: `${issuer}/token`,
+      userinfo_endpoint: `${issuer}/userinfo`,
       jwks_uri: `${issuer}/.well-known/jwks.json`,
     })
 

@@ -86,9 +86,9 @@ var SgidClient = /** @class */ (function () {
         var issuer = hostname;
         var Client = new openid_client_1.Issuer({
             issuer: issuer,
-            authorization_endpoint: "".concat(issuer, "/oauth/authorize"),
-            token_endpoint: "".concat(issuer, "/oauth/token"),
-            userinfo_endpoint: "".concat(issuer, "/oauth/userinfo"),
+            authorization_endpoint: "".concat(issuer, "/authorize"),
+            token_endpoint: "".concat(issuer, "/token"),
+            userinfo_endpoint: "".concat(issuer, "/userinfo"),
             jwks_uri: "".concat(issuer, "/.well-known/jwks.json"),
         }).Client;
         this.sgID = new Client({
