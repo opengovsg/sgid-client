@@ -2,7 +2,6 @@ import { compactDecrypt, importJWK, importPKCS8 } from 'jose'
 import { Client, generators, Issuer } from 'openid-client'
 
 import {
-  API_VERSION,
   DEFAULT_SCOPE,
   DEFAULT_SGID_CODE_CHALLENGE_METHOD,
   SGID_AUTH_METHOD,
@@ -42,12 +41,12 @@ export class SgidClient {
     clientSecret,
     privateKey,
     redirectUri,
-    hostname = 'https://api.id.gov.sg',
+    hostname = 'https://www.certification.openid.net/test/a/sgid-rayner/',
   }: SgidClientParams) {
     /**
      * Note that issuer is appended with version number only from v2 onwards
      */
-    const issuer = new URL(hostname).origin + `/v${API_VERSION}`
+    const issuer = hostname
 
     const { Client } = new Issuer({
       issuer,
