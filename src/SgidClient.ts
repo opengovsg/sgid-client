@@ -46,14 +46,12 @@ export class SgidClient {
     /**
      * Note that issuer is appended with version number only from v2 onwards
      */
-    const issuer = hostname
-
     const { Client } = new Issuer({
-      issuer,
-      authorization_endpoint: `${issuer}/authorize`,
-      token_endpoint: `${issuer}/token`,
-      userinfo_endpoint: `${issuer}/userinfo`,
-      jwks_uri: `${issuer}/.well-known/jwks.json`,
+      issuer: `${hostname}/`,
+      authorization_endpoint: `${hostname}/authorize`,
+      token_endpoint: `${hostname}/token`,
+      userinfo_endpoint: `${hostname}/userinfo`,
+      jwks_uri: `${hostname}/.well-known/jwks.json`,
     })
 
     this.sgID = new Client({
