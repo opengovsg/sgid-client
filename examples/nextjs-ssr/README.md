@@ -12,10 +12,10 @@ Before you can run the development server, you will have to register your client
 
 Copy the `.env.example` file, rename it to `.env`, and fill in your credentials obtained during registration.
 
-Then, run the server by running:
+Then, run the development server by running:
 
 ```bash
-npm run start:dev
+npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
