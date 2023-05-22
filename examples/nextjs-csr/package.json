@@ -3,10 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "NEXT_ENV=development next dev",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "start:dev": "next build && NEXT_ENV=development next start",
     "lint": "next lint"
   },
   "dependencies": {
