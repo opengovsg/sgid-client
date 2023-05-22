@@ -88,7 +88,7 @@ var SgidClient = /** @class */ (function () {
             authorization_endpoint: "".concat(hostname, "/authorize"),
             token_endpoint: "".concat(hostname, "/token"),
             userinfo_endpoint: "".concat(hostname, "/userinfo"),
-            jwks_uri: "".concat(hostname, "/.well-known/jwks.json"),
+            jwks_uri: "".concat(hostname, "/jwks"),
         }).Client;
         this.sgID = new Client({
             client_id: clientId,

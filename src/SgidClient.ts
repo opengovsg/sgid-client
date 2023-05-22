@@ -51,7 +51,7 @@ export class SgidClient {
       authorization_endpoint: `${hostname}/authorize`,
       token_endpoint: `${hostname}/token`,
       userinfo_endpoint: `${hostname}/userinfo`,
-      jwks_uri: `${hostname}/.well-known/jwks.json`,
+      jwks_uri: `${hostname}/jwks`,
     })
 
     this.sgID = new Client({
