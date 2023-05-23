@@ -6,7 +6,7 @@ The example application code is in `index.ts`. You can copy this code to bootstr
 
 ### Prerequisites
 
-Register a new client at the [sgID developer portal](https://developer.id.gov.sg). For detailed instructions on how to register, check out our [documentation](https://jie-hao-kwa.gitbook.io/sgid-v2-beta/~/changes/75HA2ZSHqQMuHPNECzfs/introduction/getting-started/registration). Feel free to register a test client; there is no limit to the number of clients you can create.
+Register a new client at the [sgID developer portal](https://developer.id.gov.sg). For detailed instructions on how to register, check out our [documentation](https://docs.id.gov.sg/introduction/getting-started/register-your-application). Feel free to register a test client; there is no limit to the number of clients you can create.
 
 When registering a client, be sure to register the callback URL to be `http://localhost:5001/api/callback`, since this example runs on port `5001` by default.
 
@@ -18,7 +18,7 @@ When registering a client, be sure to register the callback URL to be `http://lo
 git clone https://github.com/opengovsg/sgid-client.git
 ```
 
-2. Go to this folder and copy the contents of `example.env` into a new file called `.env`.
+2. Go to this folder and copy the contents of `.env.example` into a new file called `.env`.
 
 ```
 cd sgid-client/examples/express

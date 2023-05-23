@@ -102,7 +102,7 @@ apiRouter.get('/callback', async (req, res): Promise<void> => {
   }
 
   // Validate that the code verifier exists for this session
-  if (!session?.codeVerifier) {
+  if (session?.codeVerifier === undefined) {
     res.redirect(`${frontendHost}/error`)
     return
   }
@@ -111,7 +111,7 @@ apiRouter.get('/callback', async (req, res): Promise<void> => {
   const { accessToken, sub } = await sgid.callback({
     code: authCode,
     nonce: session.nonce,
-    codeVerifier: session.codeVerifier
+    codeVerifier: session.codeVerifier,
   })
 
   session.accessToken = accessToken
@@ -131,7 +131,7 @@ apiRouter.get('/userinfo', async (req, res) => {
   const sub = session?.sub
 
   // User is not authenticated
-  if (session === undefined || accessToken === undefined || sub == undefined) {
+  if (session === undefined || accessToken === undefined || sub === undefined) {
     return res.sendStatus(401)
   }
   const userinfo = await sgid.userinfo({
@@ -161,7 +161,7 @@ const initServer = async (): Promise<void> => {
     })
   } catch (error) {
     console.error(
-      'Something went wrong while fetching the static files. Please restart the server.',
+      'Something went wrong while starting the server. Please restart the server.',
     )
     console.error(error)
   }
