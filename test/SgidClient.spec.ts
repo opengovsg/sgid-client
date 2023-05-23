@@ -25,6 +25,7 @@ import {
   tokenHandlerNoToken,
   userInfoHandlerMalformedData,
   userInfoHandlerMalformedKey,
+  userInfoHandlerMismatchedSub,
   userInfoHandlerNoData,
   userInfoHandlerNoKey,
 } from './mocks/handlers'
@@ -340,6 +341,7 @@ describe('SgidClient', () => {
   describe('userinfo', () => {
     it('should call userinfo endpoint and return sub and data', async () => {
       const { sub, data } = await client.userinfo({
+        sub: MOCK_SUB,
         accessToken: MOCK_ACCESS_TOKEN,
       })
 
@@ -351,6 +353,7 @@ describe('SgidClient', () => {
       server.use(userInfoHandlerNoKey)
 
       const { sub, data } = await client.userinfo({
+        sub: MOCK_SUB,
         accessToken: MOCK_ACCESS_TOKEN,
       })
 
@@ -358,10 +361,24 @@ describe('SgidClient', () => {
       expect(data).toEqual({})
     })
 
+    it('should throw when sub returned by server does not match ID token', async () => {
+      server.use(userInfoHandlerMismatchedSub)
+
+      await expect(
+        client.userinfo({
+          sub: MOCK_SUB,
+          accessToken: MOCK_ACCESS_TOKEN,
+        }),
+      ).rejects.toThrow(
+        'Sub returned by sgID did not match the sub passed to the userinfo method. Check that you passed the correct sub to the userinfo method.',
+      )
+    })
+
     it('should return empty data object when no data is returned', async () => {
       server.use(userInfoHandlerNoData)
 
       const { sub, data } = await client.userinfo({
+        sub: MOCK_SUB,
         accessToken: MOCK_ACCESS_TOKEN,
       })
 
@@ -380,6 +397,7 @@ describe('SgidClient', () => {
 
       await expect(
         invalidPrivateKeyClient.userinfo({
+          sub: MOCK_SUB,
           accessToken: MOCK_ACCESS_TOKEN,
         }),
       ).rejects.toThrow('Failed to import private key')
@@ -390,6 +408,7 @@ describe('SgidClient', () => {
 
       await expect(
         client.userinfo({
+          sub: MOCK_SUB,
           accessToken: MOCK_ACCESS_TOKEN,
         }),
       ).rejects.toThrow('Unable to decrypt or import payload key')
@@ -400,6 +419,7 @@ describe('SgidClient', () => {
 
       await expect(
         client.userinfo({
+          sub: MOCK_SUB,
           accessToken: MOCK_ACCESS_TOKEN,
         }),
       ).rejects.toThrow('Unable to decrypt payload')
