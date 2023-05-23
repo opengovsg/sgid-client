@@ -1,4 +1,5 @@
-import { generators } from 'openid-client'
+import { createHash, randomBytes } from 'crypto'
+import { base64url } from 'jose'
 
 import * as Errors from './error'
 
@@ -32,8 +33,7 @@ export function generateCodeVerifier(length = 43): string {
   }
 
   // 96 bytes results in a 128 long base64 string
-  const codeVerifier = generators.codeVerifier(96)
-
+  const codeVerifier = base64url.encode(randomBytes(96))
   // This works because a prefix of a random string is still random
   return codeVerifier.slice(0, length)
 }
@@ -44,5 +44,5 @@ export function generateCodeVerifier(length = 43): string {
  * @returns The calculated code challenge
  */
 export function generateCodeChallenge(codeVerifier: string): string {
-  return generators.codeChallenge(codeVerifier)
+  return base64url.encode(createHash('sha256').update(codeVerifier).digest())
 }
