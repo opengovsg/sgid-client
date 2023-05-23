@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background: #506377;
+    background-image: url("../assets/skyline.png");
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+}
