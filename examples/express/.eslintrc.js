@@ -13,5 +13,6 @@ module.exports = {
   },
   rules: {
     '@typescript-eslint/no-misused-promises': 'off',
+    '@typescript-eslint/no-dynamic-delete': 'off',
   },
 }
