@@ -145,7 +145,10 @@ apiRouter.get('/userinfo', async (req, res) => {
   return res.json(userinfo)
 })
 
-apiRouter.get('/logout', async (_req, res) => {
+apiRouter.get('/logout', async (req, res) => {
+  const sessionId = String(req.cookies[SESSION_COOKIE_NAME])
+  // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+  delete sessionData[sessionId]
   return res
     .clearCookie(SESSION_COOKIE_NAME, SESSION_COOKIE_OPTIONS)
     .sendStatus(200)
