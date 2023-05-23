@@ -108,10 +108,11 @@ apiRouter.get('/callback', async (req, res): Promise<void> => {
   }
 
   // Exchange the authorization code and code verifier for the access token
+  const { codeVerifier, nonce } = session
   const { accessToken, sub } = await sgid.callback({
     code: authCode,
-    nonce: session.nonce,
-    codeVerifier: session.codeVerifier,
+    nonce,
+    codeVerifier,
   })
 
   session.accessToken = accessToken
