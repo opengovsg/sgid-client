@@ -6,7 +6,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 Before you can run the development server, you will have to register your client on the sgID [developer portal](https://developer.id.gov.sg/).
 
-- For this example, you will need to include the following scopes `[openid, myinfo.name]` and register the following redirect URL `http://localhost:3000/api/callback`
+- For this example, you will need to include the following scopes `[openid, myinfo.name]` and register the following redirect URL `http://localhost:3000/api/redirect`
 
 > For more information about sgID, please visit the [developer documentation](https://docs.id.gov.sg/).
 

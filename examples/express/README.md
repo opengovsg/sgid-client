@@ -8,7 +8,7 @@ The example application code is in `index.ts`. You can copy this code to bootstr
 
 Register a new client at the [sgID developer portal](https://developer.id.gov.sg). For detailed instructions on how to register, check out our [documentation](https://docs.id.gov.sg/introduction/getting-started/register-your-application). Feel free to register a test client; there is no limit to the number of clients you can create.
 
-When registering a client, be sure to register the callback URL to be `http://localhost:5001/api/callback`, since this example runs on port `5001` by default.
+When registering a client, be sure to register the redirect URL to be `http://localhost:5001/api/redirect`, since this example runs on port `5001` by default.
 
 ### Steps to run locally
 
