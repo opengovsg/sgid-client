@@ -18,7 +18,7 @@ export const MOCK_JWKS_ENDPOINT = `${MOCK_ISSUER}/.well-known/jwks.json`
 // RP configuration
 export const MOCK_CLIENT_ID = 'mockClientId'
 export const MOCK_CLIENT_SECRET = 'mockClientSecret'
-export const MOCK_REDIRECT_URI = 'https://sgid.com/callback'
+export const MOCK_REDIRECT_URI = 'https://sgid.com/redirect'
 export const MOCK_CLIENT_PUBLIC_KEY = mockClientKeys.publicKey
 export const MOCK_CLIENT_PRIVATE_KEY = mockClientKeys.privateKey
 
