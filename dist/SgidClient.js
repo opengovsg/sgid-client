@@ -79,7 +79,7 @@ var SgidClient = /** @class */ (function () {
      * https://api.id.gov.sg.
      */
     function SgidClient(_a) {
-        var clientId = _a.clientId, clientSecret = _a.clientSecret, privateKey = _a.privateKey, redirectUri = _a.redirectUri, _b = _a.hostname, hostname = _b === void 0 ? 'https://www.certification.openid.net/test/a/sgid-rayner' : _b;
+        var clientId = _a.clientId, clientSecret = _a.clientSecret, privateKey = _a.privateKey, redirectUri = _a.redirectUri, hostname = _a.hostname;
         /**
          * Note that issuer is appended with version number only from v2 onwards
          */

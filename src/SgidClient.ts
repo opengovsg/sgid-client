@@ -41,7 +41,7 @@ export class SgidClient {
     clientSecret,
     privateKey,
     redirectUri,
-    hostname = 'https://www.certification.openid.net/test/a/sgid-rayner',
+    hostname,
   }: SgidClientParams) {
     /**
      * Note that issuer is appended with version number only from v2 onwards
