@@ -1,0 +1,5 @@
+asyncio
+httpx
+python-dotenv
+requests
+selenium

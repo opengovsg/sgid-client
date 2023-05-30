@@ -2,6 +2,7 @@ import { compactDecrypt, importJWK, importPKCS8 } from 'jose'
 import { Client, generators, Issuer } from 'openid-client'
 
 import {
+  API_VERSION,
   DEFAULT_SCOPE,
   DEFAULT_SGID_CODE_CHALLENGE_METHOD,
   SGID_AUTH_METHOD,
@@ -41,17 +42,19 @@ export class SgidClient {
     clientSecret,
     privateKey,
     redirectUri,
-    hostname,
+    hostname = 'https://api.id.gov.sg',
   }: SgidClientParams) {
     /**
      * Note that issuer is appended with version number only from v2 onwards
      */
+    const issuer = new URL(hostname).origin + `/v${API_VERSION}`
+
     const { Client } = new Issuer({
-      issuer: `${hostname}/`,
-      authorization_endpoint: `${hostname}/authorize`,
-      token_endpoint: `${hostname}/token`,
-      userinfo_endpoint: `${hostname}/userinfo`,
-      jwks_uri: `${hostname}/jwks`,
+      issuer,
+      authorization_endpoint: `${issuer}/oauth/authorize`,
+      token_endpoint: `${issuer}/oauth/token`,
+      userinfo_endpoint: `${issuer}/oauth/userinfo`,
+      jwks_uri: `${issuer}/.well-known/jwks.json`,
     })
 
     this.sgID = new Client({

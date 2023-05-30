@@ -79,16 +79,17 @@ var SgidClient = /** @class */ (function () {
      * https://api.id.gov.sg.
      */
     function SgidClient(_a) {
-        var clientId = _a.clientId, clientSecret = _a.clientSecret, privateKey = _a.privateKey, redirectUri = _a.redirectUri, hostname = _a.hostname;
+        var clientId = _a.clientId, clientSecret = _a.clientSecret, privateKey = _a.privateKey, redirectUri = _a.redirectUri, _b = _a.hostname, hostname = _b === void 0 ? 'https://api.id.gov.sg' : _b;
         /**
          * Note that issuer is appended with version number only from v2 onwards
          */
+        var issuer = new URL(hostname).origin + "/v".concat(constants_1.API_VERSION);
         var Client = new openid_client_1.Issuer({
-            issuer: "".concat(hostname, "/"),
-            authorization_endpoint: "".concat(hostname, "/authorize"),
-            token_endpoint: "".concat(hostname, "/token"),
-            userinfo_endpoint: "".concat(hostname, "/userinfo"),
-            jwks_uri: "".concat(hostname, "/jwks"),
+            issuer: issuer,
+            authorization_endpoint: "".concat(issuer, "/oauth/authorize"),
+            token_endpoint: "".concat(issuer, "/oauth/token"),
+            userinfo_endpoint: "".concat(issuer, "/oauth/userinfo"),
+            jwks_uri: "".concat(issuer, "/.well-known/jwks.json"),
         }).Client;
         this.sgID = new Client({
             client_id: clientId,

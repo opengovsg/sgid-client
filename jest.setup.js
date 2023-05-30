@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-const { server } = require('./test/mocks/server.ts')
+const { server } = require('./test/unit/mocks/server.ts')
 
 // Establish API mocking before all tests.
 beforeAll(() =>
