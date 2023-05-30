@@ -106,5 +106,6 @@ typings/
 .DS_Store
 # dist/
 
+.cache_ggshield
 test/conformance/suite/.venv/
 test/conformance/suite/__pycache__/
