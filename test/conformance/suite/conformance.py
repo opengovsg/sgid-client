@@ -203,17 +203,17 @@ class Conformance(object):
 
         response = session.get('http://localhost:3000/api/auth-url', allow_redirects=False)
 
-        auth_url = response.content
+        auth_url = response.content.decode('UTF-8')
         print("Auth URL {}\n".format(auth_url))
 
         auth_response = session.get(auth_url, allow_redirects=False)
 
-        callback_url = auth_response.content
+        callback_url = auth_response.content.decode('UTF-8')
         print("Callback URL {}\n".format(callback_url))
 
         callback_response = session.get(callback_url, allow_redirects=False)
 
-        logged_in_url = callback_response.content
+        logged_in_url = callback_response.content.decode('UTF-8')
         print("Logged in URL {}\n", logged_in_url)
 
         logged_in_response = session.get(logged_in_url)
@@ -238,23 +238,23 @@ class Conformance(object):
                 return (status, result)
             elif status == 'WAITING':
                 print("[id: {}] Attempting a connection... (Try count: {})".format(module_id, tries + 1))
-                tries += 1
+                # tries += 1
 
-                options = webdriver.ChromeOptions()
-                options.add_argument('--headless=new')
+                # options = webdriver.ChromeOptions()
+                # options.add_argument('--headless=new')
 
-                driver = webdriver.Chrome(options=options)
-                driver.get('http://localhost:3000/api/auth-url')
-                driver.implicitly_wait(10)
-                await asyncio.sleep(10)# 
+                # driver = webdriver.Chrome(options=options)
+                # driver.get('http://localhost:3000/api/auth-url')
+                # driver.implicitly_wait(10)
+                # await asyncio.sleep(10)# 
 
-                while (info['status'] == "WAITING"):
-                    await asyncio.sleep(1)
-                    print('[id: {}] Waiting...'.format(module_id))
-                    info = await self.get_module_info(module_id)
+                # while (info['status'] == "WAITING"):
+                #     await asyncio.sleep(1)
+                #     print('[id: {}] Waiting...'.format(module_id))
+                #     info = await self.get_module_info(module_id)
 
-                # await self.init_connection()
-                # await asyncio.sleep(5)#
+                await self.init_connection()
+                await asyncio.sleep(5)#
 
 
             elif status != 'CREATED' and status != 'RUNNING':

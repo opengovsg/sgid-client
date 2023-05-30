@@ -1,0 +1,13 @@
+version: 2
+
+secret:
+  ignored-matches:
+    - match: -----BEGIN RSA PRIVATE KEY-----MIIEowIBAAKCAQBnPRbP6o/PauID0uDlPQmHIm7tislCnsKHdszHsrE5zYg2l5HfxPCgj9F9gXVh6n6PArZK47WZ9lIREPjq6h61GTnFHbWiqCGH88TDoKphFDwxrvgXJEC/haNYWlR5zh60LMopSc4XGxWgqhrWnJGaky9muMSMy9ENlz+aHt8RpKGhGu3sbGnfDkiINp0s34I8ZxKavxGWXIjxNdEa/IUth7JunzvmmHB39DO+9wtC++d24lJ3Sl2eVrYLbXg1YHwJbybTTlxliLay58Jtn1erV1dwxkNgxqIZVcDCadLTu+fTyWUTzDD/dd7nhJSObZaHyJ16L3/3TMy+f0R8PvEVAgMBAAECggEAKL9g4KGZL2nlWVMDdxd3SkIZ/GH5+/SDnUoTm4J5FvJ7n+iFKAgoXYdGTT4qoYIXf8S3RKnJxMIHNDs5tCbCBgK13YpTZabszSc282vXs8dz1rxTqXaio7VQeo/0pbroPX8sL820rUQAblCVlT1o7tTHMckdsuDDW5TmAqPKscCBpPaNTtdCsZkloDQlI2Ljk42tlJh2h955zsQbuONnU82jf4rcAvyqNYHeNjR87cpby/Dk1NF+jKZKCs3ehqmQ3QSDNWXEL0M/3Ck2qBMdZryIIWpetGvPaXUOD4Yr2ZSjNlDY1XeKd8UymwZuhcvGMrp0zo3JwoWHBHLRZyD+IQKBgQDC3g9ATE5/ZNDAKwpBmwvkxsNo0X94fuu+XMD17pOXjJP4NXMYp9CZsdb7NXHo5Q5eUqd/3HEnAjXlQRZ/EqbBfltrtOa9/RpDOoREB/wCIA7pFhINllKbMPrwdzpY5sDFw9zNaxWLdM7dDeMdK8wEays+SwEy6PHdeGNpMNF4SQKBgQCHoEGpl/TPLv8pM/SYidbzXnz8O8YGVDTtzNbZZuiTI/I4WyJ2ib31xNYxxuchfkSIUS8bbaB7OQsQxatZkIoM+kiRTkaWZClhVdaYV/Fx2a+WJlhTxS7cK7Kc3UJ26N520ZVzJY7A3RDwSoDNMrAtryZeHYdtpKKNZRtuujzqbQKBgQCi03v45QneZvYK7KvIP+7DPdZAOnWB0MPZL5XIqY5H3p4xky/WFTs3gaM6CuFgkizcYcI2E5O03aL9KdLLYWFXYuau69y2Ocv9CuNEGUvY1sK+vsNc+ROTO20jCu0FJeNEHLHeLzE0cuj7SsRQNq1lr8rVZUTeLkkTHqoqVjFhiQKBgHOOcMPuK/DnKxLRKMNbFmEvjbBfwX6c+qfuktSTIPBVfUjVJYz4GXkw6AtrXH0mF4BKI6fsBQNYe/wjX7alN2qNSY08s1nqJ3O+bmRI8fg+MKPvMezWIfIH7VxIDRxBl2KHeh2sz2+2K3uBDzNGz+Nsy3T/Feeuka2FixUR61sVAoGBALu/5harfZCowTrZxeG1hKtKoNBuWgygX+Rf7isbHRuDcOOQjXIHbkE756zvLHyLbcHNEa04Om0wt/HwYaRH46Lch1m6Tqrzp9ENwcEHV2//lSkiYOdi6bDXeFi03yt7Q9xCtvdoOc/jpuApr9X6jBAYuVIIGfUMQ5fr3TjBXYHA-----END RSA PRIVATE KEY-----
+      name: Dummy private key to init ConformanceSgidClient
+  ignored-paths:
+    - match: 'test/conformance/demo-rp/src/lib/sgidClient.ts'
+      name: Conformance test suite mock keys
+    - match: 'test/unit/mocks/*
+      name: Unit test mock keys
+
+max-commits-for-hook: 1

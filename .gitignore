@@ -105,3 +105,6 @@ typings/
 
 .DS_Store
 # dist/
+
+test/conformance/suite/.venv/
+test/conformance/suite/__pycache__/
