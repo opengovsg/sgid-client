@@ -32,7 +32,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       req,
       res,
       httpOnly: true,
-      secure: true,
+      // domain: 'http://localhost:3000',
+      // sameSite: 'none',
     })
 
     // Redirect the browser to the authorization URL

@@ -46,6 +46,9 @@ test_plan = asyncio.run(conformance.create_test_plan(test_plan_name, json.dumps(
 plan_id = test_plan['id']
 print('Plan URL: {}plan-detail.html?plan={}\n'.format(CONFORMANCE_SERVER, plan_id))
 
+passed_modules = []
+failed_modules = []
+
 for module_name in modules.keys():
 
     # Finding the test module index based on the name of the module_name
@@ -63,11 +66,19 @@ for module_name in modules.keys():
     print('[id: {}] Starting test module: {} (Test URL: {}log-detail.html?log={})'.format(module_id, module_name, CONFORMANCE_SERVER, module_id))
 
     # Run the test and wait for it to finish
-    state, result = asyncio.run(conformance.wait_for_state(module_id, modules[module_name]['status']))
+    try:
+        state, result = asyncio.run(conformance.wait_for_state(module_id, modules[module_name]['status']))
+    except Exception as e:
+        failed_modules.append(module_name)
+        print('[id: {}] Test module {} failed with message {} and did not complete\n'.format(module_id, module_name, e))
 
     if result not in modules[module_name]['result']:
+        failed_modules.append(module_name)
         print('[id: {}] Test module {} complete with non-matching results! (State: {}; Result: {}; Expected results: {})\n'.format(module_id, module_name, state, result, modules[module_name]['result']))
     else:
+        passed_modules.append(module_name)
         print('[id: {}] Test module {} complete with matching results! (State: {}; Result: {}; Expected results: {})\n'.format(module_id, module_name, state, result, modules[module_name]['result']))
 
-print('Conformance suite has been completed successfully!')
+print('Conformance suite has been completed successfully!\n')
+print('Passed modules: {} / {}  \n{}'.format(len(passed_modules), len(modules.keys()), passed_modules))
+print('Failed modules: {} / {}  \n{}'.format(len(failed_modules), len(modules.keys()), failed_modules))

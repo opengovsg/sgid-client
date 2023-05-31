@@ -201,28 +201,42 @@ class Conformance(object):
     async def init_connection(self):
         session = requests.Session()
 
-        response = session.get('http://localhost:3000/api/auth-url', allow_redirects=False)
+        # print("Retrieving auth URL...")
+        # The origin must be set as `localhost:3000` - otherwise the cookies will be set with the domain of the auth URL (i.e. www.certification.openid.net) instead of `localhost`
+        response = session.get('http://localhost:3000/api/auth-url', headers={'Host':'localhost:3000'}, allow_redirects=False)
 
-        auth_url = response.content.decode('UTF-8')
-        print("Auth URL {}\n".format(auth_url))
-
+        auth_url = response.text
+        # print("Retrieving callback URL from auth URL {}...".format(auth_url))
         auth_response = session.get(auth_url, allow_redirects=False)
 
-        callback_url = auth_response.content.decode('UTF-8')
-        print("Callback URL {}\n".format(callback_url))
+        if 'Location' not in auth_response.headers:
+            print("Redirect location not present in auth response headers...")
+            print("Concluding connection...")
+            return
 
+        callback_url = auth_response.headers['Location']
+        # print("Exchanging code for access token {}...".format(callback_url))
         callback_response = session.get(callback_url, allow_redirects=False)
 
-        logged_in_url = callback_response.content.decode('UTF-8')
-        print("Logged in URL {}\n", logged_in_url)
+        redirect_url = callback_response.text
 
-        logged_in_response = session.get(logged_in_url)
-        print(logged_in_response)
+        if redirect_url == '/logged-in':
+            print("Redirected to /logged-in...")
+            # print("Requesting userinfo with access token...")
+            userinfo_response = session.get('http://localhost:3000/api/userinfo')
+            # print("Userinfo", userinfo_response.text)
+
+            # print("Clearing session...")
+            session.get("http://localhost:3000/api/logout")
+        elif redirect_url == '/error':
+            print("Redirected to /error")
+
+            # Server needs time to register that no further requests will be made
+            await asyncio.sleep(5)
 
     async def wait_for_state(self, module_id, required_states, timeout=240):
         timeout_at = time.time() + timeout
         tries = 0
-
 
         while True:
             if time.time() > timeout_at:
@@ -238,7 +252,7 @@ class Conformance(object):
                 return (status, result)
             elif status == 'WAITING':
                 print("[id: {}] Attempting a connection... (Try count: {})".format(module_id, tries + 1))
-                # tries += 1
+                tries += 1
 
                 # options = webdriver.ChromeOptions()
                 # options.add_argument('--headless=new')
@@ -254,7 +268,7 @@ class Conformance(object):
                 #     info = await self.get_module_info(module_id)
 
                 await self.init_connection()
-                await asyncio.sleep(5)#
+                await asyncio.sleep(2)
 
 
             elif status != 'CREATED' and status != 'RUNNING':

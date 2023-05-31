@@ -1,41 +1,43 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import { store } from "../../lib/store";
-import { sgidClient } from "../../lib/sgidClient";
-import { getCookie } from "cookies-next";
+import type { NextApiRequest, NextApiResponse } from 'next'
+import { store } from '../../lib/store'
+import { sgidClient } from '../../lib/sgidClient'
+import { getCookie } from 'cookies-next'
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   try {
     // Retrieve the auth code from the query params
-    let { code, state } = req.query;
-
+    let { code, state } = req.query
+    console.log(req.cookies)
     // Retrieve the session ID from the browser cookies
-    const sessionId = getCookie("sessionId", { req, res });
+    const sessionId = getCookie('sessionId', { req, res })
 
-    if (typeof sessionId !== "string") {
-      return res.status(400).send("Session ID not found in browser cookies");
+    if (typeof sessionId !== 'string') {
+      return res
+        .status(400)
+        .send('Session ID not found in browser cookies (HEY)')
     } else if (!code) {
       return res
         .status(400)
-        .send("Authorization code not found in query params");
+        .send('Authorization code not found in query params')
     }
-    code = String(code);
+    code = String(code)
 
     // Retrieve the code verifier from the store
-    const session = store.get(sessionId);
+    const session = store.get(sessionId)
 
     if (!session) {
-      return res.status(400).send("Session not found");
+      return res.status(400).send('Session not found')
     } else if (state && state !== session.state) {
-      return res.status(400).send("State does not match");
+      return res.status(400).send('State does not match')
     }
 
-    const { nonce, codeVerifier } = session;
+    const { nonce, codeVerifier } = session
 
-    if (!codeVerifier || typeof codeVerifier !== "string") {
-      return res.status(400).send("Code verifier not found");
+    if (!codeVerifier || typeof codeVerifier !== 'string') {
+      return res.status(400).send('Code verifier not found')
     }
 
     // Exchange the auth code and code verifier for the access token and sub
@@ -44,21 +46,21 @@ export default async function handler(
       code,
       nonce,
       codeVerifier,
-    });
+    })
 
     // Store the access token and sub
     const updatedSession = {
       ...session,
       accessToken,
       sub,
-    };
+    }
 
-    store.set(sessionId, updatedSession);
+    store.set(sessionId, updatedSession)
 
     // Redirect to a logged in page
-    res.redirect("/logged-in");
+    res.redirect('/logged-in')
   } catch (error) {
-    console.error(error);
-    res.redirect("/error");
+    console.error(error)
+    res.redirect('/error')
   }
 }

@@ -97,7 +97,7 @@ modules = {
          "FINISHED"
       ],
       "result":[
-         "PASSED" 
+         "SKIPPED"
       ]
    },
    "oidcc-client-test-idtoken-sig-rs256":{
@@ -153,7 +153,7 @@ modules = {
          "WAITING"
       ],
       "result":[
-         "UNKNOWN"  
+         None
       ]
    },
    "oidcc-client-test-invalid-sig-hs256":{
@@ -182,11 +182,10 @@ modules = {
    },
    "oidcc-client-test-distributed-claims":{
       "status":[
-         "FINISHED",
-         "INTERRUPTED"
+         "WAITING"
       ],
       "result":[
-         "FAILED"  
+         None
       ]
    },
    "oidcc-client-test-discovery-openid-config":{
@@ -199,10 +198,10 @@ modules = {
    },
    "oidcc-client-test-discovery-jwks-uri-keys":{
       "status":[
-         "FINISHED"
+         "FINISHED","INTERRUPTED"
       ],
       "result":[
-         "PASSED" 
+         "FAILED" 
       ]
    },
    "oidcc-client-test-discovery-issuer-mismatch":{
@@ -234,20 +233,18 @@ modules = {
    },
    "oidcc-client-test-discovery-webfinger-acct":{
       "status":[
-         "FINISHED",
-         "INTERRUPTED"
+         "WAITING",
       ],
       "result":[
-         "FAILED" 
+          None
       ]
    },
    "oidcc-client-test-discovery-webfinger-url":{
       "status":[
-         "FINISHED",
-         "INTERRUPTED"
+         "WAITING",
       ],
       "result":[
-         "FAILED" 
+          None
       ]
    },
    "oidcc-client-test-userinfo-signed":{
