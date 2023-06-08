@@ -1,11 +1,11 @@
 import { readFileSync } from 'fs'
 
-import SgidClient from '../src'
+import SgidClient from '../../src'
 import {
   generateCodeChallenge,
   generateCodeVerifier,
   generatePkcePair,
-} from '../src/generators'
+} from '../../src/generators'
 
 import {
   MOCK_ACCESS_TOKEN,
