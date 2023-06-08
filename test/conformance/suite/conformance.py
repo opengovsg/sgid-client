@@ -210,6 +210,7 @@ class Conformance(object):
         auth_response = session.get(auth_url, allow_redirects=False)
 
         if 'Location' not in auth_response.headers:
+            # print(auth_response.text)
             print("Redirect location not present in auth response headers...")
             print("Concluding connection...")
             return

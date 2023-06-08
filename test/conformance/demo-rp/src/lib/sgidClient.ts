@@ -7,15 +7,15 @@ import {
 } from '../../../../../dist/constants'
 import { SgidClient } from '../../../../../dist/SgidClient'
 
-export default class ConformanceSgidClient extends SgidClient {
-  constructor() {
-    const clientId = 'sgid-conformance-test'
-    const clientSecret =
-      'sgid-conformance-test-secret-that-should-be-at-least-256-bits-long'
-    const hostname =
-      'https://www.certification.openid.net/test/a/sgid-sdk-test-rayner'
-    const redirectUri = 'http://localhost:3000/api/callback'
+const clientId = 'sgid-conformance-test'
+const clientSecret =
+  'sgid-conformance-test-secret-that-should-be-at-least-256-bits-long'
+const hostname =
+  'https://www.certification.openid.net/test/a/sgid-sdk-test-rayner-2'
+const redirectUri = 'http://localhost:3000/api/callback'
 
+class ConformanceSgidClient extends SgidClient {
+  constructor() {
     super({
       clientId,
       clientSecret,
@@ -68,34 +68,29 @@ export default class ConformanceSgidClient extends SgidClient {
       token_endpoint_auth_method: SGID_AUTH_METHOD,
     })
   }
-}
-
-declare global {
-  var sgidClient: ConformanceSgidClient
-}
-
-let sgidClient: ConformanceSgidClient
-
-if (process.env.NODE_ENV === 'production') {
-  sgidClient = new ConformanceSgidClient()
-} else {
-  // If the client does not exist, initialize it
-  if (!global.sgidClient) {
-    global.sgidClient = new ConformanceSgidClient()
-  }
-  sgidClient = global.sgidClient
-}
-
-class SgidClientService {
-  sgidClient: ConformanceSgidClient
-
-  constructor() {
-    this.sgidClient = new ConformanceSgidClient()
-  }
 
   reset() {
-    this.sgidClient = new ConformanceSgidClient()
+    const { Client } = new Issuer({
+      issuer: `${hostname}/`,
+      authorization_endpoint: `${hostname}/authorize`,
+      token_endpoint: `${hostname}/token`,
+      userinfo_endpoint: `${hostname}/userinfo`,
+      jwks_uri: `${hostname}/jwks`,
+    })
+
+    const any_this = this as any
+
+    any_this.sgID = new Client({
+      client_id: clientId,
+      client_secret: clientSecret,
+      redirect_uris: [redirectUri],
+      id_token_signed_response_alg: SGID_SIGNING_ALG,
+      response_types: SGID_SUPPORTED_GRANT_TYPES,
+      token_endpoint_auth_method: SGID_AUTH_METHOD,
+    })
   }
 }
+
+const sgidClient = new ConformanceSgidClient()
 
 export { sgidClient }

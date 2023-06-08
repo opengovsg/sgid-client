@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { store } from '../../lib/store'
-import { sgidClient } from '../../lib/sgidClient'
+import { sgidClient, sgidClientService } from '../../lib/sgidClient'
 import { getCookie } from 'cookies-next'
 
 export default async function handler(

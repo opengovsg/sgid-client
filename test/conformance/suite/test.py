@@ -28,7 +28,7 @@ test_variant_config = {
 # This is the required configuration for the test run:
 test_plan_config = {
     "consent": {},
-    "alias": 'sgid-sdk-test-rayner',
+    "alias": 'sgid-sdk-test-rayner-2',
     "description": 'OIDC Conformance Testing for sgID SDKs',
     "client": {
         "client_id": 'sgid-conformance-test',
