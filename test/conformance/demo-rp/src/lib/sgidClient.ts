@@ -12,7 +12,8 @@ export default class ConformanceSgidClient extends SgidClient {
     const clientId = 'sgid-conformance-test'
     const clientSecret =
       'sgid-conformance-test-secret-that-should-be-at-least-256-bits-long'
-    const hostname = 'https://www.certification.openid.net/test/a/sgid-sdk-test'
+    const hostname =
+      'https://www.certification.openid.net/test/a/sgid-sdk-test-rayner'
     const redirectUri = 'http://localhost:3000/api/callback'
 
     super({
@@ -69,4 +70,32 @@ export default class ConformanceSgidClient extends SgidClient {
   }
 }
 
-export const sgidClient = new ConformanceSgidClient()
+declare global {
+  var sgidClient: ConformanceSgidClient
+}
+
+let sgidClient: ConformanceSgidClient
+
+if (process.env.NODE_ENV === 'production') {
+  sgidClient = new ConformanceSgidClient()
+} else {
+  // If the client does not exist, initialize it
+  if (!global.sgidClient) {
+    global.sgidClient = new ConformanceSgidClient()
+  }
+  sgidClient = global.sgidClient
+}
+
+class SgidClientService {
+  sgidClient: ConformanceSgidClient
+
+  constructor() {
+    this.sgidClient = new ConformanceSgidClient()
+  }
+
+  reset() {
+    this.sgidClient = new ConformanceSgidClient()
+  }
+}
+
+export { sgidClient }

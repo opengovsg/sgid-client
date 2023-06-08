@@ -3,11 +3,13 @@ import { setCookie } from 'cookies-next'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { v4 as uuidv4 } from 'uuid'
 
-import { sgidClient } from '../../lib/sgidClient'
+import ConformanceSgidClient, { sgidClient } from '../../lib/sgidClient'
 import { store } from '../../lib/store'
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
+    store.clear()
+
     // Retrieve the state from the query params
     let { state } = req.query
     state = String(state)

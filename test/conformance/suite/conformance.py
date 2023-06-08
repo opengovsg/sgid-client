@@ -268,7 +268,7 @@ class Conformance(object):
                 #     info = await self.get_module_info(module_id)
 
                 await self.init_connection()
-                await asyncio.sleep(2)
+                await asyncio.sleep(5)
 
 
             elif status != 'CREATED' and status != 'RUNNING':

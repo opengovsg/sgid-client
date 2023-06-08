@@ -28,7 +28,7 @@ test_variant_config = {
 # This is the required configuration for the test run:
 test_plan_config = {
     "consent": {},
-    "alias": 'sgid-sdk-test',
+    "alias": 'sgid-sdk-test-rayner',
     "description": 'OIDC Conformance Testing for sgID SDKs',
     "client": {
         "client_id": 'sgid-conformance-test',
@@ -68,16 +68,16 @@ for module_name in modules.keys():
     # Run the test and wait for it to finish
     try:
         state, result = asyncio.run(conformance.wait_for_state(module_id, modules[module_name]['status']))
+        if result not in modules[module_name]['result']:
+            failed_modules.append(module_name)
+            print('[id: {}] Test module {} complete with non-matching results! (State: {}; Result: {}; Expected results: {})\n'.format(module_id, module_name, state, result, modules[module_name]['result']))
+        else:
+            passed_modules.append(module_name)
+            print('[id: {}] Test module {} complete with matching results! (State: {}; Result: {}; Expected results: {})\n'.format(module_id, module_name, state, result, modules[module_name]['result']))
     except Exception as e:
         failed_modules.append(module_name)
         print('[id: {}] Test module {} failed with message {} and did not complete\n'.format(module_id, module_name, e))
 
-    if result not in modules[module_name]['result']:
-        failed_modules.append(module_name)
-        print('[id: {}] Test module {} complete with non-matching results! (State: {}; Result: {}; Expected results: {})\n'.format(module_id, module_name, state, result, modules[module_name]['result']))
-    else:
-        passed_modules.append(module_name)
-        print('[id: {}] Test module {} complete with matching results! (State: {}; Result: {}; Expected results: {})\n'.format(module_id, module_name, state, result, modules[module_name]['result']))
 
 print('Conformance suite has been completed successfully!\n')
 print('Passed modules: {} / {}  \n{}'.format(len(passed_modules), len(modules.keys()), passed_modules))
