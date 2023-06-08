@@ -1,59 +1,3 @@
-# enum Status {
-# 	NOT_YET_CREATED, // object just created, not yet setup
-# 	CREATED, // test has been instantiated
-# 	CONFIGURED, // configuration files have been sent and set up
-# 	RUNNING, // test is executing
-# 	WAITING, // test is waiting for external input
-# 	INTERRUPTED, // test has been stopped before completion
-# 	FINISHED, // test has completed
-# }
-
-# enum Result {
-# 	PASSED, // test has passed successfully
-# 	FAILED, // test has failed
-# 	WARNING, // test has warnings
-# 	REVIEW, // test requires manual review
-# 	SKIPPED, // test can not be completed
-# 	UNKNOWN // test results not yet known, probably still running (see status)
-# }
-
-# modules = {
-#    "oidcc-client-test":{
-#       "status":[
-#          "FINISHED"
-#       ],
-#       "result":[
-#          "PASSED" 
-#       ]
-#    },
-#    "oidcc-client-test-nonce-invalid":{
-#       "status":[
-#          "FINISHED"
-#       ],
-#       "result":[
-#          "PASSED"  
-#       ]
-#    },
-#    "oidcc-client-test-client-secret-basic":{
-#       "status":[
-#          "FINISHED",
-#          "INTERRUPTED"
-#       ],
-#       "result":[
-#          "FAILED" 
-#       ]
-#    },
-#    "oidcc-client-test-scope-userinfo-claims":{
-#       "status":[
-#          "FINISHED",
-#          "INTERRUPTED"
-#       ],
-#       "result":[
-#          "FAILED"  
-#       ]
-#    }
-# }
-
 modules = {
    "oidcc-client-test":{
       "status":[
@@ -94,7 +38,7 @@ modules = {
          "FINISHED"
       ],
       "result":[
-         "PASSED" # Works when ran first - otherwise fails
+         "PASSED" 
       ]
    },
    "oidcc-client-test-kid-absent-multiple-jwks":{
@@ -209,6 +153,8 @@ modules = {
          "PASSED" 
       ]
    },
+
+   # NOTE: Commented out as we do not use aggregated nor distributed claims
    # "oidcc-client-test-aggregated-claims":{
    #    "status":[
    #       "FINISHED"
@@ -268,6 +214,8 @@ modules = {
          "FAILED" # Passes but supposed to fail
       ]
    },
+
+   # NOTE: Commented out as we do not use webfinger
    # "oidcc-client-test-discovery-webfinger-acct":{
    #    "status":[
    #       "WAITING",
@@ -293,3 +241,4 @@ modules = {
       ]
    }
 }
+

@@ -3,6 +3,7 @@
 import asyncio
 import json
 import os
+import time
 
 from conformance import Conformance
 from dotenv import load_dotenv
@@ -36,6 +37,9 @@ test_plan_config = {
         "redirect_uri": 'http://localhost:3000/api/callback',
     },
 }
+
+# Start a timer
+start_time = time.perf_counter()
 
 # Create a Conformance instance...
 print("Starting the Conformance tests...\n")
@@ -78,7 +82,9 @@ for module_name in modules.keys():
         failed_modules.append(module_name)
         print('[id: {}] Test module {} failed with message {} and did not complete\n'.format(module_id, module_name, e))
 
+# End timer
+end_time = time.perf_counter()
 
-print('Conformance suite has been completed successfully!\n')
+print('Conformance suite has been completed successfully in {:.2f} seconds!\n'.format(end_time - start_time))
 print('Passed modules: {} / {}  \n{}'.format(len(passed_modules), len(modules.keys()), passed_modules))
 print('Failed modules: {} / {}  \n{}'.format(len(failed_modules), len(modules.keys()), failed_modules))

@@ -17,7 +17,6 @@ import shutil
 import time
 import traceback
 import zipfile
-from selenium import webdriver
 
 
 class RetryTransport(httpx.HTTPTransport):
@@ -201,33 +200,31 @@ class Conformance(object):
     async def init_connection(self):
         session = requests.Session()
 
-        # print("Retrieving auth URL...")
-        # The origin must be set as `localhost:3000` - otherwise the cookies will be set with the domain of the auth URL (i.e. www.certification.openid.net) instead of `localhost`
+        # The Host (origin) must be set as `localhost:3000` - otherwise the cookies will be set with the domain of the auth URL (i.e. www.certification.openid.net) instead of `localhost`
         response = session.get('http://localhost:3000/api/auth-url', headers={'Host':'localhost:3000'}, allow_redirects=False)
 
         auth_url = response.text
-        # print("Retrieving callback URL from auth URL {}...".format(auth_url))
         auth_response = session.get(auth_url, allow_redirects=False)
 
+        # Auth response does not contain a redirect location
         if 'Location' not in auth_response.headers:
-            # print(auth_response.text)
             print("Redirect location not present in auth response headers...")
             print("Concluding connection...")
             return
 
+        # Retrieving callback URL from auth
         callback_url = auth_response.headers['Location']
-        # print("Exchanging code for access token {}...".format(callback_url))
+        # Exchanging code for access token
         callback_response = session.get(callback_url, allow_redirects=False)
 
         redirect_url = callback_response.text
 
         if redirect_url == '/logged-in':
             print("Redirected to /logged-in...")
-            # print("Requesting userinfo with access token...")
-            userinfo_response = session.get('http://localhost:3000/api/userinfo')
-            # print("Userinfo", userinfo_response.text)
+            # Requesting userinfo with access token
+            session.get('http://localhost:3000/api/userinfo')
 
-            # print("Clearing session...")
+            # Clearing session
             session.get("http://localhost:3000/api/logout")
         elif redirect_url == '/error':
             print("Redirected to /error")
@@ -255,22 +252,8 @@ class Conformance(object):
                 print("[id: {}] Attempting a connection... (Try count: {})".format(module_id, tries + 1))
                 tries += 1
 
-                # options = webdriver.ChromeOptions()
-                # options.add_argument('--headless=new')
-
-                # driver = webdriver.Chrome(options=options)
-                # driver.get('http://localhost:3000/api/auth-url')
-                # driver.implicitly_wait(10)
-                # await asyncio.sleep(10)# 
-
-                # while (info['status'] == "WAITING"):
-                #     await asyncio.sleep(1)
-                #     print('[id: {}] Waiting...'.format(module_id))
-                #     info = await self.get_module_info(module_id)
-
                 await self.init_connection()
                 await asyncio.sleep(5)
-
 
             elif status != 'CREATED' and status != 'RUNNING':
                 raise Exception("[id: {}] Test module has failed with status {}".format(module_id, status))

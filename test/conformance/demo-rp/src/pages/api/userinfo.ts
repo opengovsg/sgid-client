@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { store } from '../../lib/store'
-import { sgidClientService, sgidClient } from '../../lib/sgidClient'
+import { sgidClient } from '../../lib/sgidClient'
 import { getCookie } from 'cookies-next'
 
 export default async function handler(

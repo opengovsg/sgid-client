@@ -3,7 +3,7 @@ import { setCookie } from 'cookies-next'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { v4 as uuidv4 } from 'uuid'
 
-import { sgidClientService, sgidClient } from '../../lib/sgidClient'
+import { sgidClient } from '../../lib/sgidClient'
 import { store } from '../../lib/store'
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {

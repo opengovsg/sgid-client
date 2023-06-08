@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { store } from '../../lib/store'
-import { sgidClient, sgidClientService } from '../../lib/sgidClient'
+import { sgidClient } from '../../lib/sgidClient'
 import { getCookie } from 'cookies-next'
 
 export default async function handler(
@@ -10,7 +10,7 @@ export default async function handler(
   try {
     // Retrieve the auth code from the query params
     let { code, state } = req.query
-    console.log(req.cookies)
+
     // Retrieve the session ID from the browser cookies
     const sessionId = getCookie('sessionId', { req, res })
 
