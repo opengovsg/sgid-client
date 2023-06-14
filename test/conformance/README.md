@@ -25,10 +25,10 @@ Before you can run the tests, you will need to:
 
 1. Build the sgID SDK
    - Run `npm run build` in the root directory (i.e. `/sgid-client`)
-1. Run the demo app locally
+2. Run the demo app locally
    - Run `cd test/conformance/demo-rp` to move to the `demo-rp` directory
    - Run `npm i` to install the dependencies
-1. Run the test runner script
+3. Run the test runner script
    - Create a new terminal instance
    - Run `cd test/conformance/suite` to move to the `suite` directory
    - Run
@@ -36,16 +36,16 @@ Before you can run the tests, you will need to:
      python3 -m venv .venv
      ```
      to setup a Python virtual env
-   - Run `cat .env.example > .env` and repalce the `CONFORMANCE_TOKEN` with your [conformance testing permanent token](https://www.certification.openid.net/tokens.html) to setup your environment variables
+   - Run `cat .env.example > .env` and replace the `CONFORMANCE_TOKEN` with your [conformance testing permanent token](https://www.certification.openid.net/tokens.html) to setup your environment variables
    - Run `pip install -r requirements.txt` to install the requirements
 
 ## Running the tests
 
 1. In the `test/conformance/demo-rp` directory, run `npm run dev`
-1. In a new terminal in the `test/conformance/suite` directory
+2. In a new terminal in the `test/conformance/suite` directory
    - If you have not activate your Python venv, run `source .venv/bin/activate`
    - Run `python test.py`
-1. Observe the results in the terminal
+3. Observe the results in the terminal
 
 ## Important points
 

@@ -1,26 +1,20 @@
-import type { NextPage } from "next";
-import Image from "next/image";
-import sgidLogo from "../../public/logo.png";
-import singpassLogo from "../../public/singpass.svg";
-import { useState } from "react";
-import Link from "next/link";
+import type { NextPage } from 'next'
+import Image from 'next/image'
+import { useState } from 'react'
+import Link from 'next/link'
 
-const flavours = ["Vanilla", "Chocolate", "Strawberry"] as const;
-type IceCream = (typeof flavours)[number];
+const flavours = ['Vanilla', 'Chocolate', 'Strawberry'] as const
+type IceCream = (typeof flavours)[number]
 
 const Home: NextPage = () => {
-  const [state, setState] = useState<IceCream>("Vanilla");
+  const [state, setState] = useState<IceCream>('Vanilla')
 
   return (
     <main className="h-screen grid place-items-center">
       <div className="bg-white rounded-md py-12 px-8 flex flex-col max-w-lg">
         <div className="flex gap-12 w-4/5 mx-auto mb-8">
-          <div className="w-full grid place-items-center">
-            <Image src={sgidLogo} alt="sgID logo" />
-          </div>
-          <div className="w-full grid place-items-center">
-            <Image src={singpassLogo} alt="Singpass logo" />
-          </div>
+          <div className="w-full grid place-items-center"></div>
+          <div className="w-full grid place-items-center"></div>
         </div>
         <h2 className="font-medium mb-1">Favourite ice cream flavour</h2>
         <p className="font-light text-sm mb-2">
@@ -39,7 +33,7 @@ const Home: NextPage = () => {
                 checked={state === flavour}
                 value={flavour}
                 onChange={(e) => {
-                  setState(e.target.value as IceCream);
+                  setState(e.target.value as IceCream)
                 }}
                 className="cursor-pointer"
                 title="flavour"
@@ -64,7 +58,7 @@ const Home: NextPage = () => {
         </Link>
       </div>
     </main>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home

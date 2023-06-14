@@ -1,5 +1,5 @@
 {
-  "name": "nextjs-csr",
+  "name": "conformance-demo-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@opengovsg/sgid-client": "github:opengovsg/sgid-client#test/oidc-conformance",
+    "@opengovsg/sgid-client": "^2.0.0",
     "@tanstack/react-query": "^4.29.7",
     "@types/node": "20.1.3",
     "@types/react": "18.2.6",
