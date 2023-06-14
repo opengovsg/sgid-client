@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "test": "jest",
+    "test": "jest --config=./test/unit/jest.config.js",
     "prepare": "husky install",
     "lint": "eslint --ext .ts --ignore-path .gitignore --max-warnings 0 .",
     "lint-fix": "eslint --ext .ts --ignore-path .gitignore --max-warnings 0 --fix .",
