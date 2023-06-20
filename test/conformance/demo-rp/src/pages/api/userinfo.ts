@@ -30,7 +30,13 @@ export default async function handler(
     return res.status(400).send('Sub not in session')
   }
 
-  // Request user info with access token
+  /**
+   * Request user info with access token
+   *
+   * Note that with the OIDC conformance test server, the returned `userInfo` field is an empty object.
+   * As such, the sgID SDK will NOT attempt decryption of the user info.
+   * The relevant discussion can be found here: https://github.com/opengovsg/sgid-client/pull/60#discussion_r1227624649
+   */
   const { data } = await sgidClient.userinfo({
     accessToken,
     sub,
