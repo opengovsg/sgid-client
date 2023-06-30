@@ -26,7 +26,7 @@ Before you can run the tests, you will need to:
    - Run `cat .env.example > .env` and replace the `CONFORMANCE_TOKEN` with your [conformance testing permanent token](https://www.certification.openid.net/tokens.html) to setup your environment variables
    - Run `pip install -r requirements.txt` to install the requirements
 4. Additional notes
-   - Please ensure that the value of `test_plan_config.alias` in `test/conformance/suite/test.py` is the same as the last path parameter in `hostname` in `test/conformance/demo-rp/src/lib/sgidClient.ts` (e.g. `sgid-sdk-test-rayner-2`)
+   - Please ensure that the value of `test_plan_config.alias` in `test/conformance/suite/test.py` is the same as the last path parameter in `hostname` in `test/conformance/demo-rp/src/lib/sgidClient.ts` (e.g. `sgid-sdk-conformance-test`)
 
 ### Running the tests
 
@@ -48,6 +48,12 @@ Before you can run the tests, you will need to:
   3.  The tests are flaky as they depend on making requests to the OIDC conformance test servers which could also be disruptive to our releases
 
 ### How it works
+
+OpenID Foundation's conformance test server acts as an IdP for an RP to run against. The IdP has various test modules (module names can be seen in `modules.py`) which test for specific behaviour from the RP. They then verify whether the RP is compliant by observing their behaviour in response (e.g. if the `accessToken` is rejected, then no calls should be made to the `userinfo` endpoint).
+
+As such, we are utilizing these tests to verify that our sgID SDK conforms to the OIDC spec.
+
+### Understanding the directory structure
 
 The `demo-rp` directory contains the demo app that will be interacting with the conformance tests.
 

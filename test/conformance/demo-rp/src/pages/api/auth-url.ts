@@ -9,7 +9,6 @@ import { store } from '../../lib/store'
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     store.clear()
-    // sgidClientService.reset()
     sgidClient.reset()
 
     // Retrieve the state from the query params
@@ -36,8 +35,10 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       req,
       res,
       httpOnly: true,
-      // domain: 'http://localhost:3000',
-      // sameSite: 'none',
+      /**
+       * The cookie has to have the `secure` flag set as `false`. If it is set to `true`, the tests will fail.
+       */
+      secure: false,
     })
 
     // Redirect the browser to the authorization URL

@@ -12,7 +12,7 @@ modules = {
       "status":[
          "FINISHED"
       ],
-      "result":[
+      "expected-result":[
          "PASSED" 
       ]
    },
@@ -31,7 +31,7 @@ modules = {
       "status":[
          "FINISHED"
       ],
-      "result":[
+      "expected-result":[
          "PASSED"  
       ]
    },
@@ -52,7 +52,7 @@ modules = {
          "FINISHED",
          "INTERRUPTED"
       ],
-      "result":[
+      "expected-result":[
          "FAILED" 
       ]
    },
@@ -73,7 +73,7 @@ modules = {
          "FINISHED",
          "INTERRUPTED"
       ],
-      "result":[
+      "expected-result":[
          "FAILED"  
       ]
    },
@@ -92,7 +92,7 @@ modules = {
       "status":[
          "FINISHED"
       ],
-      "result":[
+      "expected-result":[
          "PASSED" 
       ]
    },
@@ -111,7 +111,7 @@ modules = {
       "status":[
          "FINISHED"
       ],
-      "result":[
+      "expected-result":[
          "PASSED" 
       ]
    },
@@ -129,7 +129,7 @@ modules = {
       "status":[
          "FINISHED"
       ],
-      "result":[
+      "expected-result":[
          "PASSED" 
       ]
    },
@@ -148,7 +148,7 @@ modules = {
       "status":[
          "FINISHED"
       ],
-      "result":[
+      "expected-result":[
          "PASSED" 
       ]
    },
@@ -167,7 +167,7 @@ modules = {
       "status":[
          "FINISHED"
       ],
-      "result":[
+      "expected-result":[
          "PASSED" 
       ]
    },
@@ -187,7 +187,7 @@ modules = {
       "status":[
          "FINISHED"
       ],
-      "result":[
+      "expected-result":[
          "SKIPPED"
       ]
    },
@@ -206,7 +206,7 @@ modules = {
       "status":[
          "FINISHED"
       ],
-      "result":[
+      "expected-result":[
          "PASSED" 
       ]
    },
@@ -225,7 +225,7 @@ modules = {
       "status":[
          "FINISHED"
       ],
-      "result":[
+      "expected-result":[
          "PASSED" 
       ]
    },
@@ -244,7 +244,7 @@ modules = {
       "status":[
          "FINISHED"
       ],
-      "result":[
+      "expected-result":[
          "PASSED" 
       ]
    },
@@ -263,7 +263,7 @@ modules = {
       "status":[
          "FINISHED"
       ],
-      "result":[
+      "expected-result":[
          "PASSED" 
       ]
    },
@@ -283,7 +283,7 @@ modules = {
       "status":[
          "FINISHED"
       ],
-      "result":[
+      "expected-result":[
          "PASSED" 
       ]
    },
@@ -303,7 +303,7 @@ modules = {
       "status":[
          "FINISHED"
       ],
-      "result":[
+      "expected-result":[
          "PASSED" 
       ]
    },
@@ -324,7 +324,7 @@ modules = {
          "FINISHED",
          "INTERRUPTED"
       ],
-      "result":[
+      "expected-result":[
          "FAILED"  
       ]
    },
@@ -343,7 +343,7 @@ modules = {
       "status":[
          "FINISHED"
       ],
-      "result":[
+      "expected-result":[
          "PASSED" 
       ]
    },
@@ -362,7 +362,7 @@ modules = {
       "status":[
          "FINISHED"
       ],
-      "result":[
+      "expected-result":[
          "PASSED" 
       ]
    },
@@ -380,7 +380,7 @@ modules = {
    #    "status":[
    #       "FINISHED"
    #    ],
-   #    "result":[
+   #    "expected-result":[
    #       "PASSED" 
    #    ]
    # },
@@ -400,7 +400,7 @@ modules = {
    #    "status":[
    #       "WAITING"
    #    ],
-   #    "result":[
+   #    "expected-result":[
    #       None
    #    ]
    # },
@@ -421,7 +421,7 @@ modules = {
    #    "status":[
    #       "FINISHED"
    #    ],
-   #    "result":[
+   #    "expected-result":[
    #       "PASSED" 
    #    ]
    # },
@@ -441,7 +441,7 @@ modules = {
       "status":[
          "FINISHED","INTERRUPTED"
       ],
-      "result":[
+      "expected-result":[
          "FAILED" 
       ]
    },
@@ -462,7 +462,7 @@ modules = {
          "FINISHED",
          "INTERRUPTED"
       ],
-      "result":[
+      "expected-result":[
          "FAILED" 
       ]
    },
@@ -482,7 +482,7 @@ modules = {
        "status":[
          "FINISHED"
       ],
-      "result":[
+      "expected-result":[
          "PASSED" 
       ]
    },
@@ -502,7 +502,7 @@ modules = {
    #    "status":[
    #       "FINISHED"
    #    ],
-   #    "result":[
+   #    "expected-result":[
    #       "PASSED" 
    #    ]
    # },
@@ -520,7 +520,7 @@ modules = {
    #    "status":[
    #       "WAITING",
    #    ],
-   #    "result":[
+   #    "expected-result":[
    #        None
    #    ]
    # },
@@ -540,7 +540,7 @@ modules = {
    #    "status":[
    #       "WAITING",
    #    ],
-   #    "result":[
+   #    "expected-result":[
    #        None
    #    ]
    # },
@@ -559,7 +559,7 @@ modules = {
       "status":[
          "FINISHED"
       ],
-      "result":[
+      "expected-result":[
          "PASSED" 
       ]
    }

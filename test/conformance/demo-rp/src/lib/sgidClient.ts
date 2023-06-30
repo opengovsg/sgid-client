@@ -13,8 +13,8 @@ const clientSecret =
 
 // Ensure that the last path parameter matches the alias in `test/conformance/suite/test.py`
 const hostname =
-  'https://www.certification.openid.net/test/a/sgid-sdk-test-rayner-2'
-const redirectUri = 'http://localhost:3000/api/callback'
+  'https://www.certification.openid.net/test/a/sgid-sdk-conformance-test'
+const redirectUri = 'http://localhost:3000/api/redirect'
 
 class ConformanceSgidClient extends SgidClient {
   constructor() {
@@ -33,9 +33,14 @@ class ConformanceSgidClient extends SgidClient {
       jwks_uri: `${hostname}/jwks`,
     })
 
-    const any_this = this as any
+    /**
+     * This is a hack to get around the fact that the `sgid` property is private on the `SgidClient` class.
+     *
+     * If this typecasting is removed, TypeScript will complain about the forceful reassignment of the `sgid` property.
+     */
+    const anyThis = this as any
 
-    any_this.sgID = new Client({
+    anyThis.sgID = new Client({
       client_id: clientId,
       client_secret: clientSecret,
       redirect_uris: [redirectUri],
