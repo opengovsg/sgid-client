@@ -1,4 +1,0 @@
-asyncio
-httpx
-python-dotenv
-requests
