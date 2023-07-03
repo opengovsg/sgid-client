@@ -29,7 +29,7 @@ Before you can run the tests, you will need to:
    - Run `pip install -r requirements.txt` to install the requirements
    - Run `cat .env.example > .env` and replace the `CONFORMANCE_TOKEN` with your [conformance testing permanent token](https://www.certification.openid.net/tokens.html) to setup your environment variables
 5. Additional notes
-   - Please ensure that the value of `test_plan_config.alias` in `test/conformance/suite/test.py` is the same as the last path parameter in `hostname` in `test/conformance/demo-rp/src/lib/sgidClient.ts` (e.g. `sgid-sdk-conformance-test`)
+   - Please ensure that the value of `test_plan_config.alias` in `test/conformance/sgid-client-conformance-suite/test.py` is the same as the last path parameter in `hostname` in `test/conformance/demo-rp/src/lib/sgidClient.ts` (e.g. `sgid-sdk-conformance-test`)
 
 ### Running the tests
 
