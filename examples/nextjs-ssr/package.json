@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@opengovsg/sgid-client": "github:opengovsg/sgid-client#test/v2",
+    "@opengovsg/sgid-client": "^2.0.0",
     "@types/node": "20.1.2",
     "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",

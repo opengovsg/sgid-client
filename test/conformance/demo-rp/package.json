@@ -1,15 +1,16 @@
 {
-  "name": "nextjs-csr",
+  "name": "conformance-demo-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 5001",
+    "dev": "next dev",
     "build": "next build",
-    "start": "next start -p 5001",
+    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@opengovsg/sgid-client": "^2.0.0",
+    "@tanstack/react-query": "^4.29.7",
     "@types/node": "20.1.3",
     "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",
@@ -18,10 +19,12 @@
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.2",
     "next": "13.4.2",
+    "openid-client": "^5.4.2",
     "postcss": "8.4.23",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "tailwindcss": "3.3.2",
+    "ts-loader": "^9.4.3",
     "typescript": "5.0.4",
     "uuid": "^9.0.0"
   },

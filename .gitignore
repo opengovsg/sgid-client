@@ -103,6 +103,9 @@ dist
 # TernJS port file
 .tern-port
 
+# Conformance test suite directory
+test/conformance/sgid-client-conformance-suite/
+
 dist/
 
 .DS_Store
