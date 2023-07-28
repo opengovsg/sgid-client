@@ -225,7 +225,13 @@ export class SgidClient {
       )
       payloadJwk = await importJWK(JSON.parse(decryptedKey))
     } catch (e) {
-      throw new Error(Errors.DECRYPT_BLOCK_KEY_ERROR)
+      if (e instanceof Error) {
+        const errorWithTraces = new Error(Errors.DECRYPT_BLOCK_KEY_ERROR)
+        errorWithTraces.stack = e.stack
+        throw errorWithTraces
+      } else {
+        throw new Error(Errors.DECRYPT_BLOCK_KEY_ERROR)
+      }
     }
 
     // Decrypt each jwe in body
@@ -239,7 +245,13 @@ export class SgidClient {
         result[field] = decryptedValue
       }
     } catch (e) {
-      throw new Error(Errors.DECRYPT_PAYLOAD_ERROR)
+      if (e instanceof Error) {
+        const errorWithTraces = new Error(Errors.DECRYPT_PAYLOAD_ERROR)
+        errorWithTraces.stack = e.stack
+        throw errorWithTraces
+      } else {
+        throw new Error(Errors.DECRYPT_PAYLOAD_ERROR)
+      }
     }
     return result
   }
