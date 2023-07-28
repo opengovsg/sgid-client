@@ -4,6 +4,7 @@ import SgidClient from '../../src'
 import {
   generateCodeChallenge,
   generateCodeVerifier,
+  generateNonce,
   generatePkcePair,
 } from '../../src/generators'
 
@@ -497,6 +498,34 @@ describe('SgidClient', () => {
       const secondCodeChallenge = generateCodeChallenge(MOCK_CODE_VERIFIER)
 
       expect(firstCodeChallenge).toBe(secondCodeChallenge)
+    })
+  })
+
+  describe('generateNonce', () => {
+    it('should generate a nonce with 32 random bytes when no length is provided', () => {
+      const nonce = generateNonce()
+
+      // 32 bytes -> 10 groups of 3 bytes + 2 leftover -> 10 * 4 + 3 base64 characters,
+      // excluding padding
+      expect(nonce.length).toBe(43)
+    })
+
+    it('should generate a nonce of the specified number of random bytes', () => {
+      const numBytesToB64StrLength = (numBytes: number) => {
+        switch (numBytes % 3) {
+          case 0:
+            return (numBytes / 3) * 4
+          case 1:
+            return ((numBytes - 1) / 3) * 4 + 2
+          case 2:
+            return ((numBytes - 2) / 3) * 4 + 3
+        }
+      }
+      // Arbitrary start and end, just to check behaviour is correct
+      for (let numBytes = 32; numBytes <= 128; numBytes++) {
+        const nonce = generateNonce(numBytes)
+        expect(nonce.length).toBe(numBytesToB64StrLength(numBytes))
+      }
     })
   })
 })

@@ -1,5 +1,5 @@
 import { compactDecrypt, importJWK, importPKCS8 } from 'jose'
-import { Client, generators, Issuer } from 'openid-client'
+import { Client, Issuer } from 'openid-client'
 
 import {
   API_VERSION,
@@ -10,6 +10,7 @@ import {
   SGID_SUPPORTED_GRANT_TYPES,
 } from './constants'
 import * as Errors from './error'
+import { generateNonce } from './generators'
 import {
   AuthorizationUrlParams,
   AuthorizationUrlReturn,
@@ -98,7 +99,7 @@ export class SgidClient {
   authorizationUrl({
     state,
     scope = DEFAULT_SCOPE,
-    nonce = generators.nonce(),
+    nonce = generateNonce(),
     redirectUri = this.getFirstRedirectUri(),
     codeChallenge,
   }: AuthorizationUrlParams): AuthorizationUrlReturn {
