@@ -16,11 +16,16 @@ import {
   AuthorizationUrlReturn,
   CallbackParams,
   CallbackReturn,
+  SafelyParsedJson,
   SgidClientParams,
   UserInfoParams,
   UserInfoReturn,
 } from './types'
-import { convertPkcs1ToPkcs8 } from './util'
+import {
+  convertPkcs1ToPkcs8,
+  isStringWrappedInSquareBrackets,
+  safeJsonParse,
+} from './util'
 
 export class SgidClient {
   private privateKey: string
@@ -207,7 +212,7 @@ export class SgidClient {
   private async decryptPayload(
     encryptedPayloadKey: string,
     data: Record<string, string>,
-  ): Promise<Record<string, string>> {
+  ): Promise<Record<string, SafelyParsedJson>> {
     let privateKeyJwk
     let payloadJwk
     try {
@@ -229,14 +234,20 @@ export class SgidClient {
     }
 
     // Decrypt each jwe in body
-    const result: Record<string, string> = {}
+    const result: Record<string, string | SafelyParsedJson> = {}
     try {
       for (const field in data) {
         const jwe = data[field]
         const decryptedValue = decoder.decode(
           (await compactDecrypt(jwe, payloadJwk)).plaintext,
         )
-        result[field] = decryptedValue
+
+        // JSON parse array data values if necessary
+        if (isStringWrappedInSquareBrackets(decryptedValue)) {
+          result[field] = safeJsonParse(decryptedValue)
+        } else {
+          result[field] = decryptedValue
+        }
       }
     } catch (e) {
       throw new Error(Errors.DECRYPT_PAYLOAD_ERROR)
