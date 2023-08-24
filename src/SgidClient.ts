@@ -16,11 +16,16 @@ import {
   AuthorizationUrlReturn,
   CallbackParams,
   CallbackReturn,
+  ParsedSgidDataValue,
   SgidClientParams,
   UserInfoParams,
   UserInfoReturn,
 } from './types'
-import { convertPkcs1ToPkcs8 } from './util'
+import {
+  convertPkcs1ToPkcs8,
+  isStringifiedArrayOrObject,
+  safeJsonParse,
+} from './util'
 
 export class SgidClient {
   private privateKey: string
@@ -242,5 +247,20 @@ export class SgidClient {
       throw new Error(Errors.DECRYPT_PAYLOAD_ERROR)
     }
     return result
+  }
+
+  /**
+   * Parses sgID user data.
+   * @param dataValue A value from the `data` object returned from the `userinfo` method
+   * @returns The parsed data value. If the input is a string, then a string is returned.
+   * If a stringified array or object is passed in, then an array or object is returned
+   * respectively.
+   */
+  parseData(dataValue: string): ParsedSgidDataValue {
+    // JSON parse array data values if necessary
+    if (isStringifiedArrayOrObject(dataValue)) {
+      return safeJsonParse(dataValue)
+    }
+    return dataValue
   }
 }
