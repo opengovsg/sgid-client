@@ -10,12 +10,12 @@ export function convertPkcs1ToPkcs8(pkcs1: string): string {
   return key.exportKey('pkcs8')
 }
 
-export function isStringWrappedInSquareBrackets(
-  possibleArrayString: string,
-): boolean {
+export function isStringifiedObject(possibleObjectString: string): boolean {
   return (
-    possibleArrayString.charAt(0) === '[' &&
-    possibleArrayString.charAt(possibleArrayString.length - 1) === ']'
+    (possibleObjectString.charAt(0) === '[' &&
+      possibleObjectString.charAt(possibleObjectString.length - 1) === ']') ||
+    (possibleObjectString.charAt(0) === '{' &&
+      possibleObjectString.charAt(possibleObjectString.length - 1) === '}')
   )
 }
 

@@ -1,4 +1,4 @@
-import { isStringWrappedInSquareBrackets, safeJsonParse } from '../../src/util'
+import { isStringifiedObject, safeJsonParse } from '../../src/util'
 
 describe('util functions', () => {
   const exampleArray = ['a', 'b', 'c']
@@ -8,20 +8,14 @@ describe('util functions', () => {
   const exampleStringifiedObject = JSON.stringify(exampleObject)
   const exampleString = 'hello world'
 
-  describe('isStringWrappedInSquareBrackets', () => {
-    it('should correctly identify strings wrapped in square brackets', () => {
-      expect(isStringWrappedInSquareBrackets(exampleStringifiedArray)).toBe(
-        true,
-      )
-      expect(isStringWrappedInSquareBrackets(corruptedStringifiedArray)).toBe(
-        true,
-      )
+  describe('isStringifiedObject', () => {
+    it('should correctly identify stringified objects (both arrays and objects)', () => {
+      expect(isStringifiedObject(exampleStringifiedArray)).toBe(true)
+      expect(isStringifiedObject(corruptedStringifiedArray)).toBe(true)
+      expect(isStringifiedObject(exampleStringifiedObject)).toBe(true)
     })
     it('should correctly reject strings that are not stringified arrays', () => {
-      expect(isStringWrappedInSquareBrackets(exampleStringifiedObject)).toBe(
-        false,
-      )
-      expect(isStringWrappedInSquareBrackets(exampleString)).toBe(false)
+      expect(isStringifiedObject(exampleString)).toBe(false)
     })
   })
 
