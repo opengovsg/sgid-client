@@ -1,6 +1,6 @@
 import NodeRSA from 'node-rsa'
 
-import { SafelyParsedJson } from './types'
+import { ParsedSgidDataValue } from './types'
 
 /**
  * Convert PKCS1 PEM private key to PKCS8 PEM
@@ -19,7 +19,7 @@ export function isStringWrappedInSquareBrackets(
   )
 }
 
-export function safeJsonParse(jsonString: string): SafelyParsedJson {
+export function safeJsonParse(jsonString: string): ParsedSgidDataValue {
   try {
     return JSON.parse(jsonString)
   } catch (_) {

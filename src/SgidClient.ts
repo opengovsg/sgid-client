@@ -16,7 +16,7 @@ import {
   AuthorizationUrlReturn,
   CallbackParams,
   CallbackReturn,
-  SafelyParsedJson,
+  ParsedSgidDataValue,
   SgidClientParams,
   UserInfoParams,
   UserInfoReturn,
@@ -212,7 +212,7 @@ export class SgidClient {
   private async decryptPayload(
     encryptedPayloadKey: string,
     data: Record<string, string>,
-  ): Promise<Record<string, SafelyParsedJson>> {
+  ): Promise<Record<string, string>> {
     let privateKeyJwk
     let payloadJwk
     try {
@@ -234,24 +234,33 @@ export class SgidClient {
     }
 
     // Decrypt each jwe in body
-    const result: Record<string, string | SafelyParsedJson> = {}
+    const result: Record<string, string> = {}
     try {
       for (const field in data) {
         const jwe = data[field]
         const decryptedValue = decoder.decode(
           (await compactDecrypt(jwe, payloadJwk)).plaintext,
         )
-
-        // JSON parse array data values if necessary
-        if (isStringWrappedInSquareBrackets(decryptedValue)) {
-          result[field] = safeJsonParse(decryptedValue)
-        } else {
-          result[field] = decryptedValue
-        }
+        result[field] = decryptedValue
       }
     } catch (e) {
       throw new Error(Errors.DECRYPT_PAYLOAD_ERROR)
     }
     return result
+  }
+
+  /**
+   * Parses sgID user data.
+   * @param dataValue A value from the `data` object returned from the `userinfo` method
+   * @returns The parsed data value. If the input is a string, then a string is returned.
+   * If a stringified array or object is passed in, then an array or object is returned
+   * respectively.
+   */
+  static parseData(dataValue: string): ParsedSgidDataValue {
+    // JSON parse array data values if necessary
+    if (isStringWrappedInSquareBrackets(dataValue)) {
+      return safeJsonParse(dataValue)
+    }
+    return dataValue
   }
 }

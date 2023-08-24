@@ -1,4 +1,4 @@
-export type SafelyParsedJson = string | unknown[] | Record<string, unknown>
+export type ParsedSgidDataValue = string | unknown[] | Record<string, unknown>
 
 export type AuthorizationUrlParams = {
   state?: string
@@ -26,7 +26,7 @@ export type UserInfoParams = {
 
 export type UserInfoReturn = {
   sub: string
-  data: Record<string, SafelyParsedJson>
+  data: Record<string, string>
 }
 
 export type SgidClientParams = {
