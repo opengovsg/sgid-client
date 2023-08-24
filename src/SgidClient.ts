@@ -256,7 +256,7 @@ export class SgidClient {
    * If a stringified array or object is passed in, then an array or object is returned
    * respectively.
    */
-  static parseData(dataValue: string): ParsedSgidDataValue {
+  parseData(dataValue: string): ParsedSgidDataValue {
     // JSON parse array data values if necessary
     if (isStringWrappedInSquareBrackets(dataValue)) {
       return safeJsonParse(dataValue)
