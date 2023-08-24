@@ -21,7 +21,11 @@ import {
   UserInfoParams,
   UserInfoReturn,
 } from './types'
-import { convertPkcs1ToPkcs8, isStringifiedObject, safeJsonParse } from './util'
+import {
+  convertPkcs1ToPkcs8,
+  isStringifiedArrayOrObject,
+  safeJsonParse,
+} from './util'
 
 export class SgidClient {
   private privateKey: string
@@ -254,7 +258,7 @@ export class SgidClient {
    */
   parseData(dataValue: string): ParsedSgidDataValue {
     // JSON parse array data values if necessary
-    if (isStringifiedObject(dataValue)) {
+    if (isStringifiedArrayOrObject(dataValue)) {
       return safeJsonParse(dataValue)
     }
     return dataValue

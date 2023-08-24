@@ -1,4 +1,4 @@
-import { isStringifiedObject, safeJsonParse } from '../../src/util'
+import { isStringifiedArrayOrObject, safeJsonParse } from '../../src/util'
 
 describe('util functions', () => {
   const exampleArray = ['a', 'b', 'c']
@@ -8,14 +8,14 @@ describe('util functions', () => {
   const exampleStringifiedObject = JSON.stringify(exampleObject)
   const exampleString = 'hello world'
 
-  describe('isStringifiedObject', () => {
+  describe('isStringifiedArrayOrObject', () => {
     it('should correctly identify stringified objects (both arrays and objects)', () => {
-      expect(isStringifiedObject(exampleStringifiedArray)).toBe(true)
-      expect(isStringifiedObject(corruptedStringifiedArray)).toBe(true)
-      expect(isStringifiedObject(exampleStringifiedObject)).toBe(true)
+      expect(isStringifiedArrayOrObject(exampleStringifiedArray)).toBe(true)
+      expect(isStringifiedArrayOrObject(corruptedStringifiedArray)).toBe(true)
+      expect(isStringifiedArrayOrObject(exampleStringifiedObject)).toBe(true)
     })
     it('should correctly reject strings that are not stringified arrays', () => {
-      expect(isStringifiedObject(exampleString)).toBe(false)
+      expect(isStringifiedArrayOrObject(exampleString)).toBe(false)
     })
   })
 

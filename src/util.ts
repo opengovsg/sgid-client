@@ -10,12 +10,18 @@ export function convertPkcs1ToPkcs8(pkcs1: string): string {
   return key.exportKey('pkcs8')
 }
 
-export function isStringifiedObject(possibleObjectString: string): boolean {
+export function isStringifiedArrayOrObject(
+  possibleArrayOrObjectString: string,
+): boolean {
   return (
-    (possibleObjectString.charAt(0) === '[' &&
-      possibleObjectString.charAt(possibleObjectString.length - 1) === ']') ||
-    (possibleObjectString.charAt(0) === '{' &&
-      possibleObjectString.charAt(possibleObjectString.length - 1) === '}')
+    (possibleArrayOrObjectString.charAt(0) === '[' &&
+      possibleArrayOrObjectString.charAt(
+        possibleArrayOrObjectString.length - 1,
+      ) === ']') ||
+    (possibleArrayOrObjectString.charAt(0) === '{' &&
+      possibleArrayOrObjectString.charAt(
+        possibleArrayOrObjectString.length - 1,
+      ) === '}')
   )
 }
 
