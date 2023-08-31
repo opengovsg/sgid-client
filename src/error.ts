@@ -21,3 +21,7 @@ export const DECRYPT_BLOCK_KEY_ERROR =
 export const DECRYPT_PAYLOAD_ERROR = 'Unable to decrypt payload'
 export const SUB_MISMATCH_ERROR =
   'Sub returned by sgID did not match the sub passed to the userinfo method. Check that you passed the correct sub to the userinfo method.'
+
+// rules errors
+export const INVALID_RULES_NAMES_ERROR =
+  '[ruleNames] is missing/contains invalid rule names'

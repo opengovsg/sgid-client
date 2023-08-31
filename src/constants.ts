@@ -7,3 +7,6 @@ export const SGID_SUPPORTED_GRANT_TYPES: ResponseType[] = ['code']
 export const SGID_AUTH_METHOD: ClientAuthMethod = 'client_secret_post'
 
 export const API_VERSION = 2
+
+// TODO: Replace with https://rules.id.gov.sg/api/rule/eval once it's up
+export const SGID_RULES_ENGINE_URL = 'http://localhost:3001/api/rule/eval'
