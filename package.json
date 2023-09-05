@@ -1,6 +1,6 @@
 {
   "name": "@opengovsg/sgid-client",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "The official TypeScript/JavaScript SDK for sgID",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "test": "jest",
+    "test": "jest --config=./test/unit/jest.config.js",
     "prepare": "husky install",
     "lint": "eslint --ext .ts --ignore-path .gitignore --max-warnings 0 .",
     "lint-fix": "eslint --ext .ts --ignore-path .gitignore --max-warnings 0 --fix .",

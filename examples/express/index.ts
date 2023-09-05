@@ -10,7 +10,7 @@ dotenv.config()
 
 const PORT = 5001
 const redirectUri = String(
-  process.env.SGID_REDIRECT_URI ?? `http://localhost:${PORT}/api/callback`,
+  process.env.SGID_REDIRECT_URI ?? `http://localhost:${PORT}/api/redirect`,
 )
 const frontendHost = String(
   process.env.SGID_FRONTEND_HOST ?? 'http://localhost:5173',
@@ -89,7 +89,7 @@ apiRouter.get('/auth-url', (req, res) => {
     .json({ url })
 })
 
-apiRouter.get('/callback', async (req, res): Promise<void> => {
+apiRouter.get('/redirect', async (req, res): Promise<void> => {
   const authCode = String(req.query.code)
   const state = String(req.query.state)
   const sessionId = String(req.cookies[SESSION_COOKIE_NAME])

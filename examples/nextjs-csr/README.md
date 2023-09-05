@@ -1,21 +1,20 @@
-# sgID Next.js (CSR) Example
+# Next.js (CSR) example sgID app
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This example integrates the TypeScript SDK in a Next.js project using the pages router, api routes and client-side rendering (CSR). You can copy this code to bootstrap your sgID client application, and run this app locally to understand how this SDK helps you interact with the sgID server.
 
-## Getting Started
+## Running this example app locally
 
-Before you can run the development server, you will have to register your client on the sgID [developer portal](https://developer.id.gov.sg/).
+Refer to sgID's [documentation](https://docs.id.gov.sg/integrations-with-sgid/typescript-javascript/framework-guides/next.js-client-side-rendering) for a detailed guide on what this example does and how to run it locally.
 
-- For this example, you will need to include the following scopes `[openid, myinfo.name]` and register the following redirect URL `http://localhost:3000/api/callback`
+## For contributors
 
-> For more information about sgID, please visit the [developer documentation](https://docs.id.gov.sg/).
+### Local development
 
-Copy the `.env.example` file, rename it to `.env`, and fill in your credentials obtained during registration.
+To install the dependencies and start the server in debug mode, run:
 
-Then, run the development server by running:
-
-```bash
+```
+npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:5001](http://localhost:5001) with your browser to see the result.

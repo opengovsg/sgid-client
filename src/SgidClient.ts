@@ -1,5 +1,5 @@
 import { compactDecrypt, importJWK, importPKCS8 } from 'jose'
-import { Client, generators, Issuer } from 'openid-client'
+import { Client, Issuer } from 'openid-client'
 
 import {
   API_VERSION,
@@ -10,16 +10,22 @@ import {
   SGID_SUPPORTED_GRANT_TYPES,
 } from './constants'
 import * as Errors from './error'
+import { generateNonce } from './generators'
 import {
   AuthorizationUrlParams,
   AuthorizationUrlReturn,
   CallbackParams,
   CallbackReturn,
+  ParsedSgidDataValue,
   SgidClientParams,
   UserInfoParams,
   UserInfoReturn,
 } from './types'
-import { convertPkcs1ToPkcs8 } from './util'
+import {
+  convertPkcs1ToPkcs8,
+  isStringifiedArrayOrObject,
+  safeJsonParse,
+} from './util'
 
 export class SgidClient {
   private privateKey: string
@@ -98,7 +104,7 @@ export class SgidClient {
   authorizationUrl({
     state,
     scope = DEFAULT_SCOPE,
-    nonce = generators.nonce(),
+    nonce = generateNonce(),
     redirectUri = this.getFirstRedirectUri(),
     codeChallenge,
   }: AuthorizationUrlParams): AuthorizationUrlReturn {
@@ -241,5 +247,20 @@ export class SgidClient {
       throw new Error(Errors.DECRYPT_PAYLOAD_ERROR)
     }
     return result
+  }
+
+  /**
+   * Parses sgID user data.
+   * @param dataValue A value from the `data` object returned from the `userinfo` method
+   * @returns The parsed data value. If the input is a string, then a string is returned.
+   * If a stringified array or object is passed in, then an array or object is returned
+   * respectively.
+   */
+  parseData(dataValue: string): ParsedSgidDataValue {
+    // JSON parse array data values if necessary
+    if (isStringifiedArrayOrObject(dataValue)) {
+      return safeJsonParse(dataValue)
+    }
+    return dataValue
   }
 }

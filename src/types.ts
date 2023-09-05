@@ -1,3 +1,5 @@
+export type ParsedSgidDataValue = string | unknown[] | Record<string, unknown>
+
 export type AuthorizationUrlParams = {
   state?: string
   scope?: string | string[]

@@ -46,3 +46,12 @@ export function generateCodeVerifier(length = 43): string {
 export function generateCodeChallenge(codeVerifier: string): string {
   return generators.codeChallenge(codeVerifier)
 }
+
+/**
+ * Generates a nonce to include in the authorization URL. The nonce returned
+ * is base64-URL encoded.
+ * @param numBytes The number of random bytes to use to generate the nonce
+ */
+export function generateNonce(numBytes = 32): string {
+  return generators.nonce(numBytes)
+}
