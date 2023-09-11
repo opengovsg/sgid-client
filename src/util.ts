@@ -25,6 +25,12 @@ export function isStringifiedArrayOrObject(
   )
 }
 
+export function isNonEmptyString(value: unknown): value is string {
+  if (typeof value !== 'string') return false
+  if (value === '') return false
+  return true
+}
+
 export function safeJsonParse(jsonString: string): ParsedSgidDataValue {
   try {
     return JSON.parse(jsonString)

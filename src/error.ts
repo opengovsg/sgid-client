@@ -13,7 +13,7 @@ export const NO_SUB_ERROR = 'Authorization server did not return the sub claim'
 export const NO_ACCESS_TOKEN_ERROR =
   'Authorization server did not return an access token'
 export const NO_ID_TOKEN_ERROR =
-  'Authorization server did not return an id token'
+  'sgID token endpoint did not return a valid ID token. Expected a non-empty string.'
 
 // userinfo errors
 export const PRIVATE_KEY_IMPORT_ERROR =
