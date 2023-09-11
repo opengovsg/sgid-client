@@ -157,14 +157,17 @@ export class SgidClient {
       { nonce: nonce ?? undefined, code_verifier: codeVerifier },
     )
     const { sub } = tokenSet.claims()
-    const { access_token: accessToken } = tokenSet
+    const { access_token: accessToken, id_token: idToken } = tokenSet
+    if (!idToken) {
+      throw new Error(Errors.NO_ID_TOKEN_ERROR)
+    }
     if (!sub) {
       throw new Error(Errors.NO_SUB_ERROR)
     }
     if (!accessToken) {
       throw new Error(Errors.NO_ACCESS_TOKEN_ERROR)
     }
-    return { sub, accessToken }
+    return { sub, accessToken, idToken }
   }
 
   /**
