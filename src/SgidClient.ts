@@ -23,7 +23,6 @@ import {
 } from './types'
 import {
   convertPkcs1ToPkcs8,
-  isNonEmptyString,
   isStringifiedArrayOrObject,
   safeJsonParse,
 } from './util'
@@ -158,10 +157,11 @@ export class SgidClient {
       { nonce: nonce ?? undefined, code_verifier: codeVerifier },
     )
     const { sub } = tokenSet.claims()
+
+    // Note that validation is not done on the id token because the nodejs
+    // openid-client library already does it for us
     const { access_token: accessToken, id_token: idToken } = tokenSet
-    if (!isNonEmptyString(idToken)) {
-      throw new Error(Errors.INVALID_ID_TOKEN_ERROR)
-    }
+
     if (!sub) {
       throw new Error(Errors.NO_SUB_ERROR)
     }
