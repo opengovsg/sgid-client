@@ -160,7 +160,7 @@ export class SgidClient {
     const { sub } = tokenSet.claims()
     const { access_token: accessToken, id_token: idToken } = tokenSet
     if (!isNonEmptyString(idToken)) {
-      throw new Error(Errors.NO_ID_TOKEN_ERROR)
+      throw new Error(Errors.INVALID_ID_TOKEN_ERROR)
     }
     if (!sub) {
       throw new Error(Errors.NO_SUB_ERROR)
