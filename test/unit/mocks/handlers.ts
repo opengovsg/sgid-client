@@ -68,6 +68,21 @@ export const tokenHandlerNoToken = rest.post(
 )
 
 /**
+ * Handler to test case where server doesn't return an id token
+ */
+export const tokenHandlerNoIdToken = rest.post(
+  MOCK_TOKEN_ENDPOINT,
+  (_req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        access_token: MOCK_ACCESS_TOKEN,
+      }),
+    )
+  },
+)
+
+/**
  * Handler to test case where sub is empty
  */
 export const tokenHandlerNoSub = rest.post(
