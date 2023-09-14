@@ -22,6 +22,7 @@ import {
   MOCK_USERINFO_PLAINTEXT,
 } from './mocks/constants'
 import {
+  tokenHandlerNoIdToken,
   tokenHandlerNoSub,
   tokenHandlerNoToken,
   userInfoHandlerMalformedData,
@@ -325,6 +326,17 @@ describe('SgidClient', () => {
           codeVerifier: MOCK_CODE_VERIFIER,
         }),
       ).rejects.toThrow('Authorization server did not return an access token')
+    })
+
+    it('should throw when no ID token is returned', async () => {
+      server.use(tokenHandlerNoIdToken)
+
+      await expect(
+        client.callback({
+          code: MOCK_AUTH_CODE,
+          codeVerifier: MOCK_CODE_VERIFIER,
+        }),
+      ).rejects.toThrow('id_token not present in TokenSet')
     })
 
     it('should throw when sub is empty', async () => {

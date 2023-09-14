@@ -17,7 +17,11 @@ export type CallbackParams = {
   codeVerifier: string
 }
 
-export type CallbackReturn = { sub: string; accessToken: string }
+export type CallbackReturn = {
+  sub: string
+  accessToken: string
+  idToken: string
+}
 
 export type UserInfoParams = {
   sub: string
