@@ -158,10 +158,12 @@ export class SgidClient {
     )
     const { sub } = tokenSet.claims()
 
-    // Note that validation is not done on the id token because the nodejs
-    // openid-client library already does it for us
     const { access_token: accessToken, id_token: idToken } = tokenSet
 
+    // Note that this falsey check for the id token will never be run
+    // because the nodejs openid-client library already does it for us
+    // Doing a check here just for type safety
+    if (!idToken) throw new Error(Errors.NO_ID_TOKEN_ERROR)
     if (!sub) {
       throw new Error(Errors.NO_SUB_ERROR)
     }
