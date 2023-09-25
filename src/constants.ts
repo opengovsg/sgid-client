@@ -8,6 +8,5 @@ export const SGID_AUTH_METHOD: ClientAuthMethod = 'client_secret_post'
 
 export const API_VERSION = 2
 
-// TODO: Replace with https://rules.id.gov.sg/api/rule/eval once it's up
-// Was overwritten with local host URL during testing
-export const SGID_RULES_ENGINE_URL = 'https://rules-stg.id.gov.sg/api/rule/eval'
+export const SGID_RULES_ENGINE_ENDPOINT =
+  'https://rules.id.gov.sg/api/rule/eval'

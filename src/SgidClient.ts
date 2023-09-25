@@ -7,7 +7,7 @@ import {
   DEFAULT_SCOPE,
   DEFAULT_SGID_CODE_CHALLENGE_METHOD,
   SGID_AUTH_METHOD,
-  SGID_RULES_ENGINE_URL,
+  SGID_RULES_ENGINE_ENDPOINT,
   SGID_SIGNING_ALG,
   SGID_SUPPORTED_GRANT_TYPES,
 } from './constants'
@@ -34,6 +34,7 @@ import {
 export class SgidClient {
   private privateKey: string
   private sgID: Client
+  private rulesEngineEndpoint: string
 
   /**
    * Initialises an SgidClient instance.
@@ -46,6 +47,8 @@ export class SgidClient {
    * authorizationUrl and callback functions.
    * @param params.hostname Hostname of OpenID provider (sgID). Defaults to
    * https://api.id.gov.sg.
+   * @param params.rulesEngineEndpoint API endpoint for sgID Rules Engine. Defaults to
+   * https://rules.id.gov.sg/api/rule/eval.
    */
   constructor({
     clientId,
@@ -53,6 +56,7 @@ export class SgidClient {
     privateKey,
     redirectUri,
     hostname = 'https://api.id.gov.sg',
+    rulesEngineEndpoint = SGID_RULES_ENGINE_ENDPOINT,
   }: SgidClientParams) {
     /**
      * Note that issuer is appended with version number only from v2 onwards
@@ -75,6 +79,8 @@ export class SgidClient {
       response_types: SGID_SUPPORTED_GRANT_TYPES,
       token_endpoint_auth_method: SGID_AUTH_METHOD,
     })
+
+    this.rulesEngineEndpoint = rulesEngineEndpoint
 
     /**
      * For backward compatibility with pkcs1
@@ -216,20 +222,31 @@ export class SgidClient {
   /**
    * Generates dynamic derived data based on rules defined on sgID Developer Portal.
    * @param rulesParams The parameters for dynamic derived data calculation.
-   * @param rulesParams.clientId The client ID of the Relying Party.
    * @param rulesParams.accessToken The access token returned from the callback function.
-   * @param rulesParams.ruleNames The space-separated string containing rule names.
+   * @param rulesParams.ruleIds The space-separated string containing rule IDs.
    * @param rulesParams.userInfoData The end-user's verified data.
-   * @returns {RulesReturn} A list of rule names, alongside with their corresponding inputs and outputs.
+   * @returns {RulesReturn} A list of rule IDs, alongside with their corresponding inputs and outputs.
    */
   async rules(rulesParams: RulesParams): Promise<RulesReturn> {
     try {
-      const response = await fetch(SGID_RULES_ENGINE_URL, {
+      const { accessToken, ruleIds, userInfoData } = rulesParams
+      const response = await fetch(this.rulesEngineEndpoint, {
         method: 'POST',
-        body: JSON.stringify(rulesParams),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          ruleIds,
+          userInfoData,
+        }),
       })
-      const data: RulesReturn = await response.json()
-      return data
+
+      if (!response.ok) {
+        // json() is less helpful if API users log errors with console.error()
+        throw new Error(await response.text())
+      }
+      return await response.json()
     } catch (err) {
       return Promise.reject((err as Error).message)
     }
