@@ -1,6 +1,7 @@
 import { readFileSync } from 'fs'
 
 import SgidClient from '../../src'
+import * as Errors from '../../src/error'
 import {
   generateCodeChallenge,
   generateCodeVerifier,
@@ -538,6 +539,58 @@ describe('SgidClient', () => {
         const nonce = generateNonce(numBytes)
         expect(nonce.length).toBe(numBytesToB64StrLength(numBytes))
       }
+    })
+  })
+
+  describe('parseData', () => {
+    it('should convert stringified arrays or objects in the input data object', () => {
+      const stringifiedChildRecords =
+        '[{"nric":"T1872646C","name":"LIM YONG JIN","date_of_birth":"2018-05-05","sex":"MALE","race":"MALAY","life_status":"ALIVE","nationality":"BRITISH OVERSEAS TERRITORIES CITIZEN","residential_status":"PR"}]'
+      const inputData = {
+        'myinfo.name': 'Kwa Jie Hao',
+        'myinfo.sponsored_child_records': stringifiedChildRecords,
+      }
+      expect(client.parseData(inputData)).toMatchObject({
+        ...inputData,
+        'myinfo.sponsored_child_records': JSON.parse(stringifiedChildRecords),
+      })
+    })
+
+    it('should do nothing if there are no stringified arrays or objects in the input data object', () => {
+      const inputData = { a: 'test' }
+      expect(client.parseData(inputData)).toMatchObject(inputData)
+    })
+
+    // Test input validation
+    it('should throw an error if the input is null', () => {
+      expect(() => client.parseData(null)).toThrow(
+        Errors.INVALID_SGID_USERINFO_DATA_ERROR,
+      )
+    })
+    it('should throw an error if the input is undefined', () => {
+      expect(() => client.parseData(undefined)).toThrow(
+        Errors.INVALID_SGID_USERINFO_DATA_ERROR,
+      )
+    })
+    it('should throw an error if the input is an array', () => {
+      expect(() => client.parseData(['test'])).toThrow(
+        Errors.INVALID_SGID_USERINFO_DATA_ERROR,
+      )
+    })
+    it('should throw an error if the input is a string', () => {
+      expect(() => client.parseData('test')).toThrow(
+        Errors.INVALID_SGID_USERINFO_DATA_ERROR,
+      )
+    })
+    it('should throw an error if the input is an object, but has non-string values', () => {
+      expect(() => client.parseData({ test: 123 })).toThrow(
+        Errors.INVALID_SGID_USERINFO_DATA_ERROR,
+      )
+    })
+    it('should return the data object if the input is an object, but has non-string keys', () => {
+      // Note that we don't need to check for the key being a string, because
+      // in Javascript all object keys are coerced into strings
+      expect(client.parseData({ 123: 'test' })).toMatchObject({ 123: 'test' })
     })
   })
 })
