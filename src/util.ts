@@ -25,10 +25,38 @@ export function isStringifiedArrayOrObject(
   )
 }
 
+export function isNonEmptyString(value: unknown): value is string {
+  if (typeof value !== 'string') return false
+  if (value === '') return false
+  return true
+}
+
 export function safeJsonParse(jsonString: string): ParsedSgidDataValue {
   try {
     return JSON.parse(jsonString)
   } catch (_) {
     return jsonString
   }
+}
+
+function isDefinedObject(value: unknown): value is Record<string, unknown> {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    value !== undefined &&
+    !Array.isArray(value)
+  )
+}
+
+export function isSgidUserinfoObject(
+  data: unknown,
+): data is Record<string, string> {
+  if (!isDefinedObject(data)) {
+    return false
+  }
+
+  // Note that we don't need to check for the key being a string, because
+  // in Javascript all object keys are coerced into strings when you attempt
+  // to access them
+  return Object.values(data).every((value) => typeof value === 'string')
 }

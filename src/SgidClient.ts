@@ -23,6 +23,7 @@ import {
 } from './types'
 import {
   convertPkcs1ToPkcs8,
+  isSgidUserinfoObject,
   isStringifiedArrayOrObject,
   safeJsonParse,
 } from './util'
@@ -157,14 +158,20 @@ export class SgidClient {
       { nonce: nonce ?? undefined, code_verifier: codeVerifier },
     )
     const { sub } = tokenSet.claims()
-    const { access_token: accessToken } = tokenSet
+
+    const { access_token: accessToken, id_token: idToken } = tokenSet
+
+    // Note that this falsey check for the id token will never be run
+    // because the nodejs openid-client library already does it for us
+    // Doing a check here just for type safety
+    if (!idToken) throw new Error(Errors.NO_ID_TOKEN_ERROR)
     if (!sub) {
       throw new Error(Errors.NO_SUB_ERROR)
     }
     if (!accessToken) {
       throw new Error(Errors.NO_ACCESS_TOKEN_ERROR)
     }
-    return { sub, accessToken }
+    return { sub, accessToken, idToken }
   }
 
   /**
@@ -250,13 +257,34 @@ export class SgidClient {
   }
 
   /**
-   * Parses sgID user data.
+   * Parses the sgID user data object returned from the `userinfo` method.
+   * @param data A data object returned from the `userinfo` method
+   * @returns The parsed data object, where the value of each attribute is parsed as an
+   * object or array if applicable. If the value is a string, then a string is returned.
+   * If a stringified array or object is passed in, then an array or object is returned
+   * respectively.
+   */
+  parseData(data: unknown): Record<string, ParsedSgidDataValue> {
+    if (!isSgidUserinfoObject(data)) {
+      throw new Error(Errors.INVALID_SGID_USERINFO_DATA_ERROR)
+    }
+
+    const result = {} as Record<string, ParsedSgidDataValue>
+    Object.keys(data).forEach((key) => {
+      result[key] = this.parseIndividualDataValue(data[key])
+    })
+
+    return result
+  }
+
+  /**
+   * Parses sgID user data on an individual field level.
    * @param dataValue A value from the `data` object returned from the `userinfo` method
    * @returns The parsed data value. If the input is a string, then a string is returned.
    * If a stringified array or object is passed in, then an array or object is returned
    * respectively.
    */
-  parseData(dataValue: string): ParsedSgidDataValue {
+  private parseIndividualDataValue(dataValue: string): ParsedSgidDataValue {
     // JSON parse array data values if necessary
     if (isStringifiedArrayOrObject(dataValue)) {
       return safeJsonParse(dataValue)

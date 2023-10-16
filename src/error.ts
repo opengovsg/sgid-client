@@ -12,6 +12,8 @@ export const MISSING_REDIRECT_URI_ERROR =
 export const NO_SUB_ERROR = 'Authorization server did not return the sub claim'
 export const NO_ACCESS_TOKEN_ERROR =
   'Authorization server did not return an access token'
+export const NO_ID_TOKEN_ERROR =
+  'Authorization server did not return an ID token'
 
 // userinfo errors
 export const PRIVATE_KEY_IMPORT_ERROR =
@@ -21,3 +23,7 @@ export const DECRYPT_BLOCK_KEY_ERROR =
 export const DECRYPT_PAYLOAD_ERROR = 'Unable to decrypt payload'
 export const SUB_MISMATCH_ERROR =
   'Sub returned by sgID did not match the sub passed to the userinfo method. Check that you passed the correct sub to the userinfo method.'
+
+// parseData errors
+export const INVALID_SGID_USERINFO_DATA_ERROR =
+  'Failed to parse sgID userinfo data object. Check that the input is a valid object.'

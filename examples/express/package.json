@@ -8,7 +8,7 @@
     "dev": "tsnd --transpile-only index.ts"
   },
   "dependencies": {
-    "@opengovsg/sgid-client": "^2.0.0",
+    "@opengovsg/sgid-client": "^2.1.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
