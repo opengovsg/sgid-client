@@ -7,3 +7,6 @@ export const SGID_SUPPORTED_GRANT_TYPES: ResponseType[] = ['code']
 export const SGID_AUTH_METHOD: ClientAuthMethod = 'client_secret_post'
 
 export const API_VERSION = 2
+
+export const SGID_RULES_ENGINE_ENDPOINT =
+  'https://rules.id.gov.sg/api/rule/eval'

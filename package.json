@@ -33,6 +33,7 @@
     "@types/jest": "^29.5.0",
     "@types/jsonwebtoken": "^9.0.1",
     "@types/node": "*",
+    "@types/node-fetch": "2.6.4",
     "@types/node-rsa": "^1.1.1",
     "@typescript-eslint/eslint-plugin": "^5.59.2",
     "@typescript-eslint/parser": "^5.59.2",
@@ -54,6 +55,7 @@
   },
   "dependencies": {
     "jose": "4.9.2",
+    "node-fetch": "2.6.4",
     "node-rsa": "1.1.1",
     "openid-client": "5.4.0"
   }

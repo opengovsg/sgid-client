@@ -39,4 +39,17 @@ export type SgidClientParams = {
   privateKey: string
   redirectUri?: string
   hostname?: string
+  rulesEngineEndpoint?: string
 }
+
+export type RulesParams = {
+  accessToken: string
+  ruleIds: string
+  userInfoData: Record<string, string>
+}
+
+export type RulesReturn = {
+  ruleId: string
+  input: string
+  output: string
+}[]
