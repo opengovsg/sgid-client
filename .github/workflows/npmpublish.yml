@@ -26,6 +26,8 @@ jobs:
       id-token: write # Required for OIDC
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
@@ -37,7 +39,13 @@ jobs:
       - run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
-      - run: |
-          git tag "v$(jq -r .version package.json)"
-          git push origin "v$(jq -r .version package.json)"
-      - run: npm publish
+      - name: Create and push git tag if not exists
+        run: |
+          TAG="v$(jq -r .version package.json)"
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            echo "Tag $TAG already exists. Skipping tag creation and push."
+          else
+            git tag "$TAG"
+            git push origin "$TAG"
+          fi
+      - run: npm publish --provenance
